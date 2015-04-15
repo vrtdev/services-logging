@@ -18,14 +18,23 @@
 		<jackson.databind-version>2.5.1</jackson.databind-version>
 		<org.apache.common.lang-version>3.3.2</org.apache.common.lang-version>
 		<junit-version>4.12</junit-version>
+		<commons.beanutils-version>1.9.2</commons.beanutils-version>
 	</properties>
 	
 	<dependencyManagement>
 		<dependencies>
+			
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>${commons.beanutils-version}</version>
+			</dependency>
+
+			
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.7.10</version>
+				<version>${org.slf4j-version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.aspectj</groupId>
