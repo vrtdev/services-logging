@@ -17,8 +17,9 @@
 		<net.logstash.logback-version>4.2</net.logstash.logback-version>
 		<jackson.databind-version>2.5.1</jackson.databind-version>
 		<org.apache.common.lang-version>3.3.2</org.apache.common.lang-version>
-		<junit-version>4.12</junit-version>
 		<commons.beanutils-version>1.9.2</commons.beanutils-version>
+		<junit-version>4.12</junit-version>
+		<org.mockito-version>1.10.19</org.mockito-version>
 	</properties>
 	
 	<dependencyManagement>
@@ -83,6 +84,11 @@
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>${junit-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>${org.mockito-version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
