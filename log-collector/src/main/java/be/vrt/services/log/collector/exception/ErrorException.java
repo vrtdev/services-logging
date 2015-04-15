@@ -1,4 +1,4 @@
-package be.vrt.services.log.basic.exception;
+package be.vrt.services.log.collector.exception;
 
 @SuppressWarnings("serial")
 public class ErrorException extends RuntimeException {
