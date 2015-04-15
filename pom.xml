@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>be.vrt.services</groupId>
+	<groupId>be.vrt.services.logging</groupId>
 	<artifactId>logging</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -10,6 +10,7 @@
 	</modules>
     <properties>
 		<org.slf4j-version>1.7.10</org.slf4j-version>
+		<javax-version>7.0</javax-version>
 		<org.aspectj-version>1.8.5</org.aspectj-version>
 	</properties>
 	
@@ -31,6 +32,11 @@
 				<artifactId>aspectjweaver</artifactId>
 				<version>${org.aspectj-version}</version>
 			</dependency>
+			<dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-web-api</artifactId>
+				<version>${javax-version}</version>
+			</dependency>			
 		</dependencies>
 	</dependencyManagement>
 </project>
