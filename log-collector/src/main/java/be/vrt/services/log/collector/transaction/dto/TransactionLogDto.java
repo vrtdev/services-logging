@@ -14,7 +14,8 @@ public class TransactionLogDto {
 	private String serverName;
 	private String resource;
 	private String httpMethod;
-	private String transactionUUID;
+	private String transactionId;
+	private int responseStatus;
 	private Map<String, String> parameters;
 	
 	public Date getStartTime() {
@@ -53,17 +54,25 @@ public class TransactionLogDto {
 	public void setHttpMethod(String httpMethod) {
 		this.httpMethod = httpMethod;
 	}
-	public String getTransactionUUID() {
-		return transactionUUID;
+	public String getTransactionId() {
+		return transactionId;
 	}
-	public void setTransactionUUID(String transactionUUID) {
-		this.transactionUUID = transactionUUID;
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 	public Map<String, String> getParameters() {
 		return parameters;
 	}
 	public void setParameters(Map<String, String> parameters) {
 		this.parameters = parameters;
+	}
+
+	public int getResponseStatus() {
+		return responseStatus;
+	}
+
+	public void setResponseStatus(int responseStatus) {
+		this.responseStatus = responseStatus;
 	}
 	
 	@Override

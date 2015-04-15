@@ -21,7 +21,7 @@ public class TransactionLogDtoTest {
 		transactionLogDto.setUser("test");
 		transactionLogDto.setServerName("mediazone-dev");
 		transactionLogDto.setResource("http://mediazone-admin-dev.vrt.be/rest/client/v1/assetsources");
-		transactionLogDto.setTransactionUUID("mediazone-dev-124-5GL");
+		transactionLogDto.setTransactionId("mediazone-dev-124-5GL");
 		Map<String, String> params = new HashMap<>();
 		params.put("ardomeId", "123456789098721");
 		params.put("test", "test");
