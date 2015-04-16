@@ -29,6 +29,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 
 import com.sun.security.auth.UserPrincipal;
+import org.slf4j.MDC;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TransactionLoggerFilterTest {
@@ -71,7 +72,7 @@ public class TransactionLoggerFilterTest {
 		verify(appender).doAppend(captorLoggingEvent.capture());
         LoggingEvent loggingEvent = captorLoggingEvent.getValue();
         assertEquals(loggingEvent.getLevel(), (Level.INFO));
-        assertTrue(loggingEvent.getFormattedMessage().contains(",duration=1,user=testUser,serverName=mediazone-dev,resource=http://mediazone-admin-dev.vrt.be/rest/client/v1/assestsources,httpMethod=GET,transactionUUID=mediazone-dev-"));
+		assertNotNull(MDC.get("transactionUUID"));
 	}
 	
 }

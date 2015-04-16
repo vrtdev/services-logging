@@ -49,6 +49,7 @@ public class TransactionLoggerFilter implements Filter {
 			stopWatch.stop();
 			transaction.setDuration(stopWatch.getTime());
 			transaction.setParameters(getParameters(request));
+			transaction.setResponseStatus(response.getStatus());
 			LOG.info("Filter Info: {}", transaction);
 		}
 	}
@@ -63,7 +64,7 @@ public class TransactionLoggerFilter implements Filter {
 		transaction.setServerName(serverName);
 
 		transaction.setHttpMethod(request.getMethod());
-		transaction.setUser(request.getUserPrincipal().getName());
+		transaction.setUser(request.getUserPrincipal() == null ? null : request.getUserPrincipal().getName());
 		transaction.setResource(request.getRequestURL().toString());
 
 		return transaction;
