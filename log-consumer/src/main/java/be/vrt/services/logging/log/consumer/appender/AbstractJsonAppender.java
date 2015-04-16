@@ -34,8 +34,10 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 		if (objects != null) {
 			dto.setContent(Arrays.asList(objects));
 		}
+		dto.setLogComment(e.getMessage());
 		
 		dto.setDate(new Date(e.getTimeStamp()));
+		
 		dto.setClassName(e.getCallerData()[0].getClassName());
 		dto.setMethodName(e.getCallerData()[0].getMethodName());
 		dto.setLineNumber(e.getCallerData()[0].getLineNumber());
