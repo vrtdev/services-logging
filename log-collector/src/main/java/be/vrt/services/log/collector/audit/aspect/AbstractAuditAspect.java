@@ -7,34 +7,17 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import be.vrt.services.log.collector.audit.dto.AuditLogDto;
 import be.vrt.services.log.collector.audit.dto.ErrorDto;
 
-@Aspect
-public class AuditAspect {
-
-	private Logger log = LoggerFactory.getLogger(AuditAspect.class);
-
-	public AuditAspect() {
-	}
-
-	@Pointcut("within(@be.vrt.services.log.collector.audit.annotation.AuditFacade * *(..)) ||  @annotation(be.vrt.services.log.collector.audit.annotation.AuditFacade *).*(..)")
-	public void anAuditFacade() {
-	}
-
-	@Pointcut("execution(public * *(..))")
-	public void publicMethod() {
-	}
-
-	@Around("anAuditFacade() && publicMethod()")
+public abstract class AbstractAuditAspect {
+	
+	private Logger log = LoggerFactory.getLogger(AbstractAuditAspect.class);
+	
 	public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-
 		AuditLogDto auditLogDto = new AuditLogDto();
 		try {
 			Object[] params = joinPoint.getArgs();
@@ -58,7 +41,9 @@ public class AuditAspect {
 		}
 	}
 	
-	Object cloneParameter(Object param) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+	
+	
+	protected Object cloneParameter(Object param) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 		if (param == null) {
 			return null;
 		}
