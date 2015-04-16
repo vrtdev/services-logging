@@ -11,9 +11,9 @@ import be.vrt.services.log.collector.audit.dto.ErrorDto;
 import be.vrt.services.log.collector.transaction.dto.TransactionLogDto;
 
 
-public class AuditAspectTest {
+public class SimpleAuditAspectTest {
 	
-	private AuditAspect auditAspect = new AuditAspect();
+	private SimpleAuditAspect auditAspect = new SimpleAuditAspect();
 	
 	@Test
 	public void cloneParameter_givenNull_returnsNull() throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
