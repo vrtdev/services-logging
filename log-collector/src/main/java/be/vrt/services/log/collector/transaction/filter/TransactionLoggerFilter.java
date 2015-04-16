@@ -22,8 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import be.vrt.services.log.collector.transaction.dto.TransactionLogDto;
+import be.vrt.services.logging.log.common.Constants;
 
-public class TransactionLoggerFilter implements Filter {
+public class TransactionLoggerFilter implements Filter, Constants {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TransactionLoggerFilter.class);
 
@@ -37,7 +38,7 @@ public class TransactionLoggerFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) resp;
 
 		TransactionLogDto transaction = generateTransactionLogDtoFromRequest(request);
-		MDC.put("transactionUUID", transaction.getTransactionId());
+		MDC.put(TRANSACTION_ID, transaction.getTransactionId());
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
@@ -50,6 +51,7 @@ public class TransactionLoggerFilter implements Filter {
 			transaction.setDuration(stopWatch.getTime());
 			transaction.setParameters(getParameters(request));
 			transaction.setResponseStatus(response.getStatus());
+			response.setHeader(TRANSACTION_ID, transaction.getTransactionId());
 			LOG.info("Filter Info: {}", transaction);
 		}
 	}

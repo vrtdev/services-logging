@@ -1,5 +1,6 @@
 package be.vrt.services.log.collector.transaction.filter;
 
+import be.vrt.services.logging.log.common.Constants;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,7 +71,7 @@ public class TransactionLoggerFilterTest {
 		verify(appender).doAppend(captorLoggingEvent.capture());
 		LoggingEvent loggingEvent = captorLoggingEvent.getValue();
 		assertEquals(loggingEvent.getLevel(), (Level.INFO));
-		assertNotNull(MDC.get("transactionUUID"));
+		assertNotNull(MDC.get(Constants.TRANSACTION_ID));
 		
 	}
 

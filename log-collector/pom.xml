@@ -30,7 +30,12 @@
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 		</dependency>
-		<dependency>
+	 <dependency>
+	  <groupId>${project.groupId}</groupId>
+	  <artifactId>log-common</artifactId>
+	  <version>${project.version}</version>
+	 </dependency>
+	 <dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-web-api</artifactId>
 			<scope>provided</scope>
