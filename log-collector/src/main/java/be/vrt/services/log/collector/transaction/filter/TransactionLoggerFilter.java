@@ -35,7 +35,7 @@ public class TransactionLoggerFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
-		StatusServletResponse response = new StatusServletResponse((HttpServletResponse) resp);
+		HttpServletResponse response = (HttpServletResponse) resp;
 		
 		String serverName = request.getServerName();
 		String transactionUUID = addTransactionUUID(serverName);
@@ -54,6 +54,8 @@ public class TransactionLoggerFilter implements Filter {
 			transaction.setResource(request.getRequestURL().toString());
 			
 			chain.doFilter(request, response);
+			
+			response.addHeader("transactionUUID", transactionUUID);
 			
 			stopWatch.stop();
 			
