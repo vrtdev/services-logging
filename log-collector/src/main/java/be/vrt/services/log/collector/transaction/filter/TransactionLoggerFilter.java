@@ -34,7 +34,7 @@ public class TransactionLoggerFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
-		StatusServletResponse response = new StatusServletResponse((HttpServletResponse) resp);
+		HttpServletResponse response = (HttpServletResponse) resp;
 
 		TransactionLogDto transaction = generateTransactionLogDtoFromRequest(request);
 		MDC.put("transactionUUID", transaction.getTransactionId());
