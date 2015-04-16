@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import be.vrt.services.log.collector.audit.dto.AuditLogDto;
+import be.vrt.services.log.collector.audit.dto.ErrorDto;
 
 @Aspect
 public class AuditAspect {
@@ -73,6 +74,12 @@ public class AuditAspect {
 			return new Date(((Date) param).getTime());
 		} else if (param.getClass().isPrimitive()) {
 			return param;
+		} else if (param instanceof Throwable) {
+			ErrorDto dto = new ErrorDto();
+			Throwable t = (Throwable) param;
+			dto.setMessage(t.getMessage());
+			dto.setClassName(t.getClass().getName());
+			return dto;
 		} else {
 			return BeanUtils.cloneBean(param);
 		}

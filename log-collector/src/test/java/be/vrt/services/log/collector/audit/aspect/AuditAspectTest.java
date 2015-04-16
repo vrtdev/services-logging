@@ -7,6 +7,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import be.vrt.services.log.collector.audit.dto.ErrorDto;
 import be.vrt.services.log.collector.transaction.dto.TransactionLogDto;
 
 
@@ -75,5 +76,13 @@ public class AuditAspectTest {
 		Object result = auditAspect.cloneParameter(dto); 
 		assertTrue(result instanceof TransactionLogDto);
 		assertEquals(dto.toString(), ((TransactionLogDto) result).toString());
+	}
+	
+	@Test
+	public void cloneParameter_givenThrowable_returnsThrowable() throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+		Throwable param = new Throwable("test");
+		Object result = auditAspect.cloneParameter(param); 
+		assertTrue(result instanceof ErrorDto);
+		assertEquals(param.getMessage(), ((ErrorDto) result).getMessage());
 	}
 }
