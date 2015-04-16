@@ -54,7 +54,7 @@ public class AuditAspect {
 			auditLogDto.setResponse(cloneParameter(t));
 			throw t;
 		} finally {
-			log.info(auditLogDto.toString());
+			log.info("AuditLogDto: {}",auditLogDto);
 		}
 	}
 	

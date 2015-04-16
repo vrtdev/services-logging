@@ -14,7 +14,8 @@ public class JsonLogWrapperDto {
 	private int lineNumber;
 	
 	private String loggerName;
-
+	private String logComment;
+	
 	private List<String> ids = new LinkedList<>();
 	private List<Object> content = new LinkedList<>();
 	private Object environmentInfo;
@@ -99,6 +100,12 @@ public class JsonLogWrapperDto {
 	public void setLoggerName(String loggerName) {
 		this.loggerName = loggerName;
 	}
-	
-	
+
+	public String getLogComment() {
+		return logComment;
+	}
+
+	public void setLogComment(String logComment) {
+		this.logComment = logComment;
+	}
 }

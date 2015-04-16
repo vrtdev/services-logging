@@ -19,7 +19,7 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 
 	@Override
 	protected void append(ILoggingEvent e) {
-		
+
 		Object[] objects = e.getArgumentArray();
 		JsonLogWrapperDto dto = new JsonLogWrapperDto();
 		dto.setDate(new Date());
@@ -31,7 +31,10 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			hostname = "<UnknownHost>";
 		}
 		dto.setHostName(hostname);
-		dto.setContent(Arrays.asList(objects));
+		if (objects != null) {
+			dto.setContent(Arrays.asList(objects));
+		}
+		
 		dto.setDate(new Date(e.getTimeStamp()));
 		dto.setClassName(e.getCallerData()[0].getClassName());
 		dto.setMethodName(e.getCallerData()[0].getMethodName());
