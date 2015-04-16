@@ -24,7 +24,7 @@ public class AuditAspect {
 	public AuditAspect() {
 	}
 
-	@Pointcut("within(@be.vrt.services.log.collector.audit.annotation.AuditFacade *) || @annotation(be.vrt.services.log.collector.audit.annotation.AuditFacade)")
+	@Pointcut("within(@be.vrt.services.log.collector.audit.annotation.AuditFacade * *(..)) ||  @annotation(be.vrt.services.log.collector.audit.annotation.AuditFacade *).*(..)")
 	public void anAuditFacade() {
 	}
 
