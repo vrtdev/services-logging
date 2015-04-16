@@ -1,16 +1,21 @@
 package be.vrt.services.log.collector.audit.dto;
 
+import java.util.List;
+
+import org.apache.commons.lang3.builder.RecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
 public class AuditLogDto {
 
-	private Object[] arguments;
+	private List<Object> arguments;
 	private Object response;
 	private String method;
 
-	public Object[] getArguments() {
+	public List<Object> getArguments() {
 		return arguments;
 	}
 
-	public void setArguments(Object[] arguments) {
+	public void setArguments(List<Object> arguments) {
 		this.arguments = arguments;
 	}
 
@@ -30,4 +35,9 @@ public class AuditLogDto {
 		this.method = method;
 	}
 	
+	@Override
+	public String toString() {
+		//return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		return new ReflectionToStringBuilder(this, new RecursiveToStringStyle()).toString();
+	}
 }
