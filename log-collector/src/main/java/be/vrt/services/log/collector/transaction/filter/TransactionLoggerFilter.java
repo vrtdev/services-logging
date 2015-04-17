@@ -44,6 +44,7 @@ public class TransactionLoggerFilter implements Filter, Constants {
 		stopWatch.start();
 		transaction.setStartTime(new Date(stopWatch.getStartTime()));
 
+		response.setHeader(TRANSACTION_ID, transaction.getTransactionId());
 		try {
 			chain.doFilter(request, response);
 		} finally {
@@ -51,7 +52,6 @@ public class TransactionLoggerFilter implements Filter, Constants {
 			transaction.setDuration(stopWatch.getTime());
 			transaction.setParameters(getParameters(request));
 			transaction.setResponseStatus(response.getStatus());
-			response.setHeader(TRANSACTION_ID, transaction.getTransactionId());
 			LOG.info("Filter Info: {}", transaction);
 		}
 	}
