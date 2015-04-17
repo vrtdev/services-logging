@@ -10,6 +10,7 @@ public class AuditLogDto {
 	private List<Object> arguments;
 	private Object response;
 	private String method;
+	private String className;
 
 	public List<Object> getArguments() {
 		return arguments;
@@ -33,6 +34,14 @@ public class AuditLogDto {
 
 	public void setMethod(String method) {
 		this.method = method;
+	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
 	}
 	
 	@Override

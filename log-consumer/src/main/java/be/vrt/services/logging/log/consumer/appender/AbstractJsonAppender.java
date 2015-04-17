@@ -50,6 +50,7 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			dto.setLineNumber(e.getCallerData()[0].getLineNumber());
 			dto.setEnvironmentInfo(EnvironmentSetting.log);
 			dto.setLoggerName(e.getLoggerName());
+			dto.setLogLevel(e.getLevel().toString());
 			persist(mapper.writeValueAsString(dto));
 		} catch (Exception ex) {
 			ex.printStackTrace();

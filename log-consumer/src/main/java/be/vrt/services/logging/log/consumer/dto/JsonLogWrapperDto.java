@@ -13,6 +13,8 @@ public class JsonLogWrapperDto {
 	private String methodName;
 	private int lineNumber;
 	
+	private String logLevel;
+	
 	private String loggerName;
 	private String logComment;
 	
@@ -108,4 +110,13 @@ public class JsonLogWrapperDto {
 	public void setLogComment(String logComment) {
 		this.logComment = logComment;
 	}
+
+	public String getLogLevel() {
+		return logLevel;
+	}
+
+	public void setLogLevel(String logLevel) {
+		this.logLevel = logLevel;
+	}
+	
 }

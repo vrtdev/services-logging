@@ -30,7 +30,7 @@ public abstract class AbstractAuditAspect {
 			
 			auditLogDto.setArguments(cloneArguments);
 			auditLogDto.setMethod(joinPoint.getSignature().toShortString());
-			
+			auditLogDto.setClassName(joinPoint.getTarget().getClass().getSimpleName());
 			Object obj = joinPoint.proceed();
 			auditLogDto.setResponse(cloneArgument(obj));
 			return obj;
