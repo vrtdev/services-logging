@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -26,54 +25,54 @@ public abstract class AbstractAuditAspect {
 			Object[] arguments = joinPoint.getArgs();
 			List<Object> cloneArguments = new ArrayList<Object>();
 			for (int i = 0; i < arguments.length; i++) {
-				cloneArguments.add(cloneParameter(arguments[i]));
+				cloneArguments.add(cloneArgument(arguments[i]));
 			}
 			
 			auditLogDto.setArguments(cloneArguments);
 			auditLogDto.setMethod(joinPoint.getSignature().toShortString());
 			
 			Object obj = joinPoint.proceed();
-			auditLogDto.setResponse(cloneParameter(obj));
+			auditLogDto.setResponse(cloneArgument(obj));
 			return obj;
 		} catch (Throwable t) {
-			auditLogDto.setResponse(cloneParameter(t));
+			auditLogDto.setResponse(cloneArgument(t));
 			throw t;
 		} finally {
 			log.info("AuditLogDto: {}",auditLogDto);
 		}
 	}
 	
-	protected Object cloneParameter(Object param) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-		if (param == null) {
+	protected Object cloneArgument(Object arg) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+		if (arg == null) {
 			return null;
 		}
 		
-		Map<String, Object> clonedParam = new HashMap<>();
- 		if (param instanceof String) {
- 			clonedParam.put("aString", new String((String) param));
-		} else if (param instanceof Integer) {
-			clonedParam.put("anInteger", new Integer((Integer) param));
-		} else if (param instanceof Long) {
-			clonedParam.put("aLong", new Long((Long) param));
-		} else if (param instanceof Character) {
-			clonedParam.put("aCharacter", new Character((Character) param));
-		} else if (param instanceof Date) {
-			clonedParam.put("aDate", new Date(((Date) param).getTime()));
-		} else if (param instanceof Double) {
-			clonedParam.put("aDouble", new Double((Double) param));
-		} else if (param instanceof Short) {
-			clonedParam.put("aShort", new Short((Short) param));
-		} else if (param instanceof Boolean) {
-			clonedParam.put("aBoolean", new Boolean((Boolean) param));
-		} else if (param instanceof Throwable) {
+		Map<String, Object> clonedArg = new HashMap<>();
+ 		if (arg instanceof String) {
+ 			clonedArg.put("aString", new String((String) arg));
+		} else if (arg instanceof Integer) {
+			clonedArg.put("anInteger", new Integer((Integer) arg));
+		} else if (arg instanceof Long) {
+			clonedArg.put("aLong", new Long((Long) arg));
+		} else if (arg instanceof Character) {
+			clonedArg.put("aCharacter", new Character((Character) arg));
+		} else if (arg instanceof Date) {
+			clonedArg.put("aDate", new Date(((Date) arg).getTime()));
+		} else if (arg instanceof Double) {
+			clonedArg.put("aDouble", new Double((Double) arg));
+		} else if (arg instanceof Short) {
+			clonedArg.put("aShort", new Short((Short) arg));
+		} else if (arg instanceof Boolean) {
+			clonedArg.put("aBoolean", new Boolean((Boolean) arg));
+		} else if (arg instanceof Throwable) {
 			ErrorDto dto = new ErrorDto();
-			Throwable t = (Throwable) param;
+			Throwable t = (Throwable) arg;
 			dto.setMessage(t.getMessage());
 			dto.setClassName(t.getClass().getName());
 			return dto;
 		} else {
-			return BeanUtils.cloneBean(param);
+			return BeanUtils.cloneBean(arg);
 		}
- 		return clonedParam;
+ 		return clonedArg;
 	}
 }
