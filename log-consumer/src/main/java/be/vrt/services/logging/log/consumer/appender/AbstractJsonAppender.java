@@ -20,32 +20,33 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 	@Override
 	protected void append(ILoggingEvent e) {
 
-		Object[] objects = e.getArgumentArray();
-		JsonLogWrapperDto dto = new JsonLogWrapperDto();
-		dto.setDate(new Date());
-		dto.setTransactionId(MDC.get(TRANSACTION_ID));
-		String hostname;
 		try {
-			hostname = InetAddress.getLocalHost().getHostName();
-		} catch (UnknownHostException ex) {
-			hostname = "<UnknownHost>";
-		}
-		dto.setHostName(hostname);
-		if (objects != null) {
-			dto.setContent(Arrays.asList(objects));
-		}
-		dto.setLogComment(e.getMessage());
-		
-		dto.setDate(new Date(e.getTimeStamp()));
-		
-		dto.setClassName(e.getCallerData()[0].getClassName());
-		dto.setMethodName(e.getCallerData()[0].getMethodName());
-		dto.setLineNumber(e.getCallerData()[0].getLineNumber());
-		dto.setEnvironmentInfo(EnvironmentSetting.log);
-		dto.setLoggerName(e.getLoggerName());
-		try {
+			Object[] objects = e.getArgumentArray();
+			JsonLogWrapperDto dto = new JsonLogWrapperDto();
+			dto.setDate(new Date());
+			dto.setTransactionId(MDC.get(TRANSACTION_ID));
+			String hostname;
+			try {
+				hostname = InetAddress.getLocalHost().getHostName();
+			} catch (UnknownHostException ex) {
+				hostname = "<UnknownHost>";
+			}
+			dto.setHostName(hostname);
+			if (objects != null) {
+				dto.setContent(Arrays.asList(objects));
+			}
+			dto.setLogComment(e.getMessage());
+
+			dto.setDate(new Date(e.getTimeStamp()));
+
+			dto.setClassName(e.getCallerData()[0].getClassName());
+			dto.setMethodName(e.getCallerData()[0].getMethodName());
+			dto.setLineNumber(e.getCallerData()[0].getLineNumber());
+			dto.setEnvironmentInfo(EnvironmentSetting.log);
+			dto.setLoggerName(e.getLoggerName());
 			persist(mapper.writeValueAsString(dto));
-		} catch (JsonProcessingException ex) {
+		} catch (Exception ex) {
+			ex.printStackTrace();
 			System.err.println("FAILED TO PROCESS JSON");
 //			Logger.getLogger(AbstractJsonAppender.class.getName()).log(Level.SEVERE, null, ex);
 		}
