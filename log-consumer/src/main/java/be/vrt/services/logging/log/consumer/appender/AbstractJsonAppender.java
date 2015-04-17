@@ -20,9 +20,13 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 	@Override
 	protected void append(ILoggingEvent e) {
 
+		if(!e.getMDCPropertyMap().containsKey(TRANSACTION_ID)){
+			return;
+		}
+		
+		JsonLogWrapperDto dto = new JsonLogWrapperDto();
+		Object[] objects = e.getArgumentArray();
 		try {
-			Object[] objects = e.getArgumentArray();
-			JsonLogWrapperDto dto = new JsonLogWrapperDto();
 			dto.setDate(new Date());
 			dto.setTransactionId(MDC.get(TRANSACTION_ID));
 			String hostname;
