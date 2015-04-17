@@ -1,17 +1,19 @@
 package be.vrt.services.logging.log.consumer.appender;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Date;
+
+import org.slf4j.MDC;
+
 import be.vrt.services.logging.log.common.Constants;
 import be.vrt.services.logging.log.consumer.config.EnvironmentSetting;
 import be.vrt.services.logging.log.consumer.dto.JsonLogWrapperDto;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Date;
-import org.slf4j.MDC;
 
 public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> implements Constants {
 

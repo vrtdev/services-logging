@@ -3,7 +3,10 @@ package be.vrt.services.log.collector.audit.aspect;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -20,16 +23,15 @@ public abstract class AbstractAuditAspect {
 	public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 		AuditLogDto auditLogDto = new AuditLogDto();
 		try {
-			Object[] params = joinPoint.getArgs();
-			List<Object> cloneParams = new ArrayList<Object>();
-			for (int i = 0; i < params.length; i++) {
-				cloneParams.add(cloneParameter(params[i]));
+			Object[] arguments = joinPoint.getArgs();
+			List<Object> cloneArguments = new ArrayList<Object>();
+			for (int i = 0; i < arguments.length; i++) {
+				cloneArguments.add(cloneParameter(arguments[i]));
 			}
 			
-			auditLogDto.setArguments(cloneParams);
+			auditLogDto.setArguments(cloneArguments);
 			auditLogDto.setMethod(joinPoint.getSignature().toShortString());
 			
-			joinPoint.getArgs();
 			Object obj = joinPoint.proceed();
 			auditLogDto.setResponse(cloneParameter(obj));
 			return obj;
@@ -41,24 +43,28 @@ public abstract class AbstractAuditAspect {
 		}
 	}
 	
-	
-	
 	protected Object cloneParameter(Object param) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 		if (param == null) {
 			return null;
 		}
+		
+		Map<String, Object> clonedParam = new HashMap<>();
  		if (param instanceof String) {
-			return new String((String) param);
+ 			clonedParam.put("aString", new String((String) param));
 		} else if (param instanceof Integer) {
-			return new Integer((Integer) param);
+			clonedParam.put("anInteger", new Integer((Integer) param));
 		} else if (param instanceof Long) {
-			return new Long((Long) param);
+			clonedParam.put("aLong", new Long((Long) param));
 		} else if (param instanceof Character) {
-			return new Character((Character) param);
+			clonedParam.put("aCharacter", new Character((Character) param));
 		} else if (param instanceof Date) {
-			return new Date(((Date) param).getTime());
-		} else if (param.getClass().isPrimitive()) {
-			return param;
+			clonedParam.put("aDate", new Date(((Date) param).getTime()));
+		} else if (param instanceof Double) {
+			clonedParam.put("aDouble", new Double((Double) param));
+		} else if (param instanceof Short) {
+			clonedParam.put("aShort", new Short((Short) param));
+		} else if (param instanceof Boolean) {
+			clonedParam.put("aBoolean", new Boolean((Boolean) param));
 		} else if (param instanceof Throwable) {
 			ErrorDto dto = new ErrorDto();
 			Throwable t = (Throwable) param;
@@ -68,5 +74,6 @@ public abstract class AbstractAuditAspect {
 		} else {
 			return BeanUtils.cloneBean(param);
 		}
+ 		return clonedParam;
 	}
 }
