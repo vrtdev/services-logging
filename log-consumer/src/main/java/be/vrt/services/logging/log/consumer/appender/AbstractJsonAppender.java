@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Date;
 
+import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import be.vrt.services.logging.log.common.Constants;
@@ -53,11 +54,11 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			dto.setLogLevel(e.getLevel().toString());
 			persist(mapper.writeValueAsString(dto));
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.err.println("FAILED TO PROCESS JSON");
-//			Logger.getLogger(AbstractJsonAppender.class.getName()).log(Level.SEVERE, null, ex);
+			getLogger().error("Failed to process Json: " + ex.getMessage());
 		}
 	}
 
 	protected abstract void persist(String json);
+	
+	protected abstract Logger getLogger();
 }

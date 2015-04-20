@@ -10,14 +10,13 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import be.vrt.services.log.collector.audit.dto.AuditLogDto;
 import be.vrt.services.log.collector.audit.dto.ErrorDto;
 
 public abstract class AbstractAuditAspect {
 	
-	private Logger log = LoggerFactory.getLogger(AbstractAuditAspect.class);
+	protected abstract Logger getLogger();
 	
 	public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 		AuditLogDto auditLogDto = new AuditLogDto();
@@ -38,7 +37,7 @@ public abstract class AbstractAuditAspect {
 			auditLogDto.setResponse(cloneArgument(t));
 			throw t;
 		} finally {
-			log.info("AuditLogDto: {}",auditLogDto);
+			getLogger().info("AuditLogDto: {}",auditLogDto);
 		}
 	}
 	

@@ -3,6 +3,8 @@ package be.vrt.services.logging.log.consumer.appender;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ElasticSearchAppender extends AbstractJsonAppender {
 
@@ -26,6 +28,11 @@ public class ElasticSearchAppender extends AbstractJsonAppender {
 	public void stop() {
 		super.stop();
 		client.close();
+	}
+
+	@Override
+	protected Logger getLogger() {
+		return LoggerFactory.getLogger(ElasticSearchAppender.class);
 	}
 
 }

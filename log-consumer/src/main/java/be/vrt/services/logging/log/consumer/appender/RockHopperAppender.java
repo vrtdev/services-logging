@@ -3,7 +3,9 @@ package be.vrt.services.logging.log.consumer.appender;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RockHopperAppender extends AbstractJsonAppender {
 
@@ -30,6 +32,11 @@ public class RockHopperAppender extends AbstractJsonAppender {
 	@Override
 	public void stop() {
 		clientSocket.close();
+	}
+
+	@Override
+	protected Logger getLogger() {
+		return LoggerFactory.getLogger(RockHopperAppender.class);
 	}
 
 }
