@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import be.vrt.services.log.collector.audit.dto.AuditLogDto;
 import be.vrt.services.log.collector.audit.dto.ErrorDto;
 import be.vrt.services.log.collector.exception.FailureException;
+import org.apache.commons.lang3.time.StopWatch;
 
 public abstract class AbstractAuditAspect {
 
@@ -22,7 +23,11 @@ public abstract class AbstractAuditAspect {
 
 	public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 		AuditLogDto auditLogDto = new AuditLogDto();
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
 		try {
+			auditLogDto.setLogDate(new Date(stopWatch.getStartTime()));
+
 			Object[] arguments = joinPoint.getArgs();
 			List<Object> cloneArguments = new ArrayList<Object>();
 			for (int i = 0; i < arguments.length; i++) {
@@ -40,7 +45,10 @@ public abstract class AbstractAuditAspect {
 			auditLogDto.setResponse(cloneArgument(t));
 			throw t;
 		} finally {
+			stopWatch.stop();
+			auditLogDto.setDuration(stopWatch.getTime());
 			getLogger().info("AuditLogDto: {}", auditLogDto);
+			// Add listener HERE!!
 		}
 	}
 
