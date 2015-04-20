@@ -19,13 +19,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> implements Constants {
 
 	private ObjectMapper mapper = new ObjectMapper();
+	
 
 	@Override
 	protected void append(ILoggingEvent e) {
 
-		if(!e.getMDCPropertyMap().containsKey(TRANSACTION_ID)){
-			return;
-		}
+//		if(!e.getMDCPropertyMap().containsKey(TRANSACTION_ID)){
+//			return;
+//		}
 		
 		JsonLogWrapperDto dto = new JsonLogWrapperDto();
 		Object[] objects = e.getArgumentArray();
