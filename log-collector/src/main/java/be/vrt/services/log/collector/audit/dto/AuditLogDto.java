@@ -1,5 +1,6 @@
 package be.vrt.services.log.collector.audit.dto;
 
+import be.vrt.services.log.collector.audit.AuditLevelType;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.RecursiveToStringStyle;
@@ -11,6 +12,7 @@ public class AuditLogDto {
 	private Object response;
 	private String method;
 	private String className;
+	private AuditLevelType auditLevel = AuditLevelType.OK;
 
 	public List<Object> getArguments() {
 		return arguments;
@@ -42,6 +44,15 @@ public class AuditLogDto {
 
 	public void setClassName(String className) {
 		this.className = className;
+	}
+	
+
+	public AuditLevelType getAuditLevel() {
+		return auditLevel;
+	}
+
+	public void setAuditLevel(AuditLevelType auditLevel) {
+		this.auditLevel = auditLevel;
 	}
 	
 	@Override

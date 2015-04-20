@@ -1,5 +1,6 @@
 package be.vrt.services.log.collector.audit.aspect;
 
+import be.vrt.services.log.collector.audit.AuditLevelType;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,11 +14,12 @@ import org.slf4j.Logger;
 
 import be.vrt.services.log.collector.audit.dto.AuditLogDto;
 import be.vrt.services.log.collector.audit.dto.ErrorDto;
+import be.vrt.services.log.collector.exception.FailureException;
 
 public abstract class AbstractAuditAspect {
-	
+
 	protected abstract Logger getLogger();
-	
+
 	public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 		AuditLogDto auditLogDto = new AuditLogDto();
 		try {
@@ -26,7 +28,7 @@ public abstract class AbstractAuditAspect {
 			for (int i = 0; i < arguments.length; i++) {
 				cloneArguments.add(cloneArgument(arguments[i]));
 			}
-			
+
 			auditLogDto.setArguments(cloneArguments);
 			auditLogDto.setMethod(joinPoint.getSignature().toShortString());
 			auditLogDto.setClassName(joinPoint.getTarget().getClass().getSimpleName());
@@ -34,21 +36,22 @@ public abstract class AbstractAuditAspect {
 			auditLogDto.setResponse(cloneArgument(obj));
 			return obj;
 		} catch (Throwable t) {
+			auditLogDto.setAuditLevel((t instanceof FailureException) ? AuditLevelType.FAIL : AuditLevelType.ERROR);
 			auditLogDto.setResponse(cloneArgument(t));
 			throw t;
 		} finally {
-			getLogger().info("AuditLogDto: {}",auditLogDto);
+			getLogger().info("AuditLogDto: {}", auditLogDto);
 		}
 	}
-	
+
 	protected Object cloneArgument(Object arg) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 		if (arg == null) {
 			return null;
 		}
-		
+
 		Map<String, Object> clonedArg = new HashMap<>();
- 		if (arg instanceof String) {
- 			clonedArg.put("aString", new String((String) arg));
+		if (arg instanceof String) {
+			clonedArg.put("aString", new String((String) arg));
 		} else if (arg instanceof Integer) {
 			clonedArg.put("anInteger", new Integer((Integer) arg));
 		} else if (arg instanceof Long) {
@@ -72,6 +75,6 @@ public abstract class AbstractAuditAspect {
 		} else {
 			return BeanUtils.cloneBean(arg);
 		}
- 		return clonedArg;
+		return clonedArg;
 	}
 }
