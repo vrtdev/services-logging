@@ -9,17 +9,19 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import be.vrt.services.logging.log.common.Constants;
+import be.vrt.services.logging.log.common.dto.ErrorDto;
 import be.vrt.services.logging.log.consumer.config.EnvironmentSetting;
 import be.vrt.services.logging.log.consumer.dto.JsonLogWrapperDto;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> implements Constants {
 
 	private ObjectMapper mapper = new ObjectMapper();
-	
 
 	@Override
 	protected void append(ILoggingEvent e) {
@@ -27,7 +29,6 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 //		if(!e.getMDCPropertyMap().containsKey(TRANSACTION_ID)){
 //			return;
 //		}
-		
 		JsonLogWrapperDto dto = new JsonLogWrapperDto();
 		Object[] objects = e.getArgumentArray();
 		try {
@@ -40,11 +41,11 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 				hostname = "<UnknownHost>";
 			}
 			dto.setHostName(hostname);
-			if (objects != null) {
-				dto.setContent(Arrays.asList(objects));
+			
+			for (Object object : objects) {
+				dto.getContent().add(wrapArg(object));
 			}
 			dto.setLogComment(e.getMessage());
-
 			dto.setDate(new Date(e.getTimeStamp()));
 
 			dto.setClassName(e.getCallerData()[0].getClassName());
@@ -55,11 +56,45 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			dto.setLogLevel(e.getLevel().toString());
 			persist(mapper.writeValueAsString(dto));
 		} catch (Exception ex) {
-			getLogger().error("Failed to process Json: " + ex.getMessage());
+			System.err.println("Failed to process Json: " + ex.getMessage());
 		}
 	}
 
+	Object wrapArg(Object arg) {
+
+		Map<String, Object> wrapArg = new HashMap<>();
+		if (arg == null) {
+			wrapArg.put("noValue", "null");
+		} else if (arg instanceof String) {
+			wrapArg.put("aString", ((String) arg));
+		} else if (arg instanceof Integer) {
+			wrapArg.put("anInteger", (Integer) arg);
+		} else if (arg instanceof Long) {
+			wrapArg.put("aLong", (Long) arg);
+		} else if (arg instanceof Character) {
+			wrapArg.put("aCharacter", (Character) arg);
+		} else if (arg instanceof Date) {
+			wrapArg.put("aDate", new Date(((Date) arg).getTime()));
+		} else if (arg instanceof Double) {
+			wrapArg.put("aDouble", (Double) arg);
+		} else if (arg instanceof Short) {
+			wrapArg.put("aShort", (Short) arg);
+		} else if (arg instanceof Boolean) {
+			wrapArg.put("aBoolean", (Boolean) arg);
+		} else if (arg instanceof Throwable) {
+			ErrorDto dto = new ErrorDto();
+			Throwable t = (Throwable) arg;
+			dto.setMessage(t.getMessage());
+			dto.setClassName(t.getClass().getName());
+			return dto;
+		} else {
+			return arg;
+		}
+		return wrapArg;
+
+	}
+
 	protected abstract void persist(String json);
-	
+
 	protected abstract Logger getLogger();
 }

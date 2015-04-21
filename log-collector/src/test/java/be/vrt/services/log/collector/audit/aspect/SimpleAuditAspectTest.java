@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import be.vrt.services.log.collector.audit.dto.ErrorDto;
+import be.vrt.services.logging.log.common.dto.ErrorDto;
 import be.vrt.services.log.collector.transaction.dto.TransactionLogDto;
 
 

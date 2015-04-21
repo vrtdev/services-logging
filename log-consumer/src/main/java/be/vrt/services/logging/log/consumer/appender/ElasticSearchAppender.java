@@ -10,10 +10,13 @@ public class ElasticSearchAppender extends AbstractJsonAppender {
 
 	private Client client;
 
+	private String host;
+	private int port;
+	
 	@Override
 	public void start() {
 		super.start();
-		client = new TransportClient().addTransportAddress(new InetSocketTransportAddress("localhost", 9300));
+		client = new TransportClient().addTransportAddress(new InetSocketTransportAddress(host, port));
 	}
 
 	@Override
@@ -35,4 +38,19 @@ public class ElasticSearchAppender extends AbstractJsonAppender {
 		return LoggerFactory.getLogger(ElasticSearchAppender.class);
 	}
 
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
 }

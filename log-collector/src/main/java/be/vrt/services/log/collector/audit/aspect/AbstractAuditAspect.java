@@ -13,7 +13,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 
 import be.vrt.services.log.collector.audit.dto.AuditLogDto;
-import be.vrt.services.log.collector.audit.dto.ErrorDto;
+import be.vrt.services.logging.log.common.dto.ErrorDto;
 import be.vrt.services.log.collector.exception.FailureException;
 import org.apache.commons.lang3.time.StopWatch;
 
