@@ -24,13 +24,13 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 	private ObjectMapper mapper = new ObjectMapper();
 
 	@Override
-	protected void append(ILoggingEvent e) {
+	protected void append(ILoggingEvent logEvent) {
 
 //		if(!e.getMDCPropertyMap().containsKey(TRANSACTION_ID)){
 //			return;
 //		}
 		JsonLogWrapperDto dto = new JsonLogWrapperDto();
-		Object[] objects = e.getArgumentArray();
+		Object[] objects = logEvent.getArgumentArray();
 		try {
 			dto.setDate(new Date());
 			dto.setTransactionId(MDC.get(TRANSACTION_ID));
@@ -41,20 +41,28 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 				hostname = "<UnknownHost>";
 			}
 			dto.setHostName(hostname);
-			
+
 			for (Object object : objects) {
 				dto.getContent().add(wrapArg(object));
 			}
-			dto.setLogComment(e.getMessage());
-			dto.setDate(new Date(e.getTimeStamp()));
+			dto.setLogComment(logEvent.getMessage());
+			dto.setDate(new Date(logEvent.getTimeStamp()));
 
-			dto.setClassName(e.getCallerData()[0].getClassName());
-			dto.setMethodName(e.getCallerData()[0].getMethodName());
-			dto.setLineNumber(e.getCallerData()[0].getLineNumber());
+			dto.setClassName(logEvent.getCallerData()[0].getClassName());
+			dto.setMethodName(logEvent.getCallerData()[0].getMethodName());
+			dto.setLineNumber(logEvent.getCallerData()[0].getLineNumber());
 			dto.setEnvironmentInfo(EnvironmentSetting.log);
-			dto.setLoggerName(e.getLoggerName());
-			dto.setLogLevel(e.getLevel().toString());
-			persist(mapper.writeValueAsString(dto));
+			dto.setLoggerName(logEvent.getLoggerName());
+			dto.setLogLevel(logEvent.getLevel().toString());
+			String json;
+			try {
+				json = mapper.writeValueAsString(dto);
+			} catch (Exception ex) {
+				dto.setContent(null);
+				dto.setLogComment(logEvent.getFormattedMessage());
+				json = mapper.writeValueAsString(dto);
+			}
+			persist(json);
 		} catch (Exception ex) {
 			System.err.println("Failed to process Json: " + ex.getMessage());
 		}
