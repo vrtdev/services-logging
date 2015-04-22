@@ -9,9 +9,11 @@ import org.slf4j.LoggerFactory;
 
 public class RockHopperAppender extends AbstractJsonAppender {
 
-	private int port = 5514;
 	private DatagramSocket clientSocket;
 
+	private String host;
+	private int port;
+	
 	@Override
 	public void start() {
 		super.start();
@@ -22,7 +24,7 @@ public class RockHopperAppender extends AbstractJsonAppender {
 		try {
 			clientSocket = new DatagramSocket();
 			byte[] sendData = json.getBytes();
-			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getLoopbackAddress(), port);
+			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(host), port);
 			clientSocket.send(sendPacket);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -37,6 +39,22 @@ public class RockHopperAppender extends AbstractJsonAppender {
 	@Override
 	protected Logger getLogger() {
 		return LoggerFactory.getLogger(RockHopperAppender.class);
+	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
 	}
 
 }
