@@ -34,13 +34,11 @@ public class ElasticSearchAppenderTest {
 		StackTraceElement[] stack = new StackTraceElement[1];
 		StackTraceElement element = new StackTraceElement("AssetServiceImpl", "updateAsset", null, 50);
 		stack[0] = element;
-		Object[] obj = new Object[1];
 		
 		when(logEvent.getMessage()).thenReturn("Test log comment");
 		when(logEvent.getLoggerName()).thenReturn("Test logger name");
 		when(logEvent.getTimeStamp()).thenReturn(5L);
 		when(logEvent.getCallerData()).thenReturn(stack);
-		when(logEvent.getArgumentArray()).thenReturn(obj);
 		when(logEvent.getLevel()).thenReturn(Level.INFO);
 		
 		elasticSearchAppender.append(logEvent);
