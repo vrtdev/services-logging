@@ -1,8 +1,10 @@
 package be.vrt.services.logging.log.consumer.dto;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class JsonLogWrapperDto {
 
@@ -19,7 +21,7 @@ public class JsonLogWrapperDto {
 	private String logComment;
 	
 	private List<String> ids = new LinkedList<>();
-	private List<Object> content = new LinkedList<>();
+	private Map<String, Object> content = new HashMap<>();
 	private Object environmentInfo;
 
 
@@ -47,11 +49,11 @@ public class JsonLogWrapperDto {
 		this.ids = ids;
 	}
 
-	public List<Object> getContent() {
+	public Map<String, Object> getContent() {
 		return content;
 	}
 
-	public void setContent(List<Object> content) {
+	public void setContent(Map<String, Object> content) {
 		this.content = content;
 	}
 
