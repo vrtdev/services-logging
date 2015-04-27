@@ -13,7 +13,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 
 import be.vrt.services.log.collector.audit.dto.AuditLogDto;
-import be.vrt.services.logging.log.common.dto.ErrorDto;
+import be.vrt.services.log.collector.audit.dto.ErrorDto;
 import be.vrt.services.log.collector.exception.FailureException;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -30,8 +30,8 @@ public abstract class AbstractAuditAspect {
 
 			Object[] arguments = joinPoint.getArgs();
 			List<Object> cloneArguments = new ArrayList<Object>();
-			for (int i = 0; i < arguments.length; i++) {
-				cloneArguments.add(cloneArgument(arguments[i]));
+			for (Object argument : arguments) {
+				cloneArguments.add(cloneArgument(argument));
 			}
 
 			auditLogDto.setArguments(cloneArguments);
@@ -59,21 +59,21 @@ public abstract class AbstractAuditAspect {
 
 		Map<String, Object> clonedArg = new HashMap<>();
 		if (arg instanceof String) {
-			clonedArg.put("aString", new String((String) arg));
+			clonedArg.put("aString", arg);
 		} else if (arg instanceof Integer) {
-			clonedArg.put("anInteger", new Integer((Integer) arg));
+			clonedArg.put("anInteger", arg);
 		} else if (arg instanceof Long) {
-			clonedArg.put("aLong", new Long((Long) arg));
+			clonedArg.put("aLong", arg);
 		} else if (arg instanceof Character) {
-			clonedArg.put("aCharacter", new Character((Character) arg));
+			clonedArg.put("aCharacter", arg);
 		} else if (arg instanceof Date) {
 			clonedArg.put("aDate", new Date(((Date) arg).getTime()));
 		} else if (arg instanceof Double) {
-			clonedArg.put("aDouble", new Double((Double) arg));
+			clonedArg.put("aDouble", arg);
 		} else if (arg instanceof Short) {
-			clonedArg.put("aShort", new Short((Short) arg));
+			clonedArg.put("aShort", arg);
 		} else if (arg instanceof Boolean) {
-			clonedArg.put("aBoolean", new Boolean((Boolean) arg));
+			clonedArg.put("aBoolean",  arg);
 		} else if (arg instanceof Throwable) {
 			ErrorDto dto = new ErrorDto();
 			Throwable t = (Throwable) arg;

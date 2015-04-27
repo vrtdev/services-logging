@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import be.vrt.services.logging.log.common.dto.ErrorDto;
+import be.vrt.services.log.collector.audit.dto.ErrorDto;
 import be.vrt.services.log.collector.transaction.dto.TransactionLogDto;
 
 
@@ -28,7 +28,7 @@ public class SimpleAuditAspectTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void cloneParameter_givenInteger_returnsInteger() throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-		Integer param = new Integer(5);
+		Integer param = 5;
 		Object result = auditAspect.cloneArgument(param);
 		
 		assertTrue(result instanceof HashMap);
@@ -40,7 +40,7 @@ public class SimpleAuditAspectTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void cloneParameter_givenString_returnsString() throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-		String param = new String("test");
+		String param = "test";
 		Object result = auditAspect.cloneArgument(param); 
 		
 		assertTrue(result instanceof HashMap);
@@ -52,7 +52,7 @@ public class SimpleAuditAspectTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void cloneParameter_givenLong_returnsLong() throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-		Long param = new Long(5);
+		Long param = (long) 5;
 		Object result = auditAspect.cloneArgument(param); 
 		
 		assertTrue(result instanceof HashMap);
@@ -76,7 +76,7 @@ public class SimpleAuditAspectTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void cloneParameter_givenDouble_returnsDouble() throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-		Double param = new Double(5);
+		Double param = (double) 5;
 		Object result = auditAspect.cloneArgument(param); 
 		
 		assertTrue(result instanceof HashMap);

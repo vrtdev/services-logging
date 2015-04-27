@@ -1,4 +1,4 @@
-package be.vrt.services.logging.log.common.dto;
+package be.vrt.services.log.collector.audit.dto;
 
 public class ErrorDto {
 	
