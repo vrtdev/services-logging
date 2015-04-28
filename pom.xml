@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>be.vrt.services.logging</groupId>
 	<artifactId>logging</artifactId>
 	<version>0.2-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>be.vrt.services</groupId>
@@ -11,12 +13,17 @@
 		<version>0.3</version>
 	</parent>
 
-	<packaging>pom</packaging>
 	<modules>
 		<module>log-collector</module>
 		<module>log-consumer</module>
 		<module>log-common</module>
 	</modules>
+
+	<scm>
+		<connection>scm:git:ssh://git@atlas.vrt.be:7999/ser/services-logging.git</connection>
+		<developerConnection>scm:git:ssh://git@atlas.vrt.be:7999/ser/services-logging.git</developerConnection>
+	</scm>
+
 	<properties>
 		<org.slf4j-version>1.7.10</org.slf4j-version>
 		<javax-version>7.0</javax-version>
@@ -30,23 +37,20 @@
 		<junit-version>4.12</junit-version>
 		<org.mockito-version>1.10.19</org.mockito-version>
 	</properties>
-	
+
 	<dependencyManagement>
 		<dependencies>
-			
 			<dependency>
 				<groupId>commons-beanutils</groupId>
 				<artifactId>commons-beanutils</artifactId>
 				<version>${commons.beanutils-version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.elasticsearch</groupId>
 				<artifactId>elasticsearch</artifactId>
 				<version>${org.elasticsearch-version}</version>
 				<scope>provided</scope>
 			</dependency>
-			
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
@@ -57,7 +61,6 @@
 				<artifactId>aspectjrt</artifactId>
 				<version>${org.aspectj-version}</version>
 			</dependency>
- 
 			<dependency>
 				<groupId>org.aspectj</groupId>
 				<artifactId>aspectjweaver</artifactId>
@@ -67,7 +70,7 @@
 				<groupId>javax</groupId>
 				<artifactId>javaee-web-api</artifactId>
 				<version>${javax-version}</version>
-			</dependency>			
+			</dependency>
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
@@ -82,18 +85,18 @@
 				<groupId>net.logstash.logback</groupId>
 				<artifactId>logstash-logback-encoder</artifactId>
 				<version>${net.logstash.logback-version}</version>
-			</dependency>	
+			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
 				<version>${jackson.databind-version}</version>
-			</dependency>			
+			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
 				<version>${org.apache.common.lang-version}</version>
-			</dependency>	
-	
+			</dependency>
+
 			<!-- Testing libs -->
 			<dependency>
 				<groupId>junit</groupId>
