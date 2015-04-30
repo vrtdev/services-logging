@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>log-common</artifactId>
+            <artifactId>logging-common</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
