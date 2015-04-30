@@ -11,7 +11,7 @@ import java.util.HashMap;
 import org.junit.Test;
 
 import be.vrt.services.logging.log.common.dto.ErrorDto;
-import be.vrt.services.log.collector.transaction.dto.TransactionLogDto;
+import be.vrt.services.log.collector.transaction.dto.HttpTransactionLogDto;
 
 
 public class SimpleAuditAspectTest {
@@ -124,12 +124,12 @@ public class SimpleAuditAspectTest {
 	
 	@Test
 	public void cloneParameter_givenBean_returnsBean() throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-		TransactionLogDto dto = new TransactionLogDto();
+		HttpTransactionLogDto dto = new HttpTransactionLogDto();
 		dto.setDuration(1234L);
 		dto.setUser("test");
 		Object result = auditAspect.cloneArgument(dto); 
-		assertTrue(result instanceof TransactionLogDto);
-		assertEquals(dto.toString(), ((TransactionLogDto) result).toString());
+		assertTrue(result instanceof HttpTransactionLogDto);
+		assertEquals(dto.toString(), ((HttpTransactionLogDto) result).toString());
 	}
 	
 	@Test

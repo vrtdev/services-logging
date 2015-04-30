@@ -14,7 +14,7 @@ public class TransactionLogDtoTest {
 	
 	@Test
 	public void toString_givenTransactionLogDto() {
-		TransactionLogDto transactionLogDto = new TransactionLogDto();
+		HttpTransactionLogDto transactionLogDto = new HttpTransactionLogDto();
 		transactionLogDto.setDuration(1445L);
 		transactionLogDto.setHttpMethod(HttpMethod.PUT);
 		transactionLogDto.setStartTime(new Date());

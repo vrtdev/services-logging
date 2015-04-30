@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import be.vrt.services.log.collector.transaction.dto.TransactionLogDto;
+import be.vrt.services.log.collector.transaction.dto.HttpTransactionLogDto;
 import be.vrt.services.logging.log.common.Constants;
 
 public class TransactionLoggerFilter implements Filter, Constants {
@@ -37,7 +37,7 @@ public class TransactionLoggerFilter implements Filter, Constants {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) resp;
 
-		TransactionLogDto transaction = generateTransactionLogDtoFromRequest(request);
+		HttpTransactionLogDto transaction = generateTransactionLogDtoFromRequest(request);
 		MDC.put(TRANSACTION_ID, transaction.getTransactionId());
 
 		StopWatch stopWatch = new StopWatch();
@@ -56,12 +56,12 @@ public class TransactionLoggerFilter implements Filter, Constants {
 		}
 	}
 
-	private TransactionLogDto generateTransactionLogDtoFromRequest(HttpServletRequest request) {
+	private HttpTransactionLogDto generateTransactionLogDtoFromRequest(HttpServletRequest request) {
 		String serverName = request.getServerName();
 
 		String uuid = UUID.randomUUID().toString();
 		String transactionUUID = serverName + "-" + uuid;
-		TransactionLogDto transaction = new TransactionLogDto();
+		HttpTransactionLogDto transaction = new HttpTransactionLogDto();
 		transaction.setTransactionId(transactionUUID);
 		transaction.setServerName(serverName);
 
