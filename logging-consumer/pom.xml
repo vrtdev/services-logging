@@ -6,7 +6,7 @@
         <artifactId>logging</artifactId>
         <version>0.2-SNAPSHOT</version>
     </parent>
-    <artifactId>log-consumer</artifactId>
+    <artifactId>logging-consumer</artifactId>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>

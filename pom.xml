@@ -14,9 +14,9 @@
 	</parent>
 
 	<modules>
-		<module>log-collector</module>
-		<module>log-consumer</module>
-		<module>log-common</module>
+		<module>logging-collector</module>
+		<module>logging-consumer</module>
+		<module>logging-common</module>
 	</modules>
 
 	<scm>
