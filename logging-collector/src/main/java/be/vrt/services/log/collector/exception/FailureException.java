@@ -9,4 +9,12 @@ public class FailureException extends Exception {
 	public FailureException(String message) {
 		super(message);
 	}
+
+	public FailureException(Throwable cause) {
+		super(cause);
+	}
+
+	public FailureException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }
