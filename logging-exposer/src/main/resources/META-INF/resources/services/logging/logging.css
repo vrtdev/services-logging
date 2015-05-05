@@ -1,0 +1,13 @@
+#rlog-info{
+	padding: 10px;
+	display: none;position: fixed; bottom: 0px; height: 150px; 
+	background: black; border-top: #800 3px solid;
+	width: 100%; overflow-y: auto
+}
+
+#rlog-detail{
+	padding: 10px;display: none;position: fixed; 
+	bottom: 30px; top: 50px; left: 30px;right: 30px; 
+	background: black; border: #800 3px solid;
+	overflow-y: auto
+}

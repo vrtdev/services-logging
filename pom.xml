@@ -17,6 +17,7 @@
 		<module>logging-collector</module>
 		<module>logging-consumer</module>
 		<module>logging-common</module>
+	 <module>logging-exposer</module>
 	</modules>
 
 	<scm>
