@@ -6,12 +6,19 @@ document.rLog = {
 		$.get("services/logging/logging.html",
 				function (data) {
 					$("body").prepend(data);
-					hljs.initHighlightingOnLoad();
 					$("#rlog-info-clear-btn").click(function () {
 						document.rLog.clearTransactionHistory();
 					});
 					$("#rlog-info-search-btn").click(function () {
 						document.rLog.registerTransaction($('#rlog-info-search-id').val(), "Custom Search by console");
+					});
+					
+					$("#rlog-info-search-btn").click(function () {
+						document.rLog.registerTransaction($('#rlog-info-search-id').val(), "Custom Search by console");
+					});
+					
+					$("#rlog-detail-full").click(function (){
+						$(".rlog-detail-row-json").toggle();
 					});
 
 					$('#rlog-server-index').val(localStorage.getItem('rLog.server-index'));
@@ -99,7 +106,7 @@ document.rLog = {
 	displayDetail: function (logId) {
 		$('#rlog-detail').fadeIn();
 		$('#rlog-detail-close').click(document.rLog.hideDetail);
-		$('#rlog-detail-server').text($('#rlog-server-url').val() + " | "+$('#rlog-server-index').val())
+		$('#rlog-detail-server').text($('#rlog-server-url').val() + " | " + $('#rlog-server-index').val())
 		document.rLog.client = new elasticsearch.Client({
 			host: $('#rlog-server-url').val(),
 			log: 'info'
@@ -115,11 +122,58 @@ document.rLog = {
 				}
 			}
 		}, function (error, response) {
-			$('#rlog-detail-content').html('<pre><code class="json">' + syntaxHighlight(response.hits.hits) + "</code></pre>");
+			document.rLog.displayResults(response.hits.hits);
 		});
 	},
 	hideDetail: function () {
 		$('#rlog-detail').fadeOut();
+	},
+	displayResults: function (response) {
+		$('#rlog-detail-content').empty();
+		var table = $("<table></table>");
+		$('#rlog-detail-content').append(table);
+		response.forEach(function (hit) {
+			var src = hit._source;
+			var newRow = $("<tr ></tr>");
+			newRow.append($("<td class='rlog-row-time'></td>").text(moment(src.date).format("HH:mm:ss.SSS")));
+			newRow.append($("<td class='logr-logLine-" + src.logLevel + "'></td>").text(src.logLevel));
+			newRow.append($("<td></td>").text(src.loggerName.split(".").pop()));
+			var moreInfo = "";
+			if (src.content.TransactionLogDto) {
+				var transLog = src.content.TransactionLogDto;
+				moreInfo = transLog.httpMethod + " [" + transLog.responseStatus + "] " + transLog.resource;
+				newRow.append($("<td></td>").text(moreInfo));
+				var newRowDetail = $("<tr class='rlog-detail-row-json'></tr>");
+				newRowDetail.append($("<td colspan='2'></td> "));
+				newRowDetail.append($("<td colspan='2'><pre>" + syntaxHighlight(src) + "</pre></td>"));
+				table.prepend(newRowDetail);
+				table.prepend(newRow);
+			} else if (src.content.AuditLogDto) {
+				var auditLog = src.content.AuditLogDto;
+				moreInfo = " [" + auditLog.auditLevel + "] " + auditLog.method;
+				newRow.append($("<td ></td>").text(moreInfo));
+				var newRowDetail = $("<tr class='rlog-detail-row-json'></tr>");
+				newRowDetail.append($("<td colspan='2'></td> "));
+				newRowDetail.append($("<td colspan='2'><pre>" + syntaxHighlight(src) + "</pre></td>"));
+				table.append(newRow);
+				table.append(newRowDetail);
+			} else if (src.content.String) {
+				newRow.append($("<td></td>").text(src.content.String));
+				var newRowDetail = $("<tr class='rlog-detail-row-json'></tr>");
+				newRowDetail.append($("<td colspan='2'></td> "));
+				newRowDetail.append($("<td colspan='2'><pre>" + syntaxHighlight(src) + "</pre></td>"));
+				table.append(newRow);
+				table.append(newRowDetail);
+			} else {
+				newRow.append($("<td></td>").text(src.logComment));
+				var newRowDetail = $("<tr class='rlog-detail-row-json'></tr>");
+				newRowDetail.append($("<td colspan='2'></td> "));
+				newRowDetail.append($("<td colspan='2'><pre>" + syntaxHighlight(src) + "</pre></td>"));
+				table.append(newRow);
+				table.append(newRowDetail);
+			}
+		});
+//		$('#rlog-detail-content').append('<pre><code class="json">' + syntaxHighlight(response) + "</code></pre>");
 	}
 };
 $(document.rLog.init());
@@ -129,7 +183,7 @@ $(document).bind('keydown', null, function (e) {
 		document.rLog.infoVisible = !$('#rlog-info').is(":visible");
 		$('#rlog-info').toggle(400, "linear");
 		document.rLog.displayTransactions();
-		
+
 	}
 	return true;
 });

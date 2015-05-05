@@ -6,10 +6,10 @@
 	z-index: 9999;
 	margin: 7px;
 }
-.rlog-info hr {
+.rlog-info hr , rlog-detail hr{
 	margin: 7px 0px;
 }
-.rlog-info table{
+.rlog-info table, #rlog-detail-content{
 	font-size: 12px;
 }
 .rlog-info, .rlog-info-top {
@@ -51,6 +51,10 @@
 
 #rlog-detail-server{
 	color: orange;
+}
+#rlog-detail-content .rlog-row-time{
+	color: orange;
+	width: 60px;
 }
 
 .rlog-row-time{
@@ -101,4 +105,42 @@ tr .rlog-info-show-btn{
 .rlog-clear-btn:hover{
 	color: black;
 	background-color: red;
+}
+
+.logr-logLine-INFO{
+	color: black;
+	background-color: lightblue;
+}
+.logr-logLine-WARN{
+	color: black;
+	background-color: orange;
+}
+
+.logr-logLine-ERROR{
+	color: white;
+	background-color: red;
+}
+
+.rlog-detail-row-json pre {
+	margin: 0px;
+}
+
+.rlog-detail-row-json .key{
+	color: white;
+}
+
+.rlog-detail-row-json .number{
+	color: lightblue;
+}
+
+.rlog-detail-row-json .boolean{
+	color: lightpink;
+}
+
+.rlog-detail-row-json .null{
+	color: red;
+}
+
+.rlog-detail-row-json{
+	display: none;
 }
