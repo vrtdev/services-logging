@@ -1,14 +1,25 @@
-<div id="rlog-info" >
-	Logging init.
-	<div style="float: right;">
-		Log Server Url:<br>
-		<input id="log-server-url" value="localhost:9200"><br>
-		Index Search:<br>
-		<input id="log-server-index" value="logging"><br>
-	</div>.
+<div id="rlog-info" class="rlog-info">
+	LogId:<input id="rlog-info-search-id" value=""> <span id="rlog-info-search-btn" class="rlog-info-show-btn">SHOW</span>
+	<span id="rlog-info-clear-btn" class="rlog-clear-btn">CLEAR</span>
+	<div style="float: right; padding-top: 0px;">
+		ServerUrl: <input id="rlog-server-url" value="localhost:9200">
+		Index: <input id="rlog-server-index" value="logging">
+		<span id="rlog-server-save-btn" class="rlog-btn">SAVE</span>
+	</div>
+	<hr/>
+	<div style="overflow: auto; height: 170px;" >
+		<table id="rlog-info-table" style="width: 100%">
+			<tbody/>
+		</table>
+	</div>
 </div>
 <div id="rlog-detail">
-	<div id="rlog-detail-close" >Click here to close</div>
+	Info:<span id="rlog-detail-server"></span>
+		
+		<div style="float: right; padding-top: 0px;">
+			<span id="rlog-detail-close" class="rlog-btn">CLOSE</span>
+		</div>
+	
 	<hr>
 	<div id="rlog-detail-content"></div>
 </div>

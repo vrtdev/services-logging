@@ -13,8 +13,14 @@ function loadjscssfile(filename, filetype){
     if (typeof fileref!="undefined")
         document.getElementsByTagName("head")[0].appendChild(fileref)
 }
-loadjscssfile("services/logging/logging.css", "css");
 
+if (typeof jQuery === 'undefined') {
+	loadjscssfile("https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js", "js");
+}
+
+loadjscssfile("services/logging/logging.css", "css");
+loadjscssfile("http://fonts.googleapis.com/css?family=Ubuntu+Mono", "css");
+loadjscssfile("services/logging/lib/momentjs.js", "js");
 loadjscssfile("services/logging/lib/elasticsearch.js", "js");
 loadjscssfile("services/logging/lib/elasticsearch.jquery.js", "js");
 loadjscssfile("services/logging/logging.js", "js");

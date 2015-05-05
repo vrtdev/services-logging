@@ -1,44 +1,112 @@
 document.rLog = {
 	transactions: [],
+	infoVisible: false,
 	client: null,
 	init: function () {
 		$.get("services/logging/logging.html",
 				function (data) {
-					$("body").append(data);
+					$("body").prepend(data);
 					hljs.initHighlightingOnLoad();
-					//$('#rlog-info').text("Whoehoe");
+					$("#rlog-info-clear-btn").click(function () {
+						document.rLog.clearTransactionHistory();
+					});
+					$("#rlog-info-search-btn").click(function () {
+						document.rLog.registerTransaction($('#rlog-info-search-id').val(), "Custom Search by console");
+					});
+
+					$('#rlog-server-index').val(localStorage.getItem('rLog.server-index'));
+					$('#rlog-server-url').val(localStorage.getItem('rLog.server-url'));
+
+					$("#rlog-server-save-btn").click(function () {
+						localStorage.setItem('rLog.server-index', $('#rlog-server-index').val());
+						localStorage.setItem('rLog.server-url', $('#rlog-server-url').val());
+					});
+
 				}
 		);
 	},
-	registerCall: function (headers) {
-		var logId = headers['log-transaction-uuid']; //console.log();
-		this.transactions.push(logId);
-		var p = $("<p>");
-		p.attr("log-id", logId);
-		p.text(new Date() + " : " + logId);
-		p.click(this.displayDetail);
-		$('#rlog-info').append(p);
+	registerTransaction: function (id, comment) {
+		if (!localStorage.getItem('rLog.transaction-log-lines')) {
+			localStorage.setItem('rLog.transaction-log-lines', JSON.stringify(new Array()));
+		}
+		var transactions = JSON.parse(localStorage.getItem('rLog.transaction-log-lines'));
+		while (transactions.length > 100) {
+			transactions.shift();
+		}
+		transactions.push({time: moment().format("YYYY/MM/DD HH:mm:ss.SSS"), transId: id, comment: comment});
+		localStorage.setItem('rLog.transaction-log-lines', JSON.stringify(transactions));
+		this.displayTransactions();
 	},
-	displayDetail: function (e) {
-		$('#rlog-detail').show();
+	clearTransactionHistory: function () {
+		if (confirm("Clear history?")) {
+			localStorage.setItem('rLog.transaction-log-lines', JSON.stringify(new Array()));
+			this.displayTransactions();
+		}
+	},
+	displayTransactions: function () {
+		if (!this.infoVisible) {
+			this.hideDetail();
+			return;
+		}
 
-		$('#rlog-detail-close').click(document.rLog.hideDetail);
+		$("#rlog-info-table tbody").empty();
+		var transactions = JSON.parse(localStorage.getItem('rLog.transaction-log-lines'));
+
+		transactions.forEach(function (transaction) {
+			var newRow = $("<tr></tr>");
+			newRow.append($("<td class='rlog-row-time'></td>").text(transaction.time));
+			if (!transaction.comment) {
+				transaction.comment = "";
+			}
+			if (transaction.transId) {
+				newRow.append($("<td class='rlog-row-more'></td>")
+						.append($("<span class='rlog-info-show-btn'>SHOW</span>")
+								.attr("log-id", transaction.transId)
+								.click(document.rLog.displayDetailClick)
+								)
+						);
+				newRow.append($("<td class='rlog-row-line'></td>").text("[" + transaction.transId + "] " + transaction.comment));
+			} else {
+				newRow.append($("<td class='rlog-row-more'></td>"));
+				newRow.append($("<td class='rlog-row-line'></td>").text(transaction.comment));
+			}
+			$("#rlog-info-table tbody").prepend(newRow);
+		});
+	},
+	displayLogLine: function (line, logId) {
+		var now = moment();
+		var newRow = $("<tr></tr>");
+		newRow.append($("<td class='rlog-row-time'></td>").text(now.format("YYYY/MM/DD HH:mm:ss.SSS")));
+		if (logId) {
+			newRow.append($("<td class='rlog-row-more'><span class='rlog-info-show-btn'>SHOW</span></td>")
+					.attr("log-id", logId)
+					.click(this.displayDetail));
+		} else {
+			newRow.append($("<td class='rlog-row-more'></td>"));
+		}
+		newRow.append($("<td class='rlog-row-line'></td>").text(line));
+//		var newRow = "<tr><td>"++"</td><td>"+line+"</td></tr>";
+		$("#rlog-info-table tbody").prepend(newRow);
+	},
+	registerCall: function (headers, comment) {
+		var logId = headers['log-transaction-uuid']; //console.log();
+		this.registerTransaction(logId, comment);
+	},
+	displayDetailClick: function (e) {
 		var logId = $(e.toElement).attr('log-id');
-//		var str = JSON.stringify(obj, null, 2);
-//		this.client.search({
-//			q: 'pants'
-//		}).then(function (body) {
-//			var hits = body.hits.hits;
-//		}, function (error) {
-//			console.trace(error.message);
-//		});
+		document.rLog.displayDetail(logId);
+	},
+	displayDetail: function (logId) {
+		$('#rlog-detail').fadeIn();
+		$('#rlog-detail-close').click(document.rLog.hideDetail);
+		$('#rlog-detail-server').text($('#rlog-server-url').val() + " | "+$('#rlog-server-index').val())
 		document.rLog.client = new elasticsearch.Client({
-			host: $('#log-server-url').val(),
+			host: $('#rlog-server-url').val(),
 			log: 'info'
 		});
 
 		document.rLog.client.search({
-			index: $('#log-server-index').val(),
+			index: $('#rlog-server-index').val(),
 			body: {
 				query: {
 					match_phrase: {
@@ -47,21 +115,21 @@ document.rLog = {
 				}
 			}
 		}, function (error, response) {
-			$('#rlog-detail-content').html('<pre><code class="json">' + JSON.stringify(response.hits.hits, undefined, 2) + "</code></pre>");
+			$('#rlog-detail-content').html('<pre><code class="json">' + syntaxHighlight(response.hits.hits) + "</code></pre>");
 		});
-
-
-
 	},
 	hideDetail: function () {
-		$('#rlog-detail').hide();
+		$('#rlog-detail').fadeOut();
 	}
 };
 $(document.rLog.init());
 
 $(document).bind('keydown', null, function (e) {
 	if (e.which == 222) {
+		document.rLog.infoVisible = !$('#rlog-info').is(":visible");
 		$('#rlog-info').toggle(400, "linear");
+		document.rLog.displayTransactions();
+		
 	}
 	return true;
 });

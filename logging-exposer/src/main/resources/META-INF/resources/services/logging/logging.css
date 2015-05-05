@@ -1,13 +1,104 @@
-#rlog-info{
+.rlog-info, .rlog-info-top,#rlog-detail{
+	font-family: 'Ubuntu Mono', "Courier New", Courier, monospace;
+	font-size: 14px;
+	color: greenyellow;
+	box-sizing: content-box;
+	z-index: 9999;
+	margin: 7px;
+}
+.rlog-info hr {
+	margin: 7px 0px;
+}
+.rlog-info table{
+	font-size: 12px;
+}
+.rlog-info, .rlog-info-top {
 	padding: 10px;
-	display: none;position: fixed; bottom: 0px; height: 150px; 
-	background: black; border-top: #800 3px solid;
-	width: 100%; overflow-y: auto
+	display: none;
+	position: fixed; 
+	height: 200px; 
+	left: 0px;
+	right: 0px;
+	opacity: 0.9;
+	background: black; 
+	top: 0px;
+	border-bottom: #800 3px solid;
+
+}
+.rlog-info{
+	/*bottom: 0px;*/ 
+	/*border-top: #800 3px solid;*/
 }
 
+.rlog-info-top{
+}
 #rlog-detail{
-	padding: 10px;display: none;position: fixed; 
-	bottom: 30px; top: 50px; left: 30px;right: 30px; 
-	background: black; border: #800 3px solid;
+	padding: 10px;display: none;
+	position: fixed; 
+	bottom: 0px; 
+	top: 223px; 
+	left: 0px;
+	right: 0px; 
+	background: black;
 	overflow-y: auto
+}
+
+#rlog-server-index, #rlog-server-url,#rlog-info-search-id{
+	font-family: 'Ubuntu Mono', "Courier New", Courier, monospace !important;
+	background-color: black;
+	color: orange
+}
+
+#rlog-detail-server{
+	color: orange;
+}
+
+.rlog-row-time{
+	color: orange;
+	width: 140px;
+}
+.rlog-row-line{
+	width: auto
+}
+.rlog-row-line{
+	width: auto
+}
+.rlog-row-more{
+	width: 40px;
+	text-align: center;
+
+}
+
+.rlog-btn ,.rlog-info-show-btn, .rlog-clear-btn{
+	border: 1px solid greenyellow; 
+	padding:2px 4px;
+	cursor: pointer;
+}
+.rlog-btn:hover {
+	color: black;
+	background-color: greenyellow;
+}
+
+.rlog-info-show-btn{
+	border-color: lightblue; 
+	color: lightblue;
+}
+
+tr .rlog-info-show-btn{
+	border: none;
+	color: lightblue;
+}
+
+.rlog-info-show-btn:hover{
+	color: black;
+	background-color: lightblue;
+}
+
+.rlog-clear-btn{
+	border-color: red; 
+	color: red;
+}
+.rlog-clear-btn:hover{
+	color: black;
+	background-color: red;
 }
