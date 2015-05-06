@@ -1,5 +1,6 @@
 package be.vrt.services.log.collector.transaction.filter;
 
+import be.vrt.services.log.collector.transaction.TransactionRegistery;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Enumeration;
@@ -53,6 +54,7 @@ public class TransactionLoggerFilter implements Filter, Constants {
 			transaction.setParameters(getParameters(request));
 			transaction.setResponseStatus(response.getStatus());
 			LOG.info("Filter Info: {}", transaction);
+			TransactionRegistery.register(transaction);
 		}
 	}
 

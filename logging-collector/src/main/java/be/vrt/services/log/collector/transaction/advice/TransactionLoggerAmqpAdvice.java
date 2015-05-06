@@ -1,6 +1,7 @@
 package be.vrt.services.log.collector.transaction.advice;
 
 import be.vrt.services.log.collector.exception.FailureException;
+import be.vrt.services.log.collector.transaction.TransactionRegistery;
 import be.vrt.services.log.collector.transaction.dto.AmqpTransactionLogDto;
 import be.vrt.services.log.collector.transaction.filter.TransactionLoggerFilter;
 import static be.vrt.services.logging.log.common.Constants.TRANSACTION_ID;
@@ -42,6 +43,7 @@ public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 			stopWatch.stop();
 			transaction.setDuration(stopWatch.getTime());
 			log.info("Filter Info: {}", transaction);
+			TransactionRegistery.register(transaction);
 		}
 	}
 
