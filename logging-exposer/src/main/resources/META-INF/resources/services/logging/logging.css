@@ -6,11 +6,13 @@
 	z-index: 9999;
 	margin: 7px;
 }
-.rlog-info hr , rlog-detail hr{
+.rlog-info hr , .rlog-detail hr{
 	margin: 7px 0px;
 }
-.rlog-info table, #rlog-detail-content{
+.rlog-info table, #rlog-detail-content,#rlog-detail-content table{
 	font-size: 12px;
+	border-collapse: separate;
+	border-spacing: 2px;
 }
 .rlog-info, .rlog-info-top {
 	padding: 10px;
@@ -39,7 +41,8 @@
 	top: 223px; 
 	left: 0px;
 	right: 0px; 
-	background: black;
+	opacity: 0.9;
+	background: black; 
 	overflow-y: auto
 }
 
