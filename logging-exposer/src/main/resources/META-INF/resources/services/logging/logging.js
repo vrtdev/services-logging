@@ -9,15 +9,16 @@ document.rLog = {
 					$("#rlog-info-clear-btn").click(function () {
 						document.rLog.clearTransactionHistory();
 					});
+					$("#rlog-info-close").click(function () {
+						document.rLog.hideInfo();
+					});
+
 					$("#rlog-info-search-btn").click(function () {
 						document.rLog.registerTransaction($('#rlog-info-search-id').val(), "Custom Search by console");
+						document.rLog.displayDetail($('#rlog-info-search-id').val());
 					});
-					
-					$("#rlog-info-search-btn").click(function () {
-						document.rLog.registerTransaction($('#rlog-info-search-id').val(), "Custom Search by console");
-					});
-					
-					$("#rlog-detail-full").click(function (){
+
+					$("#rlog-detail-full").click(function () {
 						$(".rlog-detail-row-json").toggle();
 					});
 
@@ -31,6 +32,16 @@ document.rLog = {
 
 				}
 		);
+	},
+	hideInfo: function () {
+		document.rLog.infoVisible = false;
+		$('#rlog-info').fadeOut();
+		document.rLog.displayTransactions();
+	},
+	displayInfo: function () {
+		document.rLog.infoVisible = true;
+		$('#rlog-info').fadeIn();
+		document.rLog.displayTransactions();
 	},
 	registerTransaction: function (id, comment) {
 		if (!localStorage.getItem('rLog.transaction-log-lines')) {
@@ -136,10 +147,10 @@ document.rLog = {
 			var src = hit._source;
 			var newRow = $("<tr ></tr>");
 			newRow.append($("<td class='rlog-row-time'></td>").text(moment(src.date).format("HH:mm:ss.SSS")));
-			newRow.append($("<td class='logr-logLine-" + src.logLevel + "'></td>").text(src.logLevel));
+			newRow.append($("<td class='logr-logLine logr-logLine-" + src.logLevel + "'></td>").text(src.logLevel));
 			newRow.append($("<td></td>").text(src.loggerName.split(".").pop()));
 			var moreInfo = "";
-			if (src.content.TransactionLogDto) {
+			if (src.content.HttpTransactionLogDto) {
 				var transLog = src.content.TransactionLogDto;
 				moreInfo = transLog.httpMethod + " [" + transLog.responseStatus + "] " + transLog.resource;
 				newRow.append($("<td></td>").text(moreInfo));

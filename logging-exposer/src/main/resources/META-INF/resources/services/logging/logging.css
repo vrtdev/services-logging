@@ -1,9 +1,21 @@
-.rlog-info, .rlog-info-top,#rlog-detail{
+#rlog-detail, .rlog-detail pre, .rlog-info{
 	font-family: 'Ubuntu Mono', "Courier New", Courier, monospace;
+	box-sizing: content-box;
+	z-index: 10000;
+	opacity: 0.9;
+	background: black; 
+	color: greenyellow;
+
+}
+
+.rlog-detail pre {
+	border: 1px solid #cccccc;
+	font-size: 12px;
+
+}
+.rlog-info, #rlog-detail{
 	font-size: 14px;
 	color: greenyellow;
-	box-sizing: content-box;
-	z-index: 9999;
 	margin: 7px;
 }
 .rlog-info hr , .rlog-detail hr{
@@ -14,26 +26,18 @@
 	border-collapse: separate;
 	border-spacing: 2px;
 }
-.rlog-info, .rlog-info-top {
+.rlog-info{
 	padding: 10px;
 	display: none;
 	position: fixed; 
 	height: 200px; 
 	left: 0px;
 	right: 0px;
-	opacity: 0.9;
-	background: black; 
 	top: 0px;
 	border-bottom: #800 3px solid;
-
-}
-.rlog-info{
-	/*bottom: 0px;*/ 
-	/*border-top: #800 3px solid;*/
 }
 
-.rlog-info-top{
-}
+
 #rlog-detail{
 	padding: 10px;display: none;
 	position: fixed; 
@@ -41,8 +45,6 @@
 	top: 223px; 
 	left: 0px;
 	right: 0px; 
-	opacity: 0.9;
-	background: black; 
 	overflow-y: auto
 }
 
@@ -109,7 +111,9 @@ tr .rlog-info-show-btn{
 	color: black;
 	background-color: red;
 }
-
+.logr-logLine{
+	text-align: center;
+}
 .logr-logLine-INFO{
 	color: black;
 	background-color: lightblue;
