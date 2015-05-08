@@ -118,23 +118,31 @@ document.rLog = {
 		$('#rlog-detail').fadeIn();
 		$('#rlog-detail-close').click(document.rLog.hideDetail);
 		$('#rlog-detail-server').text($('#rlog-server-url').val() + " | " + $('#rlog-server-index').val())
-		document.rLog.client = new elasticsearch.Client({
-			host: $('#rlog-server-url').val(),
-			log: 'info'
-		});
 
-		document.rLog.client.search({
-			index: $('#rlog-server-index').val(),
-			body: {
-				query: {
-					match_phrase: {
-						transactionId: logId
+		if (logId == 'dilbert' || logId == 'encoding-dev.vrt.be-2816c322-ec93-4b96-bf41-aea5cc3bf1aa') {
+			$('#rlog-detail-content').empty();
+			$('#rlog-detail-content').append($("<div style='text-align:center'><img src='services/logging/dilbert.gif'></img></div>"));
+		} else {
+			document.rLog.client = new elasticsearch.Client({
+				host: $('#rlog-server-url').val(),
+				log: 'info'
+			});
+
+			document.rLog.client.search({
+				index: $('#rlog-server-index').val(),
+				body: {
+					query: {
+						match_phrase: {
+							transactionId: logId
+						}
 					}
 				}
-			}
-		}, function (error, response) {
-			document.rLog.displayResults(response.hits.hits);
-		});
+			}, function (error, response) {
+				document.rLog.displayResults(response.hits.hits);
+			});
+		}
+
+
 	},
 	hideDetail: function () {
 		$('#rlog-detail').fadeOut();

@@ -16,7 +16,6 @@
 .rlog-info, #rlog-detail{
 	font-size: 14px;
 	color: greenyellow;
-	margin: 7px;
 }
 .rlog-info hr , .rlog-detail hr{
 	margin: 7px 0px;
