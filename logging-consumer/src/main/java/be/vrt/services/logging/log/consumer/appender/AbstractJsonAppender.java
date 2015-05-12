@@ -27,6 +27,7 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 //		}
 		JsonLogWrapperDto dto = new JsonLogWrapperDto();
 		Object[] objects = logEvent.getArgumentArray();
+		String json;
 		try {
 			dto.setDate(new Date());
 			dto.setTransactionId(MDC.get(TRANSACTION_ID));
@@ -38,7 +39,6 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			}
 			dto.setHostName(hostname);
 
-			
 			if (objects != null) {
 				for (Object object : objects) {
 					if (object == null) {
@@ -56,7 +56,6 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			dto.setEnvironmentInfo(EnvironmentSetting.log);
 			dto.setLoggerName(logEvent.getLoggerName());
 			dto.setLogLevel(logEvent.getLevel().toString());
-			String json;
 			try {
 				json = mapper.writeValueAsString(dto);
 			} catch (Exception ex) {

@@ -177,7 +177,7 @@ document.rLog = {
 				table.append(newRow);
 				table.append(newRowDetail);
 			} else if (src.content.String) {
-				newRow.append($("<td></td>").text(src.content.String));
+				newRow.append($("<td></td>").text(src.content.String.subString(0,400)));
 				var newRowDetail = $("<tr class='rlog-detail-row-json'></tr>");
 				newRowDetail.append($("<td colspan='2'></td> "));
 				newRowDetail.append($("<td colspan='2'><pre>" + syntaxHighlight(src) + "</pre></td>"));

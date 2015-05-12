@@ -12,7 +12,7 @@ public class ElasticSearchAppender extends AbstractJsonAppender {
 
 	private String host;
 	private int port;
-	
+
 	@Override
 	public void start() {
 		super.start();
@@ -21,10 +21,15 @@ public class ElasticSearchAppender extends AbstractJsonAppender {
 
 	@Override
 	protected void persist(String json) {
-		client.prepareIndex("logging", "log")
-				.setSource(json)
-				.execute()
-				.actionGet();
+		try {
+			client.prepareIndex("logging", "log")
+					.setSource(json)
+					.execute()
+					.actionGet();
+		} catch (Exception e) {
+			System.out.println("e: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	@Override
