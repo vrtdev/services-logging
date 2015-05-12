@@ -159,7 +159,7 @@ document.rLog = {
 			newRow.append($("<td></td>").text(src.loggerName.split(".").pop()));
 			var moreInfo = "";
 			if (src.content.HttpTransactionLogDto) {
-				var transLog = src.content.TransactionLogDto;
+				var transLog = src.content.HttpTransactionLogDto;
 				moreInfo = transLog.httpMethod + " [" + transLog.responseStatus + "] " + transLog.resource;
 				newRow.append($("<td></td>").text(moreInfo));
 				var newRowDetail = $("<tr class='rlog-detail-row-json'></tr>");
