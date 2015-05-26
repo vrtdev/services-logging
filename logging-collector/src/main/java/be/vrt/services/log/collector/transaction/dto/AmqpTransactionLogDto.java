@@ -1,5 +1,6 @@
 package be.vrt.services.log.collector.transaction.dto;
 
+import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
 import java.util.Map;
 
 public class AmqpTransactionLogDto extends AbstractTransactionLog {

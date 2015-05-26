@@ -1,4 +1,4 @@
-package be.vrt.services.log.collector.transaction.dto;
+package be.vrt.services.logging.log.common.dto;
 
 import java.util.Date;
 import java.util.Map;
@@ -10,6 +10,7 @@ public abstract class AbstractTransactionLog {
 	protected String serverName;
 	protected String resource;
 	protected String transactionId;
+	protected String flowId;
 	protected Map<String, String> parameters;
 	
 	public abstract String getType();
@@ -68,6 +69,14 @@ public abstract class AbstractTransactionLog {
 
 	public void setParameters(Map<String, String> parameters) {
 		this.parameters = parameters;
+	}
+
+	public String getFlowId() {
+		return flowId;
+	}
+
+	public void setFlowId(String flowId) {
+		this.flowId = flowId;
 	}
 
 	

@@ -1,0 +1,149 @@
+{
+	"properties": {
+		"content": {
+			"properties": {
+				"AmqpTransactionLogDto": {
+					"properties": {
+						"startTime": {
+							"type": "date",
+							"format": "yyyy/MM/dd HH:mm:ss"
+						}
+					},
+					"headers": {
+						"properties": {
+							"__TypeId__": {
+								"type": "string"
+							},
+							"content_type": {
+								"type": "string"
+							}
+						}
+					},
+					"duration": {
+						"type": "long"
+					},
+					"transactionId": {
+						"type": "string"
+					},
+					"errorReason": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string"
+					},
+					"serverName": {
+						"type": "string"
+					},
+					"exchange": {
+						"type": "string"
+					},
+					"routingKey": {
+						"type": "string"
+					}
+				}
+			},
+			"HttpTransactionLogDto": {
+				"properties": {
+					"startTime": {
+						"type": "long"
+					},
+					"duration": {
+						"type": "long"
+					},
+					"transactionId": {
+						"type": "string"
+					},
+					"httpMethod": {
+						"type": "string"
+					},
+					"responseStatus": {
+						"type": "long"
+					},
+					"resource": {
+						"type": "string"
+					},
+					"parameters": {},
+					"type": {
+						"type": "string"
+					},
+					"serverName": {
+						"type": "string"
+					}
+				}
+			},
+			"ResourceGroup": {
+				"properties": {
+					"position": {
+						"type": "long"
+					},
+					"groupName": {
+						"type": "string"
+					}
+				}
+			},
+			"JSONObject": {},
+			"AuditLogDto": {
+				"properties": {
+					"response": {},
+					"duration": {
+						"type": "long"
+					},
+					"arguments": {},
+					"method": {
+						"type": "string"
+					},
+					"logDate": {
+						"type": "long"
+					},
+					"className": {
+						"type": "string"
+					},
+					"auditLevel": {
+						"type": "string"
+					}
+				}
+			},
+			"String": {
+				"type": "string"
+			},
+			"HashMap": {},
+			"MamResponseDto": {},
+			"Integer": {},
+			"HashSet": {}
+		}
+	},
+	"@timestamp": {
+		"format": "dateOptionalTime",
+		"type": "date"
+	},
+	"transactionId": {
+		"type": "string"
+	},
+	"logComment": {
+		"type": "string"
+	},
+	"logLevel": {
+		"type": "string"
+	},
+	"lineNumber": {
+		"type": "long"
+	},
+	"hostName": {
+		"type": "string"
+	},
+	"className": {
+		"type": "string"
+	},
+	"loggerName": {
+		"type": "string"
+	},
+	"date": {
+		"type": "date"
+	},
+	"methodName": {
+		"type": "string"
+	}
+}

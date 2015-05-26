@@ -1,6 +1,7 @@
 package be.vrt.services.log.collector.transaction.dto;
 
 
+import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 

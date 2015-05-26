@@ -1,5 +1,6 @@
 package be.vrt.services.log.collector.transaction.filter;
 
+import be.vrt.services.log.collector.transaction.http.TransactionLoggerFilter;
 import be.vrt.services.logging.log.common.Constants;
 import java.io.IOException;
 import java.util.HashMap;

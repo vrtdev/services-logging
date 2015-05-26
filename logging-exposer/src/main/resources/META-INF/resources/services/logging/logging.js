@@ -107,7 +107,7 @@ document.rLog = {
 		$("#rlog-info-table tbody").prepend(newRow);
 	},
 	registerCall: function (headers, comment) {
-		var logId = headers['log-transaction-uuid']; //console.log();
+		var logId = headers['X-Log-Transaction-Id']; //console.log();
 		this.registerTransaction(logId, comment);
 	},
 	displayDetailClick: function (e) {
