@@ -3,6 +3,8 @@ package be.vrt.services.logging.log.common;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 public class LogTransaction {
@@ -30,6 +32,7 @@ public class LogTransaction {
 	}
 	
 	public static void updateFlowId(String flowid) {
+		LoggerFactory.getLogger(LogTransaction.class).info("update FlowId : {} ==> {}", flow(), flowid);
 		MDC.put(Constants.FLOW_ID, flowid);
 	}
 	
