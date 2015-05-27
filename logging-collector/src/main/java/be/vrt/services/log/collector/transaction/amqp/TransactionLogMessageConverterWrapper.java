@@ -11,6 +11,10 @@ public class TransactionLogMessageConverterWrapper implements MessageConverter{
 
 	private final MessageConverter converter;
 
+	public static TransactionLogMessageConverterWrapper decorate(MessageConverter converter){
+		return new TransactionLogMessageConverterWrapper(converter);
+	} 
+	
 	public TransactionLogMessageConverterWrapper(MessageConverter converter) {
 		this.converter = converter;
 	}
