@@ -42,11 +42,12 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			dto.setHostName(hostname);
 
 			if (objects != null) {
+				int counter = 1;
 				for (Object object : objects) {
 					if (object == null) {
-						dto.getContent().put("noValue", "null");
+						dto.getContent().put("["+ (counter++) +"] noValue", "null");
 					}
-					dto.getContent().put(object.getClass().getSimpleName(), object);
+					dto.getContent().put("["+ (counter++) +"] "+object.getClass().getSimpleName(), object);
 				}
 			}
 			dto.setLogComment(logEvent.getMessage());

@@ -3,14 +3,13 @@ package be.vrt.services.logging.log.common;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 public class LogTransaction {
 
-	private final static String TRANSACTION = "xxTransaction"; 
-	
+	private final static String TRANSACTION = "xxTransaction";
+
 	public static String id() {
 		return MDC.get(Constants.TRANSACTION_ID);
 	}
@@ -30,12 +29,10 @@ public class LogTransaction {
 		updateFlowId(buffer.toString());
 		return buffer.toString();
 	}
-	
+
 	public static void updateFlowId(String flowid) {
-		LoggerFactory.getLogger(LogTransaction.class).info("update FlowId : {} ==> {}", flow(), flowid);
+		LoggerFactory.getLogger(LogTransaction.class).info("update FlowId : "+flow()+" ==> " + flowid, flow() , flowid);
 		MDC.put(Constants.FLOW_ID, flowid);
 	}
-	
-	
-	
+
 }
