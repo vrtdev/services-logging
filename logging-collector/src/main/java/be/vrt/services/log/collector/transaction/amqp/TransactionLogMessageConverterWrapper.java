@@ -7,11 +7,11 @@ import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.support.converter.MessageConversionException;
 import org.springframework.amqp.support.converter.MessageConverter;
 
-public class TransactoppnLogMessageConverterWrapper implements MessageConverter{
+public class TransactionLogMessageConverterWrapper implements MessageConverter{
 
 	private final MessageConverter converter;
 
-	public TransactoppnLogMessageConverterWrapper(MessageConverter converter) {
+	public TransactionLogMessageConverterWrapper(MessageConverter converter) {
 		this.converter = converter;
 	}
 
