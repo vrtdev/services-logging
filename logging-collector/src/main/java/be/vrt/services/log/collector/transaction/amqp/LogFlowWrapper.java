@@ -7,15 +7,15 @@ import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.support.converter.MessageConversionException;
 import org.springframework.amqp.support.converter.MessageConverter;
 
-public class TransactionLogMessageConverterWrapper implements MessageConverter{
+public class LogFlowWrapper implements MessageConverter{
 
 	private final MessageConverter converter;
 
-	public static TransactionLogMessageConverterWrapper decorate(MessageConverter converter){
-		return new TransactionLogMessageConverterWrapper(converter);
+	public static LogFlowWrapper decorate(MessageConverter converter){
+		return new LogFlowWrapper(converter);
 	} 
 	
-	public TransactionLogMessageConverterWrapper(MessageConverter converter) {
+	public LogFlowWrapper(MessageConverter converter) {
 		this.converter = converter;
 	}
 
