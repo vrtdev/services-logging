@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>be.vrt.services.logging</groupId>
-        <artifactId>logging</artifactId>
-        <version>0.3</version>
-    </parent>
-    <artifactId>logging-exposer</artifactId>
-    <packaging>jar</packaging>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>be.vrt.services.logging</groupId>
+		<artifactId>logging</artifactId>
+		<version>0.4</version>
+	</parent>
+	<artifactId>logging-exposer</artifactId>
+	<packaging>jar</packaging>
+	<properties>
+		<mvn.timestamp>${maven.build.timestamp}</mvn.timestamp>
+		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+	</properties>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/log-init.js</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
 </project>

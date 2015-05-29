@@ -11,6 +11,7 @@ public class JsonLogWrapperDto {
 	private Date date;
 	private String transactionId;
 	private String hostName;
+	private String flowId;
 	private String className;
 	private String methodName;
 	private int lineNumber;
@@ -24,6 +25,13 @@ public class JsonLogWrapperDto {
 	private Map<String, Object> content = new HashMap<>();
 	private Object environmentInfo;
 
+	public String getFlowId() {
+		return flowId;
+	}
+
+	public void setFlowId(String flowId) {
+		this.flowId = flowId;
+	}
 
 	public Date getDate() {
 		return date;

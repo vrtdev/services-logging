@@ -1,6 +1,7 @@
-package be.vrt.services.log.collector.transaction.filter;
+package be.vrt.services.log.collector.transaction.http;
 
-import be.vrt.services.log.collector.transaction.TransactionRegistery;
+import be.vrt.services.logging.log.common.LogTransaction;
+import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Enumeration;
@@ -40,16 +41,20 @@ public class TransactionLoggerFilter implements Filter, Constants {
 
 		HttpTransactionLogDto transaction = generateTransactionLogDtoFromRequest(request);
 		MDC.put(TRANSACTION_ID, transaction.getTransactionId());
+		MDC.put(FLOW_ID, transaction.getFlowId());
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		transaction.setStartTime(new Date(stopWatch.getStartTime()));
 
 		response.setHeader(TRANSACTION_ID, transaction.getTransactionId());
+		response.setHeader(FLOW_ID, transaction.getTransactionId());
 		try {
 			chain.doFilter(request, response);
 		} finally {
 			stopWatch.stop();
+
+			transaction.setFlowId(LogTransaction.flow());
 			transaction.setDuration(stopWatch.getTime());
 			transaction.setParameters(getParameters(request));
 			transaction.setResponseStatus(response.getStatus());
@@ -64,6 +69,11 @@ public class TransactionLoggerFilter implements Filter, Constants {
 		String uuid = UUID.randomUUID().toString();
 		String transactionUUID = serverName + "-" + uuid;
 		HttpTransactionLogDto transaction = new HttpTransactionLogDto();
+		if (request.getHeader(FLOW_ID) != null) {
+			transaction.setFlowId(request.getHeader(FLOW_ID));
+		} else {
+			transaction.setFlowId(LogTransaction.generateFlowId(request.getHeader(ORIGIN_USER)));
+		}
 		transaction.setTransactionId(transactionUUID);
 		transaction.setServerName(serverName);
 

@@ -1,9 +1,10 @@
-package be.vrt.services.log.collector.transaction.advice;
+package be.vrt.services.log.collector.transaction.amqp;
 
 import be.vrt.services.log.collector.exception.FailureException;
-import be.vrt.services.log.collector.transaction.TransactionRegistery;
+import be.vrt.services.logging.log.common.LogTransaction;
+import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import be.vrt.services.log.collector.transaction.dto.AmqpTransactionLogDto;
-import be.vrt.services.log.collector.transaction.filter.TransactionLoggerFilter;
+import be.vrt.services.log.collector.transaction.http.TransactionLoggerFilter;
 import static be.vrt.services.logging.log.common.Constants.TRANSACTION_ID;
 import java.net.InetAddress;
 import java.util.Date;
@@ -41,6 +42,7 @@ public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 			throw e;
 		} finally {
 			stopWatch.stop();
+			transaction.setFlowId(LogTransaction.flow());
 			transaction.setDuration(stopWatch.getTime());
 			log.info("Filter Info: {}", transaction);
 			TransactionRegistery.register(transaction);

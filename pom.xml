@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>be.vrt.services.logging</groupId>
 	<artifactId>logging</artifactId>
-	<version>0.3</version>
+	<version>0.4</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -16,7 +16,8 @@
 		<module>logging-collector</module>
 		<module>logging-consumer</module>
 		<module>logging-common</module>
-	 <module>logging-exposer</module>
+		<module>logging-exposer</module>
+		<module>logging-full</module>
 	</modules>
 
 	<scm>
@@ -38,7 +39,6 @@
 		<org.mockito-version>1.10.19</org.mockito-version>
 		<aopalliance-version>1.0</aopalliance-version>
 		<org.springframework.amqp-version>1.4.3.RELEASE</org.springframework.amqp-version>
-
 	</properties>
 
 	<dependencyManagement>

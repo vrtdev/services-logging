@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import be.vrt.services.logging.log.common.Constants;
+import be.vrt.services.logging.log.common.LogTransaction;
 import be.vrt.services.logging.log.consumer.config.EnvironmentSetting;
 import be.vrt.services.logging.log.consumer.dto.JsonLogWrapperDto;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -30,7 +31,8 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 		String json;
 		try {
 			dto.setDate(new Date());
-			dto.setTransactionId(MDC.get(TRANSACTION_ID));
+			dto.setTransactionId(LogTransaction.id());
+			dto.setFlowId(LogTransaction.flow());
 			String hostname;
 			try {
 				hostname = InetAddress.getLocalHost().getHostName();
@@ -40,11 +42,12 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			dto.setHostName(hostname);
 
 			if (objects != null) {
+				int counter = 1;
 				for (Object object : objects) {
 					if (object == null) {
-						dto.getContent().put("noValue", "null");
+						dto.getContent().put("["+ (counter++) +"] noValue", "null");
 					}
-					dto.getContent().put(object.getClass().getSimpleName(), object);
+					dto.getContent().put("["+ (counter++) +"] "+object.getClass().getSimpleName(), object);
 				}
 			}
 			dto.setLogComment(logEvent.getMessage());

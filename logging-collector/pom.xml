@@ -4,15 +4,10 @@
 	<parent>
 		<groupId>be.vrt.services.logging</groupId>
 		<artifactId>logging</artifactId>
-		<version>0.3</version>
+		<version>0.4</version>
 	</parent>
 	<artifactId>logging-collector</artifactId>
 	<packaging>jar</packaging>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -57,20 +52,20 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
-		</dependency>	
-		
+		</dependency>
+
 		<!-- Used for rabbit MQ Adding transaction Advice -->
 		<dependency>
 			<groupId>aopalliance</groupId>
 			<artifactId>aopalliance</artifactId>
 			<scope>provided</scope>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.amqp</groupId>
 			<artifactId>spring-rabbit</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
@@ -78,4 +73,3 @@
 		</dependency>
 	</dependencies>
 </project>
-
