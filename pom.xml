@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>be.vrt.services.logging</groupId>
 	<artifactId>logging</artifactId>
-	<version>0.5-SNAPSHOT</version>
+	<version>0.4</version>
 	<packaging>pom</packaging>
 
 	<parent>
