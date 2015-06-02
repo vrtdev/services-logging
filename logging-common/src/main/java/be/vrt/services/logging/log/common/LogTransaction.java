@@ -8,8 +8,6 @@ import org.slf4j.MDC;
 
 public class LogTransaction {
 
-	private final static String TRANSACTION = "xxTransaction";
-
 	public static String id() {
 		return MDC.get(Constants.TRANSACTION_ID);
 	}
