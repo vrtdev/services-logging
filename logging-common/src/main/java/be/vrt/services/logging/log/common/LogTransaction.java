@@ -1,5 +1,8 @@
 package be.vrt.services.logging.log.common;
 
+import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -9,6 +12,9 @@ import org.slf4j.MDC;
 public class LogTransaction {
 
 	public static String id() {
+		if (MDC.get(Constants.TRANSACTION_ID) == null) {
+
+		}
 		return MDC.get(Constants.TRANSACTION_ID);
 	}
 
@@ -16,7 +22,30 @@ public class LogTransaction {
 		return MDC.get(Constants.FLOW_ID);
 	}
 
-	public static String generateFlowId(String user) {
+	public static String createTransactionId(String hostname) {
+		if (hostname == null) {
+			try {
+				hostname = InetAddress.getLocalHost().getHostName();
+			} catch (UnknownHostException ex) {
+				hostname = "[unknown]";
+			}
+		}
+		String uuid = hostname + "-" + UUID.randomUUID().toString();
+		MDC.put(Constants.TRANSACTION_ID, uuid);
+
+		return uuid;
+	}
+
+	public static String generateTransactionId() {
+		return createTransactionId(null);
+	}
+
+	public static String generateFlowId(String flowId, String user) {
+		if (flowId != null) {
+			updateFlowId(flowId);
+			return flowId;
+		}
+
 		if (user == null) {
 			user = "NOT_SPECIFIED";
 		}
@@ -29,7 +58,9 @@ public class LogTransaction {
 	}
 
 	public static void updateFlowId(String flowid) {
-		LoggerFactory.getLogger(LogTransaction.class).info("update FlowId : "+flow()+" ==> " + flowid, flow() , flowid);
+		if (flow() != null && !flow().equals(flowid)) {
+			LoggerFactory.getLogger(LogTransaction.class).info("update FlowId : " + flow() + " ==> " + flowid, flow(), flowid);
+		}
 		MDC.put(Constants.FLOW_ID, flowid);
 	}
 

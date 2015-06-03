@@ -7,25 +7,24 @@ import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.support.converter.MessageConversionException;
 import org.springframework.amqp.support.converter.MessageConverter;
 
-public class LogFlowWrapper implements MessageConverter{
+public class LogFlowWrapper implements MessageConverter {
 
 	private final MessageConverter converter;
 
-	public static LogFlowWrapper decorate(MessageConverter converter){
+	public static LogFlowWrapper decorate(MessageConverter converter) {
 		return new LogFlowWrapper(converter);
-	} 
-	
+	}
+
 	public LogFlowWrapper(MessageConverter converter) {
 		this.converter = converter;
 	}
 
 	@Override
 	public Object fromMessage(Message msg) throws MessageConversionException {
-		if(msg.getMessageProperties().getHeaders().get(Constants.FLOW_ID) != null){
-			LogTransaction.updateFlowId(msg.getMessageProperties().getHeaders().get(Constants.FLOW_ID).toString());
-		} else {
-			LogTransaction.generateFlowId((String) msg.getMessageProperties().getHeaders().get(Constants.ORIGIN_USER));
-		}
+		MessageProperties props = msg.getMessageProperties();
+		String headerFlowId = (String) props.getHeaders().get(Constants.FLOW_ID);
+		String originUser = (String) props.getHeaders().get(Constants.ORIGIN_USER);
+		LogTransaction.generateFlowId(headerFlowId,originUser );
 		return converter.fromMessage(msg);
 	}
 
@@ -34,6 +33,5 @@ public class LogFlowWrapper implements MessageConverter{
 		mp.getHeaders().put(Constants.FLOW_ID, LogTransaction.flow());
 		return converter.toMessage(o, mp);
 	}
-	
-	
+
 }

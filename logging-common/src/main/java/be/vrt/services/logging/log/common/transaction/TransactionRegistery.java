@@ -9,10 +9,12 @@ public class TransactionRegistery {
 
 	private static final TransactionRegistery instance = new TransactionRegistery();
 
+	private int bufferSize = 1000;
+	
 	private final List<AbstractTransactionLog> abstractTransactionLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(1000));
 
 	public void registerTransactionLocal(AbstractTransactionLog transaction) {
-		while (abstractTransactionLogs.size() > 1000) {
+		while (abstractTransactionLogs.size() > bufferSize) {
 			abstractTransactionLogs.remove(0);
 		}
 		abstractTransactionLogs.add(transaction);
@@ -24,5 +26,9 @@ public class TransactionRegistery {
 
 	public static List<AbstractTransactionLog> list() {
 		return new ArrayList<>(instance.abstractTransactionLogs);
+	}
+	
+	public static void setBufferSize(int size){
+		instance.bufferSize =size;
 	}
 }
