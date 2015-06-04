@@ -63,7 +63,7 @@ public class TransactionLoggerFilter implements Filter, Constants {
 		String serverName = request.getServerName();
 
 		HttpTransactionLogDto transaction = new HttpTransactionLogDto();
-		String flowId = LogTransaction.generateFlowId(request.getHeader(FLOW_ID), request.getHeader(ORIGIN_USER));
+		String flowId = LogTransaction.createFlowId(request.getHeader(FLOW_ID), request.getHeader(ORIGIN_USER));
 		
 		transaction.setFlowId(flowId);
 		transaction.setTransactionId(LogTransaction.id());

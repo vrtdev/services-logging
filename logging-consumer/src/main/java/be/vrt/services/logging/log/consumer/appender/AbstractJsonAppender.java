@@ -29,6 +29,7 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			dto.setDate(new Date());
 			dto.setTransactionId(LogTransaction.id());
 			dto.setFlowId(LogTransaction.flow());
+			dto.setBreadCrum(LogTransaction.breadCrum());
 			String hostname;
 			try {
 				hostname = InetAddress.getLocalHost().getHostName();
@@ -52,7 +53,7 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			dto.setClassName(logEvent.getCallerData()[0].getClassName());
 			dto.setMethodName(logEvent.getCallerData()[0].getMethodName());
 			dto.setLineNumber(logEvent.getCallerData()[0].getLineNumber());
-			dto.setEnvironmentInfo(EnvironmentSetting.log);
+			dto.setEnvironmentInfo(EnvironmentSetting.info());
 			dto.setLoggerName(logEvent.getLoggerName());
 			dto.setLogLevel(logEvent.getLevel().toString());
 			try {

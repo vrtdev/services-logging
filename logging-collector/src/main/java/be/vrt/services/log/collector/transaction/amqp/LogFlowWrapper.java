@@ -24,7 +24,7 @@ public class LogFlowWrapper implements MessageConverter {
 		MessageProperties props = msg.getMessageProperties();
 		String headerFlowId = (String) props.getHeaders().get(Constants.FLOW_ID);
 		String originUser = (String) props.getHeaders().get(Constants.ORIGIN_USER);
-		LogTransaction.generateFlowId(headerFlowId,originUser );
+		LogTransaction.createFlowId(headerFlowId,originUser );
 		return converter.fromMessage(msg);
 	}
 

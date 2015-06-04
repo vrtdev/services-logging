@@ -15,16 +15,20 @@ import org.slf4j.Logger;
 import be.vrt.services.log.collector.audit.dto.AuditLogDto;
 import be.vrt.services.logging.log.common.dto.ErrorDto;
 import be.vrt.services.log.collector.exception.FailureException;
+import be.vrt.services.logging.log.common.LogTransaction;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import org.apache.commons.lang3.time.StopWatch;
 import org.aspectj.lang.reflect.MethodSignature;
 
-public abstract class AbstractAuditAspect {
+public abstract class AbstractAuditAspect extends AbstractBreadcrumAuditAspect{
 
 	protected abstract Logger getLogger();
 
-	public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
+	@Override
+	protected Object handleJoinPoint(ProceedingJoinPoint joinPoint) throws Throwable  {
+		LogTransaction.increaseBreadCrum();
+
 		AuditLogDto auditLogDto = new AuditLogDto();
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
@@ -56,6 +60,8 @@ public abstract class AbstractAuditAspect {
 			stopWatch.stop();
 			auditLogDto.setDuration(stopWatch.getTime());
 			getLogger().info("AuditLogDto -- {} -> {}", auditLogDto.getClassName(), auditLogDto.getMethod(), auditLogDto);
+			LogTransaction.decreaseBreadCrum();
+
 			// Add listener HERE!!
 		}
 	}

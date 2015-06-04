@@ -13,17 +13,36 @@ public class LogTransaction {
 
 	public static String id() {
 		if (MDC.get(Constants.TRANSACTION_ID) == null) {
-			String uuid = createTransactionId();
+			String uuid = generateTransactionId();
 			MDC.put(Constants.TRANSACTION_ID, uuid);
 		}
 		return MDC.get(Constants.TRANSACTION_ID);
+	}
+
+	public static int breadCrum() {
+		if (MDC.get(Constants.BREADCRUM_COUNTER) == null) {
+			MDC.put(Constants.BREADCRUM_COUNTER, "0");
+		}
+		return Integer.valueOf(MDC.get(Constants.BREADCRUM_COUNTER));
+	}
+
+	public static void increaseBreadCrum() {
+		Integer i = breadCrum();
+		i++;
+		MDC.put(Constants.BREADCRUM_COUNTER, "" + i);
+	}
+
+	public static void decreaseBreadCrum() {
+		Integer i = breadCrum();
+		i--;
+		MDC.put(Constants.BREADCRUM_COUNTER, "" + i);
 	}
 
 	public static String flow() {
 		return MDC.get(Constants.FLOW_ID);
 	}
 
-	public static String createTransactionId() {
+	public static String generateTransactionId() {
 		String hostname;
 		try {
 			hostname = InetAddress.getLocalHost().getHostName();
@@ -34,7 +53,7 @@ public class LogTransaction {
 		return uuid;
 	}
 
-	public static String generateFlowId(String flowId, String user) {
+	public static String createFlowId(String flowId, String user) {
 		if (flowId != null) {
 			updateFlowId(flowId);
 			return flowId;
@@ -53,7 +72,7 @@ public class LogTransaction {
 
 	public static void updateFlowId(String flowid) {
 		String currentFlowId = flow();
-		if (currentFlowId!= null && !currentFlowId.equals(flowid)) {
+		if (currentFlowId != null && !currentFlowId.equals(flowid)) {
 			LoggerFactory.getLogger(LogTransaction.class).info("update FlowId : [{}] ==> [{}]", flow(), flowid);
 		}
 		MDC.put(Constants.FLOW_ID, flowid);
