@@ -1,11 +1,11 @@
 package be.vrt.services.logging.log.common;
 
-import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
+
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 

@@ -5,7 +5,6 @@ import java.net.UnknownHostException;
 import java.util.Date;
 
 import org.slf4j.Logger;
-import org.slf4j.MDC;
 
 import be.vrt.services.logging.log.common.Constants;
 import be.vrt.services.logging.log.common.LogTransaction;
