@@ -22,9 +22,6 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 	@Override
 	protected void append(ILoggingEvent logEvent) {
 
-//		if(!e.getMDCPropertyMap().containsKey(TRANSACTION_ID)){
-//			return;
-//		}
 		JsonLogWrapperDto dto = new JsonLogWrapperDto();
 		Object[] objects = logEvent.getArgumentArray();
 		String json;
@@ -44,12 +41,12 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 				int counter = 1;
 				for (Object object : objects) {
 					if (object == null) {
-						dto.getContent().put("["+ (counter++) +"] noValue", "null");
+						dto.getContent().put("[" + (counter++) + "] noValue", "null");
 					}
-					dto.getContent().put("["+ (counter++) +"] "+object.getClass().getSimpleName(), object);
+					dto.getContent().put("[" + (counter++) + "] " + object.getClass().getSimpleName(), object);
 				}
 			}
-			dto.setLogComment(logEvent.getMessage());
+			dto.setLogComment(logEvent.getFormattedMessage());
 			dto.setDate(new Date(logEvent.getTimeStamp()));
 
 			dto.setClassName(logEvent.getCallerData()[0].getClassName());
@@ -67,7 +64,7 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			}
 			persist(json);
 		} catch (Exception ex) {
-			System.err.println("Failed to process Json2: " + ex.getMessage());
+			System.err.println("Failed to process Json2: " + logEvent.getLoggerName() + ":" + logEvent.getLevel() + ":" + logEvent.getFormattedMessage());
 		}
 	}
 

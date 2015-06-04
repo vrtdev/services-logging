@@ -13,7 +13,8 @@ public class LogTransaction {
 
 	public static String id() {
 		if (MDC.get(Constants.TRANSACTION_ID) == null) {
-
+			String uuid = createTransactionId();
+			MDC.put(Constants.TRANSACTION_ID, uuid);
 		}
 		return MDC.get(Constants.TRANSACTION_ID);
 	}
@@ -22,22 +23,15 @@ public class LogTransaction {
 		return MDC.get(Constants.FLOW_ID);
 	}
 
-	public static String createTransactionId(String hostname) {
-		if (hostname == null) {
-			try {
-				hostname = InetAddress.getLocalHost().getHostName();
-			} catch (UnknownHostException ex) {
-				hostname = "[unknown]";
-			}
+	public static String createTransactionId() {
+		String hostname;
+		try {
+			hostname = InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException ex) {
+			hostname = "[unknown]";
 		}
 		String uuid = hostname + "-" + UUID.randomUUID().toString();
-		MDC.put(Constants.TRANSACTION_ID, uuid);
-
 		return uuid;
-	}
-
-	public static String generateTransactionId() {
-		return createTransactionId(null);
 	}
 
 	public static String generateFlowId(String flowId, String user) {
@@ -58,8 +52,9 @@ public class LogTransaction {
 	}
 
 	public static void updateFlowId(String flowid) {
-		if (flow() != null && !flow().equals(flowid)) {
-			LoggerFactory.getLogger(LogTransaction.class).info("update FlowId : " + flow() + " ==> " + flowid, flow(), flowid);
+		String currentFlowId = flow();
+		if (currentFlowId!= null && !currentFlowId.equals(flowid)) {
+			LoggerFactory.getLogger(LogTransaction.class).info("update FlowId : [{}] ==> [{}]", flow(), flowid);
 		}
 		MDC.put(Constants.FLOW_ID, flowid);
 	}

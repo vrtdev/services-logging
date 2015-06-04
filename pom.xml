@@ -35,7 +35,6 @@
 		<jackson.databind-version>2.5.1</jackson.databind-version>
 		<org.apache.common.lang-version>3.3.2</org.apache.common.lang-version>
 		<commons.beanutils-version>1.9.2</commons.beanutils-version>
-		<org.elasticsearch-version>1.4.4</org.elasticsearch-version>
 		<junit-version>4.12</junit-version>
 		<org.mockito-version>1.10.19</org.mockito-version>
 		<aopalliance-version>1.0</aopalliance-version>
@@ -60,12 +59,6 @@
 				<groupId>commons-beanutils</groupId>
 				<artifactId>commons-beanutils</artifactId>
 				<version>${commons.beanutils-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.elasticsearch</groupId>
-				<artifactId>elasticsearch</artifactId>
-				<version>${org.elasticsearch-version}</version>
-				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>

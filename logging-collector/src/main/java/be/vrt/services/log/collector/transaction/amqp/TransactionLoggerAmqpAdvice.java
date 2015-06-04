@@ -68,7 +68,7 @@ public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 			hostname = "[unknown]";
 		}
 		
-		String transactionUUID = LogTransaction.createTransactionId(hostname);
+		String transactionUUID = LogTransaction.id();
 		String flowId = LogTransaction.generateFlowId(headerFlowId, originUser);
 		transaction.setFlowId(flowId);
 		transaction.setTransactionId(transactionUUID);

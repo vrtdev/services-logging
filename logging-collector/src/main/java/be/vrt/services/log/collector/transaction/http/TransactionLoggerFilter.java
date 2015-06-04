@@ -54,7 +54,7 @@ public class TransactionLoggerFilter implements Filter, Constants {
 			transaction.setDuration(stopWatch.getTime());
 			transaction.setParameters(getParameters(request));
 			transaction.setResponseStatus(response.getStatus());
-			LOG.info("Filter Info: {}", transaction);
+			LOG.info("Filter Info: [{}] ==> {} | {} ", transaction.getResponseStatus(), transaction.getHttpMethod(), transaction.getResource(), transaction);
 			TransactionRegistery.register(transaction);
 		}
 	}
@@ -66,7 +66,7 @@ public class TransactionLoggerFilter implements Filter, Constants {
 		String flowId = LogTransaction.generateFlowId(request.getHeader(FLOW_ID), request.getHeader(ORIGIN_USER));
 		
 		transaction.setFlowId(flowId);
-		transaction.setTransactionId(LogTransaction.generateTransactionId());
+		transaction.setTransactionId(LogTransaction.id());
 		transaction.setServerName(serverName);
 
 		transaction.setHttpMethod(request.getMethod());
