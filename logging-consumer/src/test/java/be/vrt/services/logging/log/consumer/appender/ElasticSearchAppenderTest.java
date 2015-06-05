@@ -9,6 +9,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -18,10 +21,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.HashMap;
-import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ElasticSearchAppenderTest {

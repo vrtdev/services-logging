@@ -1,12 +1,13 @@
 package be.vrt.services.logging.log.consumer.appender;
 
-import java.io.DataOutputStream;
 import java.io.OutputStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ElasticSearchAppender extends AbstractJsonAppender {
 
