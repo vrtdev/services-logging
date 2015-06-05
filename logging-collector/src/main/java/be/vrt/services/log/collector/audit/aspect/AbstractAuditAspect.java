@@ -27,8 +27,6 @@ public abstract class AbstractAuditAspect extends AbstractBreadcrumAuditAspect{
 
 	@Override
 	protected Object handleJoinPoint(ProceedingJoinPoint joinPoint) throws Throwable  {
-		LogTransaction.increaseBreadCrum();
-
 		AuditLogDto auditLogDto = new AuditLogDto();
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
@@ -59,9 +57,7 @@ public abstract class AbstractAuditAspect extends AbstractBreadcrumAuditAspect{
 		} finally {
 			stopWatch.stop();
 			auditLogDto.setDuration(stopWatch.getTime());
-			getLogger().info("AuditLogDto -- {} -> {}", auditLogDto.getClassName(), auditLogDto.getMethod(), auditLogDto);
-			LogTransaction.decreaseBreadCrum();
-
+			getLogger().info("{} -> Audit -- {}",  auditLogDto.getMethod(),auditLogDto.getClassName(), auditLogDto);
 			// Add listener HERE!!
 		}
 	}

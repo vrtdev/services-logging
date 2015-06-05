@@ -8,11 +8,19 @@
 
 }
 
+.log-table-detail-result tr.summary:hover{
+	background-color:gray;
+}
+
 .rlog-detail pre {
 	border: 1px solid #cccccc;
 	font-size: 12px;
 
 }
+.log-table-detail-result tr.summary:hover{
+	background-color:gray;
+}
+
 .rlog-info, #rlog-detail{
 	font-size: 14px;
 	color: greenyellow;
@@ -86,6 +94,13 @@
 	color: black;
 	background-color: greenyellow;
 }
+#rlog-detail-more-searches-btn {
+	padding-top:8px;
+}
+#rlog-detail-more-searches-btn  .rlog-btn {
+	margin-right: 5px;
+}
+
 
 .rlog-info-show-btn{
 	border-color: lightblue; 
