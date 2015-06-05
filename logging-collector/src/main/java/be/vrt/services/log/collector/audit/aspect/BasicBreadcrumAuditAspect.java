@@ -6,7 +6,7 @@ public class BasicBreadcrumAuditAspect extends AbstractBreadcrumAuditAspect {
 
 	@Override
 	protected Object handleJoinPoint(ProceedingJoinPoint joinPoint) throws Throwable {
-		log.debug(joinPoint.getSignature().toShortString());
+		log.debug(joinPoint.getSignature().toShortString() + " -> BREADCRUM");
 		return joinPoint.proceed();
 	}
 

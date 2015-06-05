@@ -163,7 +163,7 @@ document.rLog = {
 	displayResults: function (response) {
 		$('#rlog-detail-content').empty();
 		$('#rlog-detail-more-searches-btn').empty();
-		
+
 		response.sort(function (a, b) {
 			if (a._source.transactionId != b._source.transactionId) {
 				return a._source.date - b._source.date;
@@ -199,8 +199,14 @@ document.rLog = {
 			newRow.click(function () {
 				$(this).next().toggle()
 			});
-
-			if (src.content.HttpTransactionLogDto) {
+			if (!src.content) {
+				newRow.append($("<td></td>").text(src.logComment));
+				var newRowDetail = $("<tr class='rlog-detail-row-json'></tr>");
+				newRowDetail.append($("<td colspan='4'></td> "));
+				newRowDetail.append($("<td colspan='2'><pre>" + syntaxHighlight(src) + "</pre></td>"));
+				table.append(newRow);
+				table.append(newRowDetail);
+			} else if (src.content.HttpTransactionLogDto) {
 				var transLog = src.content.HttpTransactionLogDto;
 				moreInfo = transLog.httpMethod + " [" + transLog.responseStatus + "] " + transLog.resource;
 				newRow.append($("<td></td>").text(moreInfo));

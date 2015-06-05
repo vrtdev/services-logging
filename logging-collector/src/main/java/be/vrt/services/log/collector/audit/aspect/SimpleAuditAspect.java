@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 @Aspect
 public class SimpleAuditAspect extends AbstractAuditAspect {
 
-	@Pointcut("within(@be.vrt.services.log.collector.audit.annotation.AuditFacade *) || @annotation(be.vrt.services.log.collector.audit.annotation.AuditFacade)")
+	@Pointcut("within(@be.vrt.services.log.collector.audit.annotation.SimpleAudit *) || @annotation(be.vrt.services.log.collector.audit.annotation.SimpleAudit)")
 	public void anAuditFacade() {
 	}
 	
