@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 
 public abstract class AbstractTransactionLog {
+
 	protected Date startTime;
 	protected long duration;
 	protected String user;
@@ -12,7 +13,15 @@ public abstract class AbstractTransactionLog {
 	protected String transactionId;
 	protected String flowId;
 	protected Map<String, String> parameters;
-	
+
+	public static enum Type {
+
+		OK, FAILED, ERROR
+	};
+
+	private Type status;
+	private String errorReason;
+
 	public abstract String getType();
 
 	public Date getStartTime() {
@@ -79,5 +88,19 @@ public abstract class AbstractTransactionLog {
 		this.flowId = flowId;
 	}
 
-	
+	public Type getStatus() {
+		return status;
+	}
+
+	public void setStatus(Type status) {
+		this.status = status;
+	}
+
+	public String getErrorReason() {
+		return errorReason;
+	}
+
+	public void setErrorReason(String errorReason) {
+		this.errorReason = errorReason;
+	}
 }

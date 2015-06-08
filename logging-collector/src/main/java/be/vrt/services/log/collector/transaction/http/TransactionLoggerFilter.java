@@ -54,6 +54,7 @@ public class TransactionLoggerFilter implements Filter, Constants {
 			transaction.setDuration(stopWatch.getTime());
 			transaction.setParameters(getParameters(request));
 			transaction.setResponseStatus(response.getStatus());
+			
 			LOG.info("Filter Info: [{}] ==> {} | {} ", transaction.getResponseStatus(), transaction.getHttpMethod(), transaction.getResource(), transaction);
 			TransactionRegistery.register(transaction);
 		}

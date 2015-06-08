@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import be.vrt.services.log.collector.audit.dto.AuditLogDto;
 import be.vrt.services.logging.log.common.dto.ErrorDto;
 import be.vrt.services.log.collector.exception.FailureException;
-import be.vrt.services.logging.log.common.LogTransaction;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import org.apache.commons.lang3.time.StopWatch;
