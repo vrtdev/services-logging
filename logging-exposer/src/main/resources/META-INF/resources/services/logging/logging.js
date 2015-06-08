@@ -70,7 +70,7 @@ document.rLog = {
 		$("#rlog-info-table tbody").empty();
 		var transactions = JSON.parse(localStorage.getItem('rLog.transaction-log-lines'));
 		transactions.sort(function (a, b) {
-			return a.date - b.date
+			return moment(a.time, "YYYY/MM/DD HH:mm:ss.SSS").diff(moment(b.time,"YYYY/MM/DD HH:mm:ss.SSS")) ;
 		})
 		transactions.forEach(function (transaction) {
 			var newRow = $("<tr></tr>");
