@@ -1,5 +1,6 @@
 package be.vrt.services.logging.log.common;
 
+import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -15,6 +16,7 @@ public class LogTransaction {
 		if (MDC.get(Constants.TRANSACTION_ID) == null) {
 			String uuid = generateTransactionId();
 			MDC.put(Constants.TRANSACTION_ID, uuid);
+			TransactionRegistery.register(uuid, flow());
 		}
 		return MDC.get(Constants.TRANSACTION_ID);
 	}

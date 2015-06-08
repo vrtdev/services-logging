@@ -25,8 +25,12 @@ public class HttpTransactionLogDto extends AbstractTransactionLog {
 	public int getResponseStatus() {
 		return responseStatus;
 	}
-
+	
 	public void setResponseStatus(int responseStatus) {
+		this.responseStatus = responseStatus;
+	}
+
+	public void responseStatus(int responseStatus) {
 		this.responseStatus = responseStatus;
 		if (responseStatus < 400) {
 			setStatus(Type.OK);

@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import be.vrt.services.logging.log.common.dto.ErrorDto;
 import be.vrt.services.log.collector.transaction.dto.HttpTransactionLogDto;
+import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
 
 public class SimpleAuditAspectTest {
 
