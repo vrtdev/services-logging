@@ -72,7 +72,7 @@ public class TransactionLoggerFilterTest {
 		verify(appender).doAppend(captorLoggingEvent.capture());
 		LoggingEvent loggingEvent = captorLoggingEvent.getValue();
 		assertEquals(loggingEvent.getLevel(), (Level.INFO));
-		assertNotNull(MDC.get(Constants.TRANSACTION_ID));
+		assertNull(MDC.get(Constants.TRANSACTION_ID));
 		
 	}
 

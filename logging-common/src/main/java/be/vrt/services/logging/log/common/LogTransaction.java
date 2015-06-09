@@ -10,38 +10,44 @@ import java.util.UUID;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-public class LogTransaction {
+public class LogTransaction implements Constants{
 
+	public static void resetThread(){
+		MDC.remove(TRANSACTION_ID);
+		MDC.remove(BREADCRUM_COUNTER);
+		MDC.remove(FLOW_ID);
+	}
+	
 	public static String id() {
-		if (MDC.get(Constants.TRANSACTION_ID) == null) {
+		if (MDC.get(TRANSACTION_ID) == null) {
 			String uuid = generateTransactionId();
-			MDC.put(Constants.TRANSACTION_ID, uuid);
+			MDC.put(TRANSACTION_ID, uuid);
 			TransactionRegistery.register(uuid, flow());
 		}
-		return MDC.get(Constants.TRANSACTION_ID);
+		return MDC.get(TRANSACTION_ID);
 	}
 
 	public static int breadCrum() {
-		if (MDC.get(Constants.BREADCRUM_COUNTER) == null) {
-			MDC.put(Constants.BREADCRUM_COUNTER, "0");
+		if (MDC.get(BREADCRUM_COUNTER) == null) {
+			MDC.put(BREADCRUM_COUNTER, "0");
 		}
-		return Integer.valueOf(MDC.get(Constants.BREADCRUM_COUNTER));
+		return Integer.valueOf(MDC.get(BREADCRUM_COUNTER));
 	}
 
 	public static void increaseBreadCrum() {
 		Integer i = breadCrum();
 		i++;
-		MDC.put(Constants.BREADCRUM_COUNTER, "" + i);
+		MDC.put(BREADCRUM_COUNTER, "" + i);
 	}
 
 	public static void decreaseBreadCrum() {
 		Integer i = breadCrum();
 		i--;
-		MDC.put(Constants.BREADCRUM_COUNTER, "" + i);
+		MDC.put(BREADCRUM_COUNTER, "" + i);
 	}
 
 	public static String flow() {
-		return MDC.get(Constants.FLOW_ID);
+		return MDC.get(FLOW_ID);
 	}
 
 	public static String generateTransactionId() {
@@ -77,7 +83,7 @@ public class LogTransaction {
 		if (currentFlowId != null && !currentFlowId.equals(flowid)) {
 			LoggerFactory.getLogger(LogTransaction.class).info("update FlowId : [{}] ==> [{}]", flow(), flowid);
 		}
-		MDC.put(Constants.FLOW_ID, flowid);
+		MDC.put(FLOW_ID, flowid);
 	}
 
 }

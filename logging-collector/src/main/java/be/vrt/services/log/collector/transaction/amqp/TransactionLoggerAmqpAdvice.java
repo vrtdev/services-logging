@@ -43,6 +43,8 @@ public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 			transaction.setDuration(stopWatch.getTime());
 			log.info("Filter Info: {}", transaction);
 			TransactionRegistery.register(transaction);
+			LogTransaction.resetThread();
+
 		}
 	}
 
@@ -67,7 +69,7 @@ public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 			//java.util.logging.Logger.getLogger(TransactionLoggerAmqpAdvice.class.getName()).log(Level.SEVERE, null, ex);
 			hostname = "[unknown]";
 		}
-		
+
 		String transactionUUID = LogTransaction.id();
 		String flowId = LogTransaction.createFlowId(headerFlowId, originUser);
 		transaction.setFlowId(flowId);
