@@ -28,7 +28,7 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 		String json;
 		try {
 			dto.setLogDate(new Date());
-			dto.setDate(dto.getLogDate());
+			dto.setDate(new Date(logEvent.getTimeStamp()));
 			dto.setTransactionId(LogTransaction.id());
 			dto.setFlowId(LogTransaction.flow());
 			dto.setBreadCrum(LogTransaction.breadCrum());
@@ -53,7 +53,6 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 				}
 			}
 			dto.setLogComment(logEvent.getFormattedMessage());
-			dto.setDate(new Date(logEvent.getTimeStamp()));
 
 			dto.setClassName(logEvent.getCallerData()[0].getClassName());
 			dto.setMethodName(logEvent.getCallerData()[0].getMethodName());
