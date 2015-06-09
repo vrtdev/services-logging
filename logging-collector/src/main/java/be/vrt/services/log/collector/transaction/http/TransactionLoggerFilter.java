@@ -41,7 +41,7 @@ public class TransactionLoggerFilter implements Filter, Constants {
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		transaction.setStartTime(new Date(stopWatch.getStartTime()));
+		transaction.setStartDate(new Date(stopWatch.getStartTime()));
 
 		response.setHeader(TRANSACTION_ID, transaction.getTransactionId());
 		response.setHeader(FLOW_ID, transaction.getFlowId());

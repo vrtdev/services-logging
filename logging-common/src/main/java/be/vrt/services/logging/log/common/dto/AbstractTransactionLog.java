@@ -1,11 +1,12 @@
 package be.vrt.services.logging.log.common.dto;
 
+import be.vrt.services.logging.log.common.DelayedLogObject;
 import java.util.Date;
 import java.util.Map;
 
-public abstract class AbstractTransactionLog {
+public abstract class AbstractTransactionLog implements DelayedLogObject{
 
-	protected Date startTime;
+	protected Date startDate;
 	protected long duration;
 	protected String user;
 	protected String serverName;
@@ -24,12 +25,12 @@ public abstract class AbstractTransactionLog {
 
 	public abstract String getType();
 
-	public Date getStartTime() {
-		return startTime;
+	public Date getStartDate() {
+		return startDate;
 	}
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
 	}
 
 	public long getDuration() {

@@ -30,7 +30,7 @@ public abstract class AbstractAuditAspect extends AbstractBreadcrumAuditAspect{
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		try {
-			auditLogDto.setLogDate(new Date(stopWatch.getStartTime()));
+			auditLogDto.setStartDate(new Date(stopWatch.getStartTime()));
 
 			Object[] arguments = joinPoint.getArgs();
 			List<Object> cloneArguments = new ArrayList<Object>();

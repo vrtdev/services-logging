@@ -7,6 +7,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 
 import be.vrt.services.logging.log.common.Constants;
+import be.vrt.services.logging.log.common.DelayedLogObject;
 import be.vrt.services.logging.log.common.LogTransaction;
 import be.vrt.services.logging.log.consumer.config.EnvironmentSetting;
 import be.vrt.services.logging.log.consumer.dto.JsonLogWrapperDto;
@@ -26,7 +27,8 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 		Object[] objects = logEvent.getArgumentArray();
 		String json;
 		try {
-			dto.setDate(new Date());
+			dto.setLogDate(new Date());
+			dto.setDate(dto.getLogDate());
 			dto.setTransactionId(LogTransaction.id());
 			dto.setFlowId(LogTransaction.flow());
 			dto.setBreadCrum(LogTransaction.breadCrum());
@@ -41,6 +43,9 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			if (objects != null) {
 				int counter = 1;
 				for (Object object : objects) {
+					if(object instanceof DelayedLogObject){
+						dto.setDate(((DelayedLogObject)object).getStartDate());
+					}
 					if (object == null) {
 						dto.getContent().put("[" + (counter++) + "] noValue", "null");
 					}

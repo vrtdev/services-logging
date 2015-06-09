@@ -26,7 +26,7 @@ public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		transaction.setStartTime(new Date(stopWatch.getStartTime()));
+		transaction.setStartDate(new Date(stopWatch.getStartTime()));
 		try {
 			return mi.proceed();
 		} catch (FailureException e) {
