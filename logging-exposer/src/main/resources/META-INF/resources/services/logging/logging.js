@@ -1,4 +1,3 @@
-
 if (!document.rLog) {
 	document.rLog = {
 		transactions: [],
@@ -19,6 +18,10 @@ if (!document.rLog) {
 						$("#rlog-info-search-btn").click(function () {
 							document.rLog.registerTransaction($('#rlog-info-search-id').val(), "Custom Search by console");
 							document.rLog.displayDetail($('#rlog-info-search-id').val());
+						});
+
+						$("#rlog-info-search-txt-btn").click(function () {
+							document.rLog.displayText($('#rlog-info-search-id').val());
 						});
 
 						$("#rlog-detail-full").click(function () {
@@ -119,45 +122,50 @@ if (!document.rLog) {
 			var logId = $(e.toElement).attr('log-id');
 			document.rLog.displayDetail(logId);
 		},
-		displayDetail: function (logId) {
+		displayText: function (text) {
+			this.displayDetail(text, {
+				match: {
+					_all: text
+				}
+			});
+		},
+		displayDetail: function (logId, query) {
 			$('#rlog-detail').fadeIn();
 			$('#rlog-detail-close').click(document.rLog.hideDetail);
 			$('#rlog-detail-server').text("searching >> " + logId)
 
-			if (logId == 'dilbert' || logId == 'encoding-dev.vrt.be-2816c322-ec93-4b96-bf41-aea5cc3bf1aa') {
-				$('#rlog-detail-content').empty();
-				$('#rlog-detail-content').append($("<div style='text-align:center'><img src='services/logging/dilbert.gif'></img></div>"));
-			} else {
-				document.rLog.client = new elasticsearch.Client({
-					host: $('#rlog-server-url').val(),
-					log: 'info'
-				});
-
-				document.rLog.client.search({
-					index: $('#rlog-server-index').val(),
-					size: this.resultSize,
-					body: {
-						query: {
-							bool: {
-								should: [
-									{
-										match_phrase: {
-											transactionId: logId
-										}
-									},
-									{
-										match_phrase: {
-											flowId: logId
-										}
-									}
-								]
+			document.rLog.client = new elasticsearch.Client({
+				host: $('#rlog-server-url').val(),
+				log: 'info'
+			});
+			if (!query) {
+				query = {
+					bool: {
+						should: [
+							{
+								match_phrase: {
+									transactionId: logId
+								}
+							},
+							{
+								match_phrase: {
+									flowId: logId
+								}
 							}
-						}
+						]
 					}
-				}, function (error, response) {
-					document.rLog.displayResults(response.hits);
-				});
+				};
 			}
+			document.rLog.client.search({
+				index: $('#rlog-server-index').val(),
+				size: this.resultSize,
+				body: {
+					query: query
+				}
+			}, function (error, response) {
+				document.rLog.displayResults(response.hits);
+			});
+
 
 
 		},
@@ -187,7 +195,7 @@ if (!document.rLog) {
 			$('#rlog-detail-content').append(table);
 			var moreSearch = {
 				flow: {},
-				transction:{}
+				transction: {}
 			};
 
 			var transId = "";
@@ -206,7 +214,7 @@ if (!document.rLog) {
 					moreSearch.transction[src.transactionId] = $("<span class='rlog-btn' val='" + src.transactionId + "'>" + src.transactionId + "</span>");
 				}
 				var newRow = $("<tr class='summary'></tr>");
-				newRow.append($("<td class='rlog-row-time'></td>").text(moment(src.date).format("HH:mm:ss.SSS")));
+				newRow.append($("<td class='rlog-row-time'></td>").text(moment(src.date).format("MM/DD HH:mm:ss.SSS")));
 				newRow.append($("<td class='logr-logLine logr-logLine-" + src.logLevel + "'></td>").text(src.logLevel));
 				newRow.append($("<td></td>").text(src.loggerName.split(".").pop()));
 
@@ -281,37 +289,40 @@ if (!document.rLog) {
 //		$('#rlog-detail-content').append('<pre><code class="json">' + syntaxHighlight(response) + "</code></pre>");
 		}
 	};
-	$(document.rLog.init());
 
-	$(document).bind('keydown', null, function (e) {
-		if (e.which == 222) {
-			document.rLog.infoVisible = !$('#rlog-info').is(":visible");
-			$('#rlog-info').toggle(400, "linear");
-			document.rLog.displayTransactions();
+	$(document).ready(function () {
+		$(document.rLog.init());
 
-		}
-		return true;
-	});
-}
+		$(document).bind('keydown', null, function (e) {
+			if (e.which == 222) {
+				document.rLog.infoVisible = !$('#rlog-info').is(":visible");
+				$('#rlog-info').toggle(400, "linear");
+				document.rLog.displayTransactions();
 
-function syntaxHighlight(json) {
-	if (typeof json != 'string') {
-		json = JSON.stringify(json, undefined, 2);
-	}
-	json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-	return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-		var cls = 'number';
-		if (/^"/.test(match)) {
-			if (/:$/.test(match)) {
-				cls = 'key';
-			} else {
-				cls = 'string';
 			}
-		} else if (/true|false/.test(match)) {
-			cls = 'boolean';
-		} else if (/null/.test(match)) {
-			cls = 'null';
-		}
-		return '<span class="' + cls + '">' + match + '</span>';
+			return true;
+		});
 	});
+
+	function syntaxHighlight(json) {
+		if (typeof json != 'string') {
+			json = JSON.stringify(json, undefined, 2);
+		}
+		json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+		return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+			var cls = 'number';
+			if (/^"/.test(match)) {
+				if (/:$/.test(match)) {
+					cls = 'key';
+				} else {
+					cls = 'string';
+				}
+			} else if (/true|false/.test(match)) {
+				cls = 'boolean';
+			} else if (/null/.test(match)) {
+				cls = 'null';
+			}
+			return '<span class="' + cls + '">' + match + '</span>';
+		});
+	}
 }

@@ -52,7 +52,6 @@
 	border-bottom: #800 3px solid;
 }
 
-
 #rlog-detail{
 	padding: 10px;display: none;
 	position: fixed; 
@@ -69,12 +68,20 @@
 	color: orange
 }
 
+#rlog-info-search-id{
+	width: 600px;
+}
+
+#rlog-server-index{
+	width: 60px;
+}
+
 #rlog-detail-server{
 	color: orange;
 }
 #rlog-detail-content .rlog-row-time{
 	color: orange;
-	width: 60px;
+	width: 120px;
 }
 
 .rlog-row-time{
