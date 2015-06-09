@@ -1,6 +1,7 @@
 package be.vrt.services.logging.log.consumer.config;
 
 import be.vrt.services.logging.log.common.LogTransaction;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +12,8 @@ public class EnvironmentSetting {
 	private Map<String, Object> log = new HashMap<>();
 	
 	private EnvironmentSetting() {
-		log.put("runtime", "runtime:" + LogTransaction.generateTransactionId());
+		log.put("runtime", "runtime-" + LogTransaction.generateTransactionId());
+		log.put("starup", new Date());
 	
 	}
 
