@@ -7,7 +7,15 @@
 	color: greenyellow;
 
 }
+.log-transaction {
+	background-color: lightblue;
+	color: black;
+}
 
+.log-transaction td {
+	padding-left: 20px;
+	font-size: larger;
+}
 .log-table-detail-result tr.summary:hover{
 	background-color:gray;
 }
@@ -74,11 +82,11 @@
 	width: 140px;
 }
 .rlog-row-line{
-	width: auto
-}
+	/* width: auto
+ */}
 .rlog-row-line{
-	width: auto
-}
+	/* width: auto
+ */}
 .rlog-row-more{
 	width: 40px;
 	text-align: center;
@@ -96,9 +104,11 @@
 }
 #rlog-detail-more-searches-btn {
 	padding-top:8px;
+	line-height: 200%;
 }
 #rlog-detail-more-searches-btn  .rlog-btn {
 	margin-right: 5px;
+	white-space: nowrap;
 }
 
 
