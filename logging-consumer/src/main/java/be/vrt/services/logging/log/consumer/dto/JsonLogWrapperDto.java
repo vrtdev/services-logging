@@ -9,11 +9,13 @@ import java.util.Map;
 public class JsonLogWrapperDto {
 
 	private Date date;
+	private Date logDate;
 	private String transactionId;
 	private String hostName;
 	private String flowId;
 	private String className;
 	private String methodName;
+	private int breadCrum;
 	private int lineNumber;
 	
 	private String logLevel;
@@ -128,5 +130,20 @@ public class JsonLogWrapperDto {
 	public void setLogLevel(String logLevel) {
 		this.logLevel = logLevel;
 	}
-	
+
+	public int getBreadCrum() {
+		return breadCrum;
+	}
+
+	public void setBreadCrum(int breadCrum) {
+		this.breadCrum = breadCrum;
+	}
+
+	public Date getLogDate() {
+		return logDate;
+	}
+
+	public void setLogDate(Date logDate) {
+		this.logDate = logDate;
+	}
 }

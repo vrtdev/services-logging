@@ -4,6 +4,7 @@ public class ErrorDto {
 	
 	private String message;
 	private String className;
+	private String stackTrace;
 	
 	public String getMessage() {
 		return message;
@@ -20,5 +21,15 @@ public class ErrorDto {
 	public void setClassName(String className) {
 		this.className = className;
 	}
+
+	public String getStackTrace() {
+		return stackTrace;
+	}
+
+	public void setStackTrace(String stackTrace) {
+		this.stackTrace = stackTrace;
+	}
+	
+	
 	
 }

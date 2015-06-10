@@ -5,12 +5,7 @@ import java.util.Map;
 
 public class AmqpTransactionLogDto extends AbstractTransactionLog {
 
-	public static enum Type{
-		OK, FAILED, ERROR
-	};
-	
-	private Type status;
-	private String errorReason;
+
 	private String exchange;
 	private String routingKey;
 	private String queueName;
@@ -19,22 +14,6 @@ public class AmqpTransactionLogDto extends AbstractTransactionLog {
 	@Override
 	public String getType() {
 		return "AMQP";
-	}
-
-	public Type getStatus() {
-		return status;
-	}
-
-	public void setStatus(Type status) {
-		this.status = status;
-	}
-
-	public String getErrorReason() {
-		return errorReason;
-	}
-
-	public void setErrorReason(String errorReason) {
-		this.errorReason = errorReason;
 	}
 
 	public String getExchange() {

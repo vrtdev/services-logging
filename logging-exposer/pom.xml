@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>be.vrt.services.logging</groupId>
 		<artifactId>logging</artifactId>
-		<version>0.4</version>
+		<version>0.5</version>
 	</parent>
 	<artifactId>logging-exposer</artifactId>
 	<packaging>jar</packaging>
@@ -26,4 +26,20 @@
 			</resource>
 		</resources>
 	</build>
+	<dependencies>
+	 <dependency>
+	  <groupId>com.fasterxml.jackson.core</groupId>
+	  <artifactId>jackson-databind</artifactId>
+	 </dependency>
+	 <dependency>
+	  <groupId>${project.groupId}</groupId>
+	  <artifactId>logging-common</artifactId>
+	  <version>${project.version}</version>
+	 </dependency>
+	 <dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-web-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 </project>

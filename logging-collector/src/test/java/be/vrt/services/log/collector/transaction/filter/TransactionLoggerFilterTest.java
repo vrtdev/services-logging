@@ -69,10 +69,10 @@ public class TransactionLoggerFilterTest {
 		transactionLoggerFilter.doFilter(httpServletRequest, httpServletResponse, filterChain);
 
 		ArgumentCaptor<LoggingEvent> captorLoggingEvent = ArgumentCaptor.forClass(LoggingEvent.class);
-		verify(appender, times(2)).doAppend(captorLoggingEvent.capture());
+		verify(appender).doAppend(captorLoggingEvent.capture());
 		LoggingEvent loggingEvent = captorLoggingEvent.getValue();
 		assertEquals(loggingEvent.getLevel(), (Level.INFO));
-		assertNotNull(MDC.get(Constants.TRANSACTION_ID));
+		assertNull(MDC.get(Constants.TRANSACTION_ID));
 		
 	}
 

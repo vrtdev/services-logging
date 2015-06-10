@@ -1,14 +1,15 @@
 package be.vrt.services.logging.log.consumer.appender;
 
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ElasticSearchAppender extends AbstractJsonAppender {
-
-	private Client client;
 
 	private String host;
 	private int port;
@@ -16,26 +17,38 @@ public class ElasticSearchAppender extends AbstractJsonAppender {
 	@Override
 	public void start() {
 		super.start();
-		client = new TransportClient().addTransportAddress(new InetSocketTransportAddress(host, port));
 	}
 
 	@Override
 	protected void persist(String json) {
+		String esUrl = "http://" + host + ":" + port + "/logging/log/"+UUID.randomUUID().toString();
 		try {
-			client.prepareIndex("logging", "log")
-					.setSource(json)
-					.execute()
-					.actionGet();
+			
+			
+			URL url = new URL(esUrl);
+
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setConnectTimeout(1000);
+			con.setRequestMethod("POST");
+			con.setDoOutput(true);
+			
+			OutputStream out = con.getOutputStream();
+			out.write(json.getBytes(Charset.forName("UTF8")));
+			out.flush();
+			out.close();
+
+			if (con.getResponseCode() > 299) {
+				System.err.println(">> Failed to save to ES > [" + con.getResponseCode() + "] :" + con.getResponseMessage() + " || " + esUrl);
+				System.err.println(json);
+			}
 		} catch (Exception e) {
-			System.out.println("e: " + e.getMessage());
-			e.printStackTrace();
+			System.out.println("e: " + e.getMessage() + " >> " + host + ":" + port);
 		}
 	}
 
 	@Override
 	public void stop() {
 		super.stop();
-		client.close();
 	}
 
 	@Override

@@ -4,10 +4,10 @@
 	<parent>
 		<groupId>be.vrt.services.logging</groupId>
 		<artifactId>logging</artifactId>
-		<version>0.4</version>
+		<version>0.5</version>
 	</parent>
 	<artifactId>logging-full</artifactId>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>

@@ -5,9 +5,9 @@ import java.net.UnknownHostException;
 import java.util.Date;
 
 import org.slf4j.Logger;
-import org.slf4j.MDC;
 
 import be.vrt.services.logging.log.common.Constants;
+import be.vrt.services.logging.log.common.DelayedLogObject;
 import be.vrt.services.logging.log.common.LogTransaction;
 import be.vrt.services.logging.log.consumer.config.EnvironmentSetting;
 import be.vrt.services.logging.log.consumer.dto.JsonLogWrapperDto;
@@ -23,16 +23,15 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 	@Override
 	protected void append(ILoggingEvent logEvent) {
 
-//		if(!e.getMDCPropertyMap().containsKey(TRANSACTION_ID)){
-//			return;
-//		}
 		JsonLogWrapperDto dto = new JsonLogWrapperDto();
 		Object[] objects = logEvent.getArgumentArray();
 		String json;
 		try {
-			dto.setDate(new Date());
+			dto.setLogDate(new Date());
+			dto.setDate(new Date(logEvent.getTimeStamp()));
 			dto.setTransactionId(LogTransaction.id());
 			dto.setFlowId(LogTransaction.flow());
+			dto.setBreadCrum(LogTransaction.breadCrum());
 			String hostname;
 			try {
 				hostname = InetAddress.getLocalHost().getHostName();
@@ -44,19 +43,21 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			if (objects != null) {
 				int counter = 1;
 				for (Object object : objects) {
-					if (object == null) {
-						dto.getContent().put("["+ (counter++) +"] noValue", "null");
+					if(object instanceof DelayedLogObject){
+						dto.setDate(((DelayedLogObject)object).getStartDate());
 					}
-					dto.getContent().put("["+ (counter++) +"] "+object.getClass().getSimpleName(), object);
+					if (object == null) {
+						dto.getContent().put("[" + (counter++) + "] noValue", "null");
+					}
+					dto.getContent().put("[" + (counter++) + "] " + object.getClass().getSimpleName(), object);
 				}
 			}
-			dto.setLogComment(logEvent.getMessage());
-			dto.setDate(new Date(logEvent.getTimeStamp()));
+			dto.setLogComment(logEvent.getFormattedMessage());
 
 			dto.setClassName(logEvent.getCallerData()[0].getClassName());
 			dto.setMethodName(logEvent.getCallerData()[0].getMethodName());
 			dto.setLineNumber(logEvent.getCallerData()[0].getLineNumber());
-			dto.setEnvironmentInfo(EnvironmentSetting.log);
+			dto.setEnvironmentInfo(EnvironmentSetting.info());
 			dto.setLoggerName(logEvent.getLoggerName());
 			dto.setLogLevel(logEvent.getLevel().toString());
 			try {
@@ -68,7 +69,7 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			}
 			persist(json);
 		} catch (Exception ex) {
-			System.err.println("Failed to process Json2: " + ex.getMessage());
+			System.err.println("Failed to process Json2: " + logEvent.getLoggerName() + ":" + logEvent.getLevel() + ":" + logEvent.getFormattedMessage());
 		}
 	}
 

@@ -1,19 +1,20 @@
 package be.vrt.services.log.collector.audit.dto;
 
 import be.vrt.services.log.collector.audit.AuditLevelType;
+import be.vrt.services.logging.log.common.DelayedLogObject;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.RecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
-public class AuditLogDto {
+public class AuditLogDto  implements DelayedLogObject{
 
 	private List<Object> arguments;
 	private Object response;
 	private String method;
 	private String className;
-	private Date logDate;
+	private Date startDate;
 	private long duration;
 	private AuditLevelType auditLevel = AuditLevelType.OK;
 
@@ -57,12 +58,12 @@ public class AuditLogDto {
 		this.auditLevel = auditLevel;
 	}
 
-	public Date getLogDate() {
-		return logDate;
+	public Date getStartDate() {
+		return startDate;
 	}
 
-	public void setLogDate(Date logDate) {
-		this.logDate = logDate;
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
 	}
 
 	public long getDuration() {

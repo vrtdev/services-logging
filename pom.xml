@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>be.vrt.services.logging</groupId>
 	<artifactId>logging</artifactId>
-	<version>0.4</version>
+	<version>0.5</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -18,7 +18,8 @@
 		<module>logging-common</module>
 		<module>logging-exposer</module>
 		<module>logging-full</module>
-	</modules>
+    <module>logging-test-web</module>
+  </modules>
 
 	<scm>
 		<connection>scm:git:ssh://git@atlas.vrt.be:7999/ser/services-logging.git</connection>
@@ -34,11 +35,12 @@
 		<jackson.databind-version>2.5.1</jackson.databind-version>
 		<org.apache.common.lang-version>3.3.2</org.apache.common.lang-version>
 		<commons.beanutils-version>1.9.2</commons.beanutils-version>
-		<org.elasticsearch-version>1.4.4</org.elasticsearch-version>
 		<junit-version>4.12</junit-version>
 		<org.mockito-version>1.10.19</org.mockito-version>
 		<aopalliance-version>1.0</aopalliance-version>
 		<org.springframework.amqp-version>1.4.3.RELEASE</org.springframework.amqp-version>
+		<javax.servlet-version>3.0.1</javax.servlet-version>
+		
 	</properties>
 
 	<dependencyManagement>
@@ -57,12 +59,6 @@
 				<groupId>commons-beanutils</groupId>
 				<artifactId>commons-beanutils</artifactId>
 				<version>${commons.beanutils-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.elasticsearch</groupId>
-				<artifactId>elasticsearch</artifactId>
-				<version>${org.elasticsearch-version}</version>
-				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -109,6 +105,13 @@
 				<artifactId>commons-lang3</artifactId>
 				<version>${org.apache.common.lang-version}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${javax.servlet-version}</version>
+			</dependency>
+
 
 			<!-- Testing libs -->
 			<dependency>

@@ -17,7 +17,7 @@ public class TransactionLogDtoTest {
 		HttpTransactionLogDto transactionLogDto = new HttpTransactionLogDto();
 		transactionLogDto.setDuration(1445L);
 		transactionLogDto.setHttpMethod(HttpMethod.PUT);
-		transactionLogDto.setStartTime(new Date());
+		transactionLogDto.setStartDate(new Date());
 		transactionLogDto.setUser("test");
 		transactionLogDto.setServerName("mediazone-dev");
 		transactionLogDto.setResource("http://mediazone-admin-dev.vrt.be/rest/client/v1/assetsources");

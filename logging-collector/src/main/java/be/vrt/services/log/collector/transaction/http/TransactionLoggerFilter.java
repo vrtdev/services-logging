@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import be.vrt.services.log.collector.transaction.dto.HttpTransactionLogDto;
 import be.vrt.services.logging.log.common.Constants;
@@ -40,15 +38,13 @@ public class TransactionLoggerFilter implements Filter, Constants {
 		HttpServletResponse response = (HttpServletResponse) resp;
 
 		HttpTransactionLogDto transaction = generateTransactionLogDtoFromRequest(request);
-		MDC.put(TRANSACTION_ID, transaction.getTransactionId());
-		MDC.put(FLOW_ID, transaction.getFlowId());
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		transaction.setStartTime(new Date(stopWatch.getStartTime()));
+		transaction.setStartDate(new Date(stopWatch.getStartTime()));
 
 		response.setHeader(TRANSACTION_ID, transaction.getTransactionId());
-		response.setHeader(FLOW_ID, transaction.getTransactionId());
+		response.setHeader(FLOW_ID, transaction.getFlowId());
 		try {
 			chain.doFilter(request, response);
 		} finally {
@@ -57,24 +53,22 @@ public class TransactionLoggerFilter implements Filter, Constants {
 			transaction.setFlowId(LogTransaction.flow());
 			transaction.setDuration(stopWatch.getTime());
 			transaction.setParameters(getParameters(request));
-			transaction.setResponseStatus(response.getStatus());
-			LOG.info("Filter Info: {}", transaction);
+			transaction.responseStatus(response.getStatus());
+
+			LOG.info("Filter Info: [{}] ==> {} | {} ", transaction.getResponseStatus(), transaction.getHttpMethod(), transaction.getResource(), transaction);
 			TransactionRegistery.register(transaction);
+			LogTransaction.resetThread();
 		}
 	}
 
 	private HttpTransactionLogDto generateTransactionLogDtoFromRequest(HttpServletRequest request) {
 		String serverName = request.getServerName();
 
-		String uuid = UUID.randomUUID().toString();
-		String transactionUUID = serverName + "-" + uuid;
 		HttpTransactionLogDto transaction = new HttpTransactionLogDto();
-		if (request.getHeader(FLOW_ID) != null) {
-			transaction.setFlowId(request.getHeader(FLOW_ID));
-		} else {
-			transaction.setFlowId(LogTransaction.generateFlowId(request.getHeader(ORIGIN_USER)));
-		}
-		transaction.setTransactionId(transactionUUID);
+		String flowId = LogTransaction.createFlowId(request.getHeader(FLOW_ID), request.getHeader(ORIGIN_USER));
+
+		transaction.setFlowId(flowId);
+		transaction.setTransactionId(LogTransaction.id());
 		transaction.setServerName(serverName);
 
 		transaction.setHttpMethod(request.getMethod());

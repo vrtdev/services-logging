@@ -7,12 +7,28 @@
 	color: greenyellow;
 
 }
+.log-transaction {
+	background-color: lightblue;
+	color: black;
+}
+
+.log-transaction td {
+	padding-left: 20px;
+	font-size: larger;
+}
+.log-table-detail-result tr.summary:hover{
+	background-color:gray;
+}
 
 .rlog-detail pre {
 	border: 1px solid #cccccc;
 	font-size: 12px;
 
 }
+.log-table-detail-result tr.summary:hover{
+	background-color:gray;
+}
+
 .rlog-info, #rlog-detail{
 	font-size: 14px;
 	color: greenyellow;
@@ -36,7 +52,6 @@
 	border-bottom: #800 3px solid;
 }
 
-
 #rlog-detail{
 	padding: 10px;display: none;
 	position: fixed; 
@@ -53,12 +68,20 @@
 	color: orange
 }
 
+#rlog-info-search-id{
+	width: 600px;
+}
+
+#rlog-server-index{
+	width: 60px;
+}
+
 #rlog-detail-server{
 	color: orange;
 }
 #rlog-detail-content .rlog-row-time{
 	color: orange;
-	width: 60px;
+	width: 120px;
 }
 
 .rlog-row-time{
@@ -66,11 +89,11 @@
 	width: 140px;
 }
 .rlog-row-line{
-	width: auto
-}
+	/* width: auto
+ */}
 .rlog-row-line{
-	width: auto
-}
+	/* width: auto
+ */}
 .rlog-row-more{
 	width: 40px;
 	text-align: center;
@@ -86,6 +109,15 @@
 	color: black;
 	background-color: greenyellow;
 }
+#rlog-detail-more-searches-btn {
+	padding-top:8px;
+	line-height: 200%;
+}
+#rlog-detail-more-searches-btn  .rlog-btn {
+	margin-right: 5px;
+	white-space: nowrap;
+}
+
 
 .rlog-info-show-btn{
 	border-color: lightblue; 
