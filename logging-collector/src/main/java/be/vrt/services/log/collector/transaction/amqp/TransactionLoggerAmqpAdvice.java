@@ -4,7 +4,6 @@ import be.vrt.services.log.collector.exception.FailureException;
 import be.vrt.services.logging.log.common.LogTransaction;
 import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import be.vrt.services.log.collector.transaction.dto.AmqpTransactionLogDto;
-import be.vrt.services.log.collector.transaction.http.TransactionLoggerFilter;
 import be.vrt.services.logging.log.common.Constants;
 import java.net.InetAddress;
 import java.util.Date;
@@ -18,7 +17,7 @@ import org.springframework.amqp.core.MessageProperties;
 
 public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 
-	private final Logger log = LoggerFactory.getLogger(TransactionLoggerFilter.class);
+	private final Logger log = LoggerFactory.getLogger(TransactionLoggerAmqpAdvice.class);
 
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
