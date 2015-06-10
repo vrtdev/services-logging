@@ -59,6 +59,7 @@ public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 			if (mi.getArguments().length == 2 && mi.getArguments()[1] instanceof Message) {
 				MessageProperties props = ((Message) mi.getArguments()[1]).getMessageProperties();
 				transaction.setExchange(props.getReceivedExchange());
+				transaction.setQueueName(props.getConsumerQueue());
 				transaction.setRoutingKey(props.getReceivedRoutingKey());
 				transaction.setHeaders(props.getHeaders());
 				headerFlowId = (String) props.getHeaders().get(Constants.FLOW_ID);
