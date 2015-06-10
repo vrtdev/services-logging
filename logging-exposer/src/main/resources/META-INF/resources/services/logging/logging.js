@@ -180,7 +180,7 @@ if (!document.rLog) {
 			var transactions = {};
 			for (var h = 0; h < response.length; h++) {
 				var src = response[h]._source;
-				if (!transactions[src.transactionId] || transactions[src.transactionId] < src.date) {
+				if (!transactions[src.transactionId] || transactions[src.transactionId] > src.date) {
 					transactions[src.transactionId] = src.date;
 				}
 			}

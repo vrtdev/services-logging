@@ -41,7 +41,7 @@ public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 			stopWatch.stop();
 			transaction.setFlowId(LogTransaction.flow());
 			transaction.setDuration(stopWatch.getTime());
-			log.info("Filter on : {}", transaction.getQueueName(), transaction);
+			log.info("Filter on : {} ", transaction.getQueueName(), transaction);
 			TransactionRegistery.register(transaction);
 			LogTransaction.resetThread();
 

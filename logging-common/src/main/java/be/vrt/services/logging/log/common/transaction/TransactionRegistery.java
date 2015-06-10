@@ -9,16 +9,16 @@ import java.util.Set;
 
 public class TransactionRegistery {
 
-	private static final TransactionRegistery instance = new TransactionRegistery();
+	static final TransactionRegistery instance = new TransactionRegistery();
 
 	private int bufferSize = 100;
 	private int bufferSizeIds = 500;
 
-	private final List<AbstractTransactionLog> transactionLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(100));
-	private final List<AbstractTransactionLog> transactionFailedLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(100));
-	private final List<AbstractTransactionLog> transactionErrorLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(100));
+	final List<AbstractTransactionLog> transactionLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(100));
+	final List<AbstractTransactionLog> transactionFailedLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(100));
+	final List<AbstractTransactionLog> transactionErrorLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(100));
 
-	private final List<TransactionIdLog> transactionIds = Collections.synchronizedList(new ArrayList<TransactionIdLog>(100));
+	final List<TransactionIdLog> transactionIds = Collections.synchronizedList(new ArrayList<TransactionIdLog>(100));
 
 	public void registerTransactionLocal(AbstractTransactionLog transaction) {
 		addToFixedSizeQueue(transactionLogs, transaction, bufferSize);
