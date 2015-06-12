@@ -18,8 +18,8 @@
 		<module>logging-common</module>
 		<module>logging-exposer</module>
 		<module>logging-full</module>
-    <module>logging-test-web</module>
-  </modules>
+		<module>logging-test-web</module>
+	</modules>
 
 	<scm>
 		<connection>scm:git:ssh://git@atlas.vrt.be:7999/ser/services-logging.git</connection>
@@ -27,6 +27,9 @@
 	</scm>
 
 	<properties>
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+		
 		<org.slf4j-version>1.7.10</org.slf4j-version>
 		<javax-version>7.0</javax-version>
 		<org.aspectj-version>1.8.5</org.aspectj-version>
@@ -42,6 +45,66 @@
 		<javax.servlet-version>3.0.1</javax.servlet-version>
 		
 	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.7.5.201505241946</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>report</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>buildnumber-maven-plugin</artifactId>
+					<version>1.3</version>
+					<executions>
+						<execution>
+							<id>build.time</id>
+							<phase>initialize</phase>
+							<goals>
+								<goal>create-timestamp</goal>
+							</goals>
+							<configuration>
+								<timestampFormat>yyyy-MM-dd HH:mm:ss</timestampFormat>
+								<timestampPropertyName>build.time</timestampPropertyName>
+							</configuration>
+						</execution>
+						<execution>
+							<phase>validate</phase>
+							<goals>
+								<goal>create</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
 	<dependencyManagement>
 		<dependencies>

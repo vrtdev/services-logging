@@ -3,22 +3,20 @@ package be.vrt.services.logging.log.common.transaction;
 import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class TransactionRegistery {
 
-	static final TransactionRegistery instance = new TransactionRegistery();
+	static TransactionRegistery instance = new TransactionRegistery();
 
-	private int bufferSize = 100;
-	private int bufferSizeIds = 500;
+	int bufferSize = 100;
+	int bufferSizeIds = 500;
 
-	final List<AbstractTransactionLog> transactionLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(100));
-	final List<AbstractTransactionLog> transactionFailedLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(100));
-	final List<AbstractTransactionLog> transactionErrorLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(100));
+	final List<AbstractTransactionLog> transactionLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(bufferSize));
+	final List<AbstractTransactionLog> transactionFailedLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(bufferSize));
+	final List<AbstractTransactionLog> transactionErrorLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(bufferSize));
 
-	final List<TransactionIdLog> transactionIds = Collections.synchronizedList(new ArrayList<TransactionIdLog>(100));
+	final List<TransactionIdLog> transactionIds = Collections.synchronizedList(new ArrayList<TransactionIdLog>(bufferSizeIds));
 
 	public void registerTransactionLocal(AbstractTransactionLog transaction) {
 		addToFixedSizeQueue(transactionLogs, transaction, bufferSize);
@@ -67,22 +65,15 @@ public class TransactionRegistery {
 		return new ArrayList<>(instance.transactionIds);
 	}
 
-	public static List<String> listFlowIds() {
-		
-		Set<String> flows = new HashSet<>();
-		
-		for (TransactionIdLog transactionId : instance.transactionIds) {
-			
-		}
-		
-		return new ArrayList<>();
+	public static TransactionRegistery instance(){
+		return instance;
 	}
-
+	
 	public int getBufferSize() {
 		return bufferSize;
 	}
 
-	public static void setBufferSize(int size) {
+	public void setBufferSize(int size) {
 		instance.bufferSize = size;
 	}
 

@@ -119,7 +119,7 @@ if (!document.rLog) {
 			this.registerTransaction(logId, comment);
 		},
 		displayDetailClick: function (e) {
-			var logId = $(e.toElement).attr('log-id');
+			var logId = $(e.toElement || e.relatedTarget || e.target).attr('log-id');
 			document.rLog.displayDetail(logId);
 		},
 		displayText: function (text) {
