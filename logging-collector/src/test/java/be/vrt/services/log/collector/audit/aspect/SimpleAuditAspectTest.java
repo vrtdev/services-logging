@@ -9,14 +9,14 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import be.vrt.services.logging.log.common.dto.ErrorDto;
 import be.vrt.services.log.collector.transaction.dto.HttpTransactionLogDto;
-import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
+import be.vrt.services.logging.log.common.dto.ErrorDto;
 
 public class SimpleAuditAspectTest {
 
 	private SimpleAuditAspect auditAspect = new SimpleAuditAspect();
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void cloneParameter_givenNull_returnsNull() throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 		Object param = null;
