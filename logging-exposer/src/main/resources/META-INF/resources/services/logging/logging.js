@@ -119,7 +119,7 @@ if (!document.rLog) {
 			this.registerTransaction(logId, comment);
 		},
 		displayDetailClick: function (e) {
-			var logId = $(e.toElement).attr('log-id');
+			var logId = $(e.toElement || e.relatedTarget || e.target).attr('log-id');
 			document.rLog.displayDetail(logId);
 		},
 		displayText: function (text) {
@@ -180,7 +180,7 @@ if (!document.rLog) {
 			var transactions = {};
 			for (var h = 0; h < response.length; h++) {
 				var src = response[h]._source;
-				if (!transactions[src.transactionId] || transactions[src.transactionId] < src.date) {
+				if (!transactions[src.transactionId] || transactions[src.transactionId] > src.date) {
 					transactions[src.transactionId] = src.date;
 				}
 			}

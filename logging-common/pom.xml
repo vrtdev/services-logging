@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>be.vrt.services.logging</groupId>
 		<artifactId>logging</artifactId>
-		<version>0.5</version>
+		<version>0.6</version>
 	</parent>
 	<artifactId>logging-common</artifactId>
 	<packaging>jar</packaging>
@@ -16,6 +16,17 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
