@@ -22,8 +22,9 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>logging-exposer</artifactId>
+            <artifactId>logging-full</artifactId>
             <version>0.7-SNAPSHOT</version>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

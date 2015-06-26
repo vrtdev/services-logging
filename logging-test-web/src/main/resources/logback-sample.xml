@@ -1,0 +1,29 @@
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoders are assigned the type
+		ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} %-5level [%thread][%X{X-Log-Transaction-Id}] %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="LocalElastic" class="be.vrt.services.logging.log.consumer.appender.ElasticSearchAppender">
+		<host>localhost</host>
+		<port>9200</port>
+	</appender>
+	
+	<appender name="RockHopper" class="be.vrt.services.logging.log.consumer.appender.RockHopperAppender">
+		<host>localhost</host>
+		<port>5514</port>
+	</appender>
+	
+	
+	<logger name="be.vrt.services" level="debug" />
+
+	<root level="info">
+		<appender-ref ref="LocalElastic" />
+		<appender-ref ref="RockHopper" />
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
