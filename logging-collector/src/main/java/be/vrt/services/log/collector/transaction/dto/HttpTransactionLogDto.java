@@ -8,6 +8,8 @@ public class HttpTransactionLogDto extends AbstractTransactionLog {
 
 	private String httpMethod;
 	private int responseStatus;
+	private String fullUrl;
+	
 
 	@Override
 	public String getType() {
@@ -48,4 +50,11 @@ public class HttpTransactionLogDto extends AbstractTransactionLog {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
+	public String getFullUrl() {
+		return fullUrl;
+	}
+
+	public void setFullUrl(String fullUrl) {
+		this.fullUrl = fullUrl;
+	}
 }

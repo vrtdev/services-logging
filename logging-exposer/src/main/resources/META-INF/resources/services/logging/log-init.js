@@ -20,8 +20,9 @@ if (typeof jQuery === 'undefined') {
 loadjscssfile("services/logging/logging.css?v=${mvn.timestamp}", "css");
 loadjscssfile("http://fonts.googleapis.com/css?family=Ubuntu+Mono", "css");
 loadjscssfile("services/logging/lib/momentjs.js", "js");
-loadjscssfile("services/logging/lib/elasticsearch.js", "js");
-loadjscssfile("services/logging/lib/elasticsearch.jquery.js", "js");
+
+
+// Test
 
 
 loadjscssfile("services/logging/logging.js?v=${mvn.timestamp}", "js");

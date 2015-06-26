@@ -90,10 +90,10 @@
 }
 .rlog-row-line{
 	/* width: auto
- */}
+	*/}
 .rlog-row-line{
 	/* width: auto
- */}
+	*/}
 .rlog-row-more{
 	width: 40px;
 	text-align: center;
@@ -181,4 +181,52 @@ tr .rlog-info-show-btn{
 
 .rlog-detail-row-json{
 	display: none;
+}
+
+.rlog-tabs{
+	margin-top: 10px;
+	/*height: 25px;*/
+	border-bottom: 1px solid white;
+	padding-bottom: 3px;
+}
+
+@-moz-document url-prefix() {
+    .rlog-tabs{
+		padding-bottom: 1px;
+	}
+}
+.rlog-tabs span{
+	padding: 3px 10px 3px 10px;
+	border: solid 1px white;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	margin-right: 5px;
+	border-bottom: none;
+}
+
+.rlog-tabs span:hover{
+	color: black;
+	background-color: white;
+}
+
+.rlog-tabs span.selected{
+	color: black;
+	background-color: lightblue;
+	border-bottom: lightblue solid 1px;
+}
+
+@-moz-document url-prefix() {
+    .rlog-tabs span.selected{
+		border-bottom: lightblue solid 1px;
+	}
+}
+
+.rlog-tab{
+	overflow: auto; height: 170px;
+}
+
+.rlog-tab .rlog-action-bar{
+	right: 10px; 
+	padding-top: 10px; 
+	position: absolute;
 }

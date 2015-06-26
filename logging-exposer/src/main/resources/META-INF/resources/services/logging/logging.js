@@ -1,5 +1,8 @@
+var logBaseUrl = logBaseUrl || 'log';
+
 if (!document.rLog) {
 	document.rLog = {
+		baseUrl: logBaseUrl,
 		transactions: [],
 		infoVisible: false,
 		resultSize: 500,
@@ -7,7 +10,7 @@ if (!document.rLog) {
 		init: function () {
 			$.get("services/logging/logging.html",
 					function (data) {
-						$("body").prepend(data);
+						$("body").append(data);
 						$("#rlog-info-clear-btn").click(function () {
 							document.rLog.clearTransactionHistory();
 						});
@@ -55,9 +58,9 @@ if (!document.rLog) {
 			}
 			var transactions = JSON.parse(localStorage.getItem('rLog.transaction-log-lines'));
 			while (transactions.length > 100) {
-				transactions.shift();
+				transactions.pop();
 			}
-			transactions.push({time: moment().format("YYYY/MM/DD HH:mm:ss.SSS"), transId: id, comment: comment});
+			transactions.unshift({time: moment().format("YYYY/MM/DD HH:mm:ss.SSS"), transId: id, comment: comment});
 			localStorage.setItem('rLog.transaction-log-lines', JSON.stringify(transactions));
 			this.displayTransactions();
 		},
@@ -73,8 +76,11 @@ if (!document.rLog) {
 				return;
 			}
 
-			$("#rlog-info-table tbody").empty();
+			$("#rlog-tab-history table tbody").empty();
 			var transactions = JSON.parse(localStorage.getItem('rLog.transaction-log-lines'));
+			if (!transactions) {
+				return
+			}
 			transactions.sort(function (a, b) {
 				return moment(a.time, "YYYY/MM/DD HH:mm:ss.SSS").diff(moment(b.time, "YYYY/MM/DD HH:mm:ss.SSS"));
 			})
@@ -96,7 +102,7 @@ if (!document.rLog) {
 					newRow.append($("<td class='rlog-row-more'></td>"));
 					newRow.append($("<td class='rlog-row-line'></td>").text(transaction.comment));
 				}
-				$("#rlog-info-table tbody").prepend(newRow);
+				$("#rlog-tab-history table tbody").prepend(newRow);
 			});
 		},
 		displayLogLine: function (line, logId) {
@@ -112,7 +118,7 @@ if (!document.rLog) {
 			}
 			newRow.append($("<td class='rlog-row-line'></td>").text(line));
 //		var newRow = "<tr><td>"++"</td><td>"+line+"</td></tr>";
-			$("#rlog-info-table tbody").prepend(newRow);
+			$("#rlog-tab-history table tbody").prepend(newRow);
 		},
 		registerCall: function (headers, comment) {
 			var logId = headers['X-Log-Transaction-Id'] || headers['X-Log-Transaction-Id'.toLowerCase()]; //headers are loweredcase
@@ -134,37 +140,41 @@ if (!document.rLog) {
 			$('#rlog-detail-close').click(document.rLog.hideDetail);
 			$('#rlog-detail-server').text("searching >> " + logId)
 
-			document.rLog.client = new elasticsearch.Client({
-				host: $('#rlog-server-url').val(),
-				log: 'info'
-			});
-			if (!query) {
-				query = {
-					bool: {
-						should: [
-							{
-								match_phrase: {
-									transactionId: logId
-								}
-							},
-							{
-								match_phrase: {
-									flowId: logId
-								}
-							}
-						]
-					}
-				};
-			}
-			document.rLog.client.search({
-				index: $('#rlog-server-index').val(),
-				size: this.resultSize,
-				body: {
-					query: query
-				}
-			}, function (error, response) {
-				document.rLog.displayResults(response.hits);
-			});
+			$.ajax(this.baseUrl + '/transaction/'+logId)
+					.done(function (data) {
+						document.rLog.displayResults(data.hits);
+					});
+//			document.rLog.client = new elasticsearch.Client({
+//				host: $('#rlog-server-url').val(),
+//				log: 'info'
+//			});
+//			if (!query) {
+//				query = {
+//					bool: {
+//						should: [
+//							{
+//								match_phrase: {
+//									transactionId: logId
+//								}
+//							},
+//							{
+//								match_phrase: {
+//									flowId: logId
+//								}
+//							}
+//						]
+//					}
+//				};
+//			}
+//			document.rLog.client.search({
+//				index: $('#rlog-server-index').val(),
+//				size: this.resultSize,
+//				body: {
+//					query: query
+//				}
+//			}, function (error, response) {
+//				document.rLog.displayResults(response.hits);
+//			});
 
 
 
@@ -287,6 +297,11 @@ if (!document.rLog) {
 				})
 			}
 //		$('#rlog-detail-content').append('<pre><code class="json">' + syntaxHighlight(response) + "</code></pre>");
+		},
+		toggleInfoWindow: function () {
+			document.rLog.infoVisible = !$('#rlog-info').is(":visible");
+			$('#rlog-info').toggle(400, "linear");
+			document.rLog.displayTransactions();
 		}
 	};
 
@@ -294,11 +309,9 @@ if (!document.rLog) {
 		$(document.rLog.init());
 
 		$(document).bind('keydown', null, function (e) {
-			if (e.which == 222) {
-				document.rLog.infoVisible = !$('#rlog-info').is(":visible");
-				$('#rlog-info').toggle(400, "linear");
-				document.rLog.displayTransactions();
-
+			if (e.which == 222 || e.key == '²') {
+				document.rLog.toggleInfoWindow();
+				return false;
 			}
 			return true;
 		});
