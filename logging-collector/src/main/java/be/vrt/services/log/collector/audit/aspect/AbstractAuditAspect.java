@@ -20,7 +20,7 @@ import java.io.StringWriter;
 import org.apache.commons.lang3.time.StopWatch;
 import org.aspectj.lang.reflect.MethodSignature;
 
-public abstract class AbstractAuditAspect extends AbstractBreadcrumAuditAspect{
+public abstract class AbstractAuditAspect extends AbstractBreadcrumbAuditAspect{
 
 	protected abstract Logger getLogger();
 

@@ -5,16 +5,16 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractBreadcrumAuditAspect {
+public abstract class AbstractBreadcrumbAuditAspect {
 
 	public final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-		LogTransaction.increaseBreadCrum();
+		LogTransaction.increaseBreadCrumb();
 		try {
 			return handleJoinPoint(joinPoint);
 		} finally {
-			LogTransaction.decreaseBreadCrum();
+			LogTransaction.decreaseBreadCrumb();
 		}
 	}
 

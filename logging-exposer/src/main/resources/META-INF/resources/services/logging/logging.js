@@ -51,8 +51,181 @@ if (!document.rLog) {
 			document.rLog.infoVisible = true;
 			$('#rlog-info').fadeIn();
 			document.rLog.displayTransactions();
-		},
-		registerTransaction: function (id, comment) {
+		}
+		, tabs: {
+			display: function (tab) {
+				$(".rlog-tabs span").removeClass("selected");
+				$(".rlog-tabs span[tab-header='" + tab.name + "']").addClass("selected");
+				$(".rlog-tab").removeClass("rlog-tab-selected");
+				$("#rlog-tab-" + tab.name).addClass("rlog-tab-selected");
+				tab.refresh();
+			}
+
+			, tab_history: {
+				name: 'history',
+				register: function (id, comment) {
+					if (!localStorage.getItem('rLog.transaction-log-lines')) {
+						localStorage.setItem('rLog.transaction-log-lines', JSON.stringify(new Array()));
+					}
+					var transactions = JSON.parse(localStorage.getItem('rLog.transaction-log-lines'));
+					while (transactions.length > 100) {
+						transactions.pop();
+					}
+					transactions.unshift({time: moment().format("YYYY/MM/DD HH:mm:ss.SSS"), transId: id, comment: comment});
+					localStorage.setItem('rLog.transaction-log-lines', JSON.stringify(transactions));
+					this.displayTransactions();
+				}
+				, clear: function () {
+					if (confirm("Clear history?")) {
+						localStorage.setItem('rLog.transaction-log-lines', JSON.stringify(new Array()));
+						this.displayTransactions();
+					}
+				}
+				, refresh: function () {
+					$("#rlog-tab-history table tbody").empty();
+					var transactions = JSON.parse(localStorage.getItem('rLog.transaction-log-lines'));
+					if (!transactions) {
+						return
+					}
+					transactions.sort(function (a, b) {
+						return moment(a.time, "YYYY/MM/DD HH:mm:ss.SSS").diff(moment(b.time, "YYYY/MM/DD HH:mm:ss.SSS"));
+					})
+					transactions.forEach(function (transaction) {
+						var newRow = $("<tr></tr>");
+						newRow.append($("<td class='rlog-row-time'></td>").text(transaction.time));
+						if (!transaction.comment) {
+							transaction.comment = "";
+						}
+						if (transaction.transId) {
+							newRow.append($("<td class='rlog-row-more'></td>")
+									.append($("<span class='rlog-info-show-btn'>SHOW</span>")
+											.attr("log-id", transaction.transId)
+											.click(document.rLog.displayDetailClick)
+											)
+									);
+							newRow.append($("<td class='rlog-row-line'></td>").text("[" + transaction.transId + "] " + transaction.comment));
+						} else {
+							newRow.append($("<td class='rlog-row-more'></td>"));
+							newRow.append($("<td class='rlog-row-line'></td>").text(transaction.comment));
+						}
+						$("#rlog-tab-history table tbody").prepend(newRow);
+					});
+				}
+				, display: function () {
+					document.rLog.tabs.display(this);
+
+				}
+			}
+			, tab_request: {
+				name: 'request'
+				, data: []
+				, refresh: function () {
+					$.ajax(document.rLog.baseUrl + "/list")
+							.done(function (data) {
+								document.rLog.tabs.tab_request.data = data.logs;
+								document.rLog.tabs.tab_request.data.sort(function (a, b) {
+									return a.startDate - b.startDate;
+								});
+								$("#rlog-tab-request table tbody").empty();
+								document.rLog.tabs.tab_request.data.forEach(function (request) {
+									var newRow = $("<tr></tr>");
+									newRow.append($("<td class='rlog-row-time'></td>").text(moment(request.startDate).format("YYYY/MM/DD HH:mm:ss.SSS")));
+									if (!request.resource) {
+										request.resource = "";
+									}
+									newRow.append($("<td class='rlog-row-more'></td>")
+											.append($("<span class='rlog-info-show-btn'>SHOW</span>")
+													.attr("log-id", request.transactionId)
+													.click(document.rLog.displayDetailClick)
+													)
+											);
+									newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
+									newRow.append($("<td class='rlog-small-cell'>" + request.httpMethod + "</td>"));
+									newRow.append($("<td class='rlog-small-cell'>" + request.responseStatus + "</td>"));
+									newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request.resource));
+									$("#rlog-tab-request table tbody").prepend(newRow);
+								})
+
+							});
+				}
+				, display: function () {
+					document.rLog.tabs.display(this);
+				}
+			}
+			, tab_failure: {
+				name: 'failure'
+				, data: []
+				, refresh: function () {
+					$.ajax(document.rLog.baseUrl + "/fail")
+							.done(function (data) {
+								document.rLog.tabs.tab_failure.data = data.logs;
+								document.rLog.tabs.tab_failure.data.sort(function (a, b) {
+									return a.startDate - b.startDate;
+								});
+								$("#rlog-tab-failure table tbody").empty();
+								document.rLog.tabs.tab_failure.data.forEach(function (request) {
+									var newRow = $("<tr></tr>");
+									newRow.append($("<td class='rlog-row-time'></td>").text(moment(request.startDate).format("YYYY/MM/DD HH:mm:ss.SSS")));
+									if (!request.resource) {
+										request.resource = "";
+									}
+									newRow.append($("<td class='rlog-row-more'></td>")
+											.append($("<span class='rlog-info-show-btn'>SHOW</span>")
+													.attr("log-id", request.transactionId)
+													.click(document.rLog.displayDetailClick)
+													)
+											);
+									newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
+									newRow.append($("<td class='rlog-small-cell'>" + request.httpMethod + "</td>"));
+									newRow.append($("<td class='rlog-small-cell'>" + request.responseStatus + "</td>"));
+									newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request.resource));
+									$("#rlog-tab-failure table tbody").prepend(newRow);
+								})
+
+							});
+				}
+				, display: function () {
+					document.rLog.tabs.display(this);
+				}
+			}
+			, tab_error: {
+				name: 'error'
+				, data: []
+				, refresh: function () {
+					$.ajax(document.rLog.baseUrl + "/error")
+							.done(function (data) {
+								document.rLog.tabs.tab_failure.data = data.logs;
+								document.rLog.tabs.tab_failure.data.sort(function (a, b) {
+									return a.startDate - b.startDate;
+								});
+								$("#rlog-tab-error table tbody").empty();
+								document.rLog.tabs.tab_failure.data.forEach(function (request) {
+									var newRow = $("<tr></tr>");
+									newRow.append($("<td class='rlog-row-time'></td>").text(moment(request.startDate).format("YYYY/MM/DD HH:mm:ss.SSS")));
+									if (!request.resource) {
+										request.resource = "";
+									}
+									newRow.append($("<td class='rlog-row-more'></td>")
+											.append($("<span class='rlog-info-show-btn'>SHOW</span>")
+													.attr("log-id", request.transactionId)
+													.click(document.rLog.displayDetailClick)
+													)
+											);
+									newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
+									newRow.append($("<td class='rlog-small-cell'>" + request.httpMethod + "</td>"));
+									newRow.append($("<td class='rlog-small-cell'>" + request.responseStatus + "</td>"));
+									newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request.resource + " >> " + request.errorReason));
+									$("#rlog-tab-error table tbody").prepend(newRow);
+								})
+
+							});
+				}
+				, display: function () {
+					document.rLog.tabs.display(this);
+				}
+			}
+		}
+		, registerTransaction: function (id, comment) {
 			if (!localStorage.getItem('rLog.transaction-log-lines')) {
 				localStorage.setItem('rLog.transaction-log-lines', JSON.stringify(new Array()));
 			}
@@ -140,44 +313,10 @@ if (!document.rLog) {
 			$('#rlog-detail-close').click(document.rLog.hideDetail);
 			$('#rlog-detail-server').text("searching >> " + logId)
 
-			$.ajax(this.baseUrl + '/transaction/'+logId)
+			$.ajax(this.baseUrl + '/transaction/' + logId)
 					.done(function (data) {
 						document.rLog.displayResults(data.hits);
 					});
-//			document.rLog.client = new elasticsearch.Client({
-//				host: $('#rlog-server-url').val(),
-//				log: 'info'
-//			});
-//			if (!query) {
-//				query = {
-//					bool: {
-//						should: [
-//							{
-//								match_phrase: {
-//									transactionId: logId
-//								}
-//							},
-//							{
-//								match_phrase: {
-//									flowId: logId
-//								}
-//							}
-//						]
-//					}
-//				};
-//			}
-//			document.rLog.client.search({
-//				index: $('#rlog-server-index').val(),
-//				size: this.resultSize,
-//				body: {
-//					query: query
-//				}
-//			}, function (error, response) {
-//				document.rLog.displayResults(response.hits);
-//			});
-
-
-
 		},
 		hideDetail: function () {
 			$('#rlog-detail').fadeOut();
@@ -199,6 +338,9 @@ if (!document.rLog) {
 				if (a._source.transactionId != b._source.transactionId) {
 					return transactions[a._source.transactionId] - transactions[b._source.transactionId];
 				}
+				if ((a._source.date - b._source.date) == 0) {
+					return (a._source.breadCrum || a._source.breadCrumb) - (b._source.breadCrum || b._source.breadCrumb)
+				}
 				return a._source.date - b._source.date;
 			});
 			var table = $("<table class='log-table-detail-result'></table>");
@@ -215,7 +357,7 @@ if (!document.rLog) {
 				var src = hit._source;
 				if (src.transactionId != transId) {
 					transId = src.transactionId;
-					table.append($("<tr class='log-transaction'><td colspan='6'>" + src.transactionId + "</td></tr>"));
+					table.append($("<tr class='log-transaction'><td colspan='26'>" + src.transactionId + "</td></tr>"));
 				}
 				if (src.flowId) {
 					moreSearch.flow[src.flowId] = $("<span class='rlog-btn rlog-info-show-btn' val='" + src.flowId + "'>" + src.flowId + "</span>");
@@ -226,15 +368,12 @@ if (!document.rLog) {
 				var newRow = $("<tr class='summary'></tr>");
 				newRow.append($("<td class='rlog-row-time'></td>").text(moment(src.date).format("MM/DD HH:mm:ss.SSS")));
 				newRow.append($("<td class='logr-logLine logr-logLine-" + src.logLevel + "'></td>").text(src.logLevel));
-				newRow.append($("<td></td>").text(src.loggerName.split(".").pop()));
-
-				var arrows = "";
-				for (var i = 0; i < src.breadCrum; i++) {
-					arrows += "&#10149;"
+				var breadcrumbs = src.breadCrumb || src.breadCrum;
+				var i = 0;
+				for (; i < breadcrumbs; i++) {
+					newRow.append($("<td>" + (i == breadcrumbs - 1 ? "&#10149;" : "") + "</td>"));
 				}
-				;
-				newRow.append($("<td></td>").html(arrows));
-
+				newRow.append($("<td colspan='" + (20 - i) + "'></td>").html(src.loggerName.split(".").pop()));
 				var moreInfo = "";
 
 				newRow.click(function () {
@@ -244,7 +383,7 @@ if (!document.rLog) {
 					newRow.append($("<td></td>").text(src.logComment));
 					var newRowDetail = $("<tr class='rlog-detail-row-json'></tr>");
 					newRowDetail.append($("<td colspan='4'></td> "));
-					newRowDetail.append($("<td colspan='2'><pre>" + syntaxHighlight(src) + "</pre></td>"));
+					newRowDetail.append($("<td colspan='22'><pre>" + syntaxHighlight(src) + "</pre></td>"));
 					table.append(newRow);
 					table.append(newRowDetail);
 				} else if (src.content.HttpTransactionLogDto) {
@@ -256,27 +395,27 @@ if (!document.rLog) {
 					newRowDetail.append($("<td ><pre>" + syntaxHighlight(src) + "</pre></td>"));
 					table.prepend(newRowDetail);
 					table.prepend(newRow);
-				} else if (src.content.AuditLogDto) {
-					var auditLog = src.content.AuditLogDto;
-					moreInfo = " [" + auditLog.auditLevel + "] " + auditLog.method;
-					newRow.append($("<td ></td>").text(moreInfo));
-					var newRowDetail = $("<tr class='rlog-detail-row-json'></tr>");
-					newRowDetail.append($("<td colspan='4'></td> "));
-					newRowDetail.append($("<td colspan='2'><pre>" + syntaxHighlight(src) + "</pre></td>"));
-					table.append(newRow);
-					table.append(newRowDetail);
+//				} else if (src.content.AuditLogDto) {
+//					var auditLog = src.content.AuditLogDto;
+//					moreInfo = " [" + auditLog.auditLevel + "] " + auditLog.method;
+//					newRow.append($("<td ></td>").text(moreInfo));
+//					var newRowDetail = $("<tr class='rlog-detail-row-json'></tr>");
+//					newRowDetail.append($("<td colspan='4'></td> "));
+//					newRowDetail.append($("<td colspan='22'><pre>" + syntaxHighlight(src) + "</pre></td>"));
+//					table.append(newRow);
+//					table.append(newRowDetail);
 				} else if (src.content.String) {
 					newRow.append($("<td></td>").text(src.content.String.subString(0, 400)));
 					var newRowDetail = $("<tr class='rlog-detail-row-json'></tr>");
 					newRowDetail.append($("<td colspan='4'></td> "));
-					newRowDetail.append($("<td colspan='2'><pre>" + syntaxHighlight(src) + "</pre></td>"));
+					newRowDetail.append($("<td colspan='22'><pre>" + syntaxHighlight(src) + "</pre></td>"));
 					table.append(newRow);
 					table.append(newRowDetail);
 				} else {
 					newRow.append($("<td></td>").text(src.logComment));
 					var newRowDetail = $("<tr class='rlog-detail-row-json'></tr>");
 					newRowDetail.append($("<td colspan='4'></td> "));
-					newRowDetail.append($("<td colspan='2'><pre>" + syntaxHighlight(src) + "</pre></td>"));
+					newRowDetail.append($("<td colspan='22'><pre>" + syntaxHighlight(src) + "</pre></td>"));
 					table.append(newRow);
 					table.append(newRowDetail);
 				}

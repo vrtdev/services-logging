@@ -16,7 +16,7 @@ public class LogTransaction implements Constants {
 
 	public static void resetThread() {
 		MDC.remove(TRANSACTION_ID);
-		MDC.remove(BREADCRUM_COUNTER);
+		MDC.remove(BREADCRUMB_COUNTER);
 		MDC.remove(FLOW_ID);
 	}
 
@@ -29,23 +29,23 @@ public class LogTransaction implements Constants {
 		return MDC.get(TRANSACTION_ID);
 	}
 
-	public static int breadCrum() {
-		if (MDC.get(BREADCRUM_COUNTER) == null) {
-			MDC.put(BREADCRUM_COUNTER, "0");
+	public static int breadCrumb() {
+		if (MDC.get(BREADCRUMB_COUNTER) == null) {
+			MDC.put(BREADCRUMB_COUNTER, "0");
 		}
-		return Integer.valueOf(MDC.get(BREADCRUM_COUNTER));
+		return Integer.valueOf(MDC.get(BREADCRUMB_COUNTER));
 	}
 
-	public static void increaseBreadCrum() {
-		Integer i = breadCrum();
+	public static void increaseBreadCrumb() {
+		Integer i = breadCrumb();
 		i++;
-		MDC.put(BREADCRUM_COUNTER, "" + i);
+		MDC.put(BREADCRUMB_COUNTER, "" + i);
 	}
 
-	public static void decreaseBreadCrum() {
-		Integer i = breadCrum();
+	public static void decreaseBreadCrumb() {
+		Integer i = breadCrumb();
 		i--;
-		MDC.put(BREADCRUM_COUNTER, "" + i);
+		MDC.put(BREADCRUMB_COUNTER, "" + i);
 	}
 
 	public static String flow() {

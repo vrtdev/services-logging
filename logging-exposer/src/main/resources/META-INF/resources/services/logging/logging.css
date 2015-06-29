@@ -86,7 +86,7 @@
 
 .rlog-row-time{
 	color: orange;
-	width: 140px;
+	width: 150px;
 }
 .rlog-row-line{
 	/* width: auto
@@ -142,19 +142,27 @@ tr .rlog-info-show-btn{
 	color: black;
 	background-color: red;
 }
-.logr-logLine{
+.logr-logLine, .rlog-logTransaction{
 	text-align: center;
 }
-.logr-logLine-INFO{
+.rlog-logTransaction {
+	width: 70px;
+}
+td.rlog-small-cell{
+	width: 25px;
+	text-align: center;
+}
+
+.logr-logLine-INFO, .rlog-logTransaction-OK{
 	color: black;
 	background-color: lightblue;
 }
-.logr-logLine-WARN{
+.logr-logLine-WARN, .rlog-logTransaction-FAILED{
 	color: black;
 	background-color: orange;
 }
 
-.logr-logLine-ERROR{
+.logr-logLine-ERROR, .rlog-logTransaction-ERROR{
 	color: white;
 	background-color: red;
 }
@@ -223,6 +231,11 @@ tr .rlog-info-show-btn{
 
 .rlog-tab{
 	overflow: auto; height: 170px;
+	display: none;
+}
+.rlog-tab-selected{
+	overflow: auto; height: 170px;
+	display: block;
 }
 
 .rlog-tab .rlog-action-bar{
