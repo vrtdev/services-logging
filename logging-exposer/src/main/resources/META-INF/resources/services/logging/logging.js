@@ -128,21 +128,7 @@ if (!document.rLog) {
 								});
 								$("#rlog-tab-request table tbody").empty();
 								document.rLog.tabs.tab_request.data.forEach(function (request) {
-									var newRow = $("<tr></tr>");
-									newRow.append($("<td class='rlog-row-time'></td>").text(moment(request.startDate).format("YYYY/MM/DD HH:mm:ss.SSS")));
-									if (!request.resource) {
-										request.resource = "";
-									}
-									newRow.append($("<td class='rlog-row-more'></td>")
-											.append($("<span class='rlog-info-show-btn'>SHOW</span>")
-													.attr("log-id", request.transactionId)
-													.click(document.rLog.displayDetailClick)
-													)
-											);
-									newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
-									newRow.append($("<td class='rlog-small-cell'>" + request.httpMethod + "</td>"));
-									newRow.append($("<td class='rlog-small-cell'>" + request.responseStatus + "</td>"));
-									newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request.resource));
+									var newRow = createRequestRow(request);
 									$("#rlog-tab-request table tbody").prepend(newRow);
 								})
 
@@ -164,21 +150,7 @@ if (!document.rLog) {
 								});
 								$("#rlog-tab-failure table tbody").empty();
 								document.rLog.tabs.tab_failure.data.forEach(function (request) {
-									var newRow = $("<tr></tr>");
-									newRow.append($("<td class='rlog-row-time'></td>").text(moment(request.startDate).format("YYYY/MM/DD HH:mm:ss.SSS")));
-									if (!request.resource) {
-										request.resource = "";
-									}
-									newRow.append($("<td class='rlog-row-more'></td>")
-											.append($("<span class='rlog-info-show-btn'>SHOW</span>")
-													.attr("log-id", request.transactionId)
-													.click(document.rLog.displayDetailClick)
-													)
-											);
-									newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
-									newRow.append($("<td class='rlog-small-cell'>" + request.httpMethod + "</td>"));
-									newRow.append($("<td class='rlog-small-cell'>" + request.responseStatus + "</td>"));
-									newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request.resource));
+									var newRow = createRequestRow(request);
 									$("#rlog-tab-failure table tbody").prepend(newRow);
 								})
 
@@ -200,21 +172,7 @@ if (!document.rLog) {
 								});
 								$("#rlog-tab-error table tbody").empty();
 								document.rLog.tabs.tab_failure.data.forEach(function (request) {
-									var newRow = $("<tr></tr>");
-									newRow.append($("<td class='rlog-row-time'></td>").text(moment(request.startDate).format("YYYY/MM/DD HH:mm:ss.SSS")));
-									if (!request.resource) {
-										request.resource = "";
-									}
-									newRow.append($("<td class='rlog-row-more'></td>")
-											.append($("<span class='rlog-info-show-btn'>SHOW</span>")
-													.attr("log-id", request.transactionId)
-													.click(document.rLog.displayDetailClick)
-													)
-											);
-									newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
-									newRow.append($("<td class='rlog-small-cell'>" + request.httpMethod + "</td>"));
-									newRow.append($("<td class='rlog-small-cell'>" + request.responseStatus + "</td>"));
-									newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request.resource + " >> " + request.errorReason));
+									var newRow = createRequestRow(request);
 									$("#rlog-tab-error table tbody").prepend(newRow);
 								})
 
@@ -476,5 +434,32 @@ if (!document.rLog) {
 			}
 			return '<span class="' + cls + '">' + match + '</span>';
 		});
+	}
+	function createRequestRow(request) {
+		var newRow = $("<tr></tr>");
+		newRow.append($("<td class='rlog-row-time'></td>").text(moment(request.startDate).format("YYYY/MM/DD HH:mm:ss.SSS")));
+		if (!request.resource) {
+			request.resource = "";
+		}
+		newRow.append($("<td class='rlog-row-more'></td>")
+				.append($("<span class='rlog-info-show-btn'>SHOW</span>")
+						.attr("log-id", request.transactionId)
+						.click(document.rLog.displayDetailClick)
+						)
+				);
+		if (request.httpMethod) {
+			newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
+			newRow.append($("<td class='rlog-small-cell'>" + request.httpMethod + "</td>"));
+			newRow.append($("<td class='rlog-small-cell'>" + request.responseStatus + "</td>"));
+			newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request.resource));
+		} else {
+			newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
+			newRow.append($("<td class='rlog-small-cell'>" + request.headers['amqp-method'] + "</td>"));
+			newRow.append($("<td class='rlog-small-cell'>AMQP</td>"));
+			newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request['amqp-url'] + "" + request.routingKey));
+		}
+
+
+		return newRow;
 	}
 }
