@@ -19,10 +19,11 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import org.apache.commons.lang3.time.StopWatch;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractAuditAspect extends AbstractBreadcrumbAuditAspect{
 
-	protected abstract Logger getLogger();
+	protected abstract String getType();
 
 	@Override
 	protected Object handleJoinPoint(ProceedingJoinPoint joinPoint) throws Throwable  {
@@ -56,7 +57,7 @@ public abstract class AbstractAuditAspect extends AbstractBreadcrumbAuditAspect{
 		} finally {
 			stopWatch.stop();
 			auditLogDto.setDuration(stopWatch.getTime());
-			getLogger().info("{} -> Audit -- {}",  auditLogDto.getMethod(),auditLogDto.getClassName(), auditLogDto);
+			LoggerFactory.getLogger(joinPoint.getTarget().getClass()).info("[{}] - {} >> ", getType(), auditLogDto.getMethod(), auditLogDto.getAuditLevel(), auditLogDto);
 			// Add listener HERE!!
 		}
 	}

@@ -7,8 +7,6 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractBreadcrumbAuditAspect {
 
-	public final Logger log = LoggerFactory.getLogger(this.getClass());
-
 	public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 		LogTransaction.increaseBreadCrumb();
 		try {
