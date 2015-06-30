@@ -41,6 +41,7 @@ public class LoggingProperties {
 		}
 		try {
 			prop.load(new FileInputStream(fileName));
+			log.info("Propertyfile loaded: "+fileName);
 			return true;
 		} catch (IOException ex) {
 			log.warn("Propertyfile accessible: [{}] - {}", fileName, ex.getMessage(), ex);
