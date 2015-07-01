@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.slf4j.Logger;
 
 import be.vrt.services.log.collector.audit.dto.AuditLogDto;
 import be.vrt.services.logging.log.common.dto.ErrorDto;
@@ -57,7 +56,7 @@ public abstract class AbstractAuditAspect extends AbstractBreadcrumbAuditAspect{
 		} finally {
 			stopWatch.stop();
 			auditLogDto.setDuration(stopWatch.getTime());
-			LoggerFactory.getLogger(joinPoint.getTarget().getClass()).info("[{}] - {} >> ", getType(), auditLogDto.getMethod(), auditLogDto.getAuditLevel(), auditLogDto);
+			LoggerFactory.getLogger(joinPoint.getTarget().getClass()).info("[{}] - {} >> {}", getType(), auditLogDto.getMethod(), auditLogDto.getAuditLevel(), auditLogDto);
 			// Add listener HERE!!
 		}
 	}
