@@ -24,7 +24,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>logging-full</artifactId>
             <version>0.8-SNAPSHOT</version>
-            <type>pom</type>
+            <TYPe>pom</type>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
