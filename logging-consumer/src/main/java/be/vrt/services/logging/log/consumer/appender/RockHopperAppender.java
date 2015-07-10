@@ -3,6 +3,8 @@ package be.vrt.services.logging.log.consumer.appender;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.util.logging.Level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,19 +19,26 @@ public class RockHopperAppender extends AbstractJsonAppender {
 	@Override
 	public void start() {
 		super.start();
+		try {
+			clientSocket = new DatagramSocket();
+			inet = InetAddress.getByName(host);
+		} catch (Exception ex) {
+			this.addError("Failed to initialize", ex);
+		}
 	}
 
 	@Override
 	protected void persist(String json) {
 		try {
-			clientSocket = new DatagramSocket();
+			
 			byte[] sendData = json.getBytes();
-			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(host), port);
+			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, inet, port);
 			clientSocket.send(sendPacket);
 		} catch (Exception e) {
-			e.printStackTrace();
+			this.addError("Failed to initalize", e);
 		}
 	}
+	private InetAddress inet;
 
 	@Override
 	public void stop() {
