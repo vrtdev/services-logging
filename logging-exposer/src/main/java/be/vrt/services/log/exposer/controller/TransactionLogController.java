@@ -15,13 +15,9 @@ import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +28,6 @@ public class TransactionLogController extends HttpServlet {
 
 	Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private String proxyRedirect;
-
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -43,11 +37,6 @@ public class TransactionLogController extends HttpServlet {
 		Map map = new HashMap();
 		List logs;
 		String path = req.getPathInfo() == null ? "/" : req.getPathInfo();
-
-		if (proxyRedirect != null) {
-			redirectRequest(path, resp);
-		}
-
 		map.put("request-path", req.getPathInfo());
 
 		logs = TransactionRegistery.list();
@@ -75,6 +64,7 @@ public class TransactionLogController extends HttpServlet {
 			map.put("hits", results);
 			map.put("info", JsonMap.with("urls", connectionUrls));
 		}
+
 
 		resp.setContentType("application/json");
 		String json = mapper.writeValueAsString(map);
@@ -134,23 +124,4 @@ public class TransactionLogController extends HttpServlet {
 		return query;
 	}
 
-	private void redirectRequest(String path, HttpServletResponse resp) throws MalformedURLException, IOException {
-		String redirectUrl = proxyRedirect + path;
-		URL url = new URL(redirectUrl);
-
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.setConnectTimeout(10000);
-		con.setRequestMethod("GET");
-		con.setDoOutput(true);
-		con.getInputStream();
-		pipe(con.getInputStream(), resp.getOutputStream());
-	}
-
-	private void pipe(InputStream is, OutputStream os) throws IOException {
-		int n;
-		byte[] buffer = new byte[1024];
-		while ((n = is.read(buffer)) > -1) {
-			os.write(buffer, 0, n);   // Don't allow any extra bytes to creep in, final write
-		}
-	}
 }
