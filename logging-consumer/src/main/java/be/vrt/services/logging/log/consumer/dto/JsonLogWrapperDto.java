@@ -15,7 +15,7 @@ public class JsonLogWrapperDto {
 	private String flowId;
 	private String className;
 	private String methodName;
-	private int breadCrum;
+	private int breadCrumb;
 	private int lineNumber;
 	
 	private String logLevel;
@@ -131,12 +131,12 @@ public class JsonLogWrapperDto {
 		this.logLevel = logLevel;
 	}
 
-	public int getBreadCrum() {
-		return breadCrum;
+	public int getBreadCrumb() {
+		return breadCrumb;
 	}
 
-	public void setBreadCrum(int breadCrum) {
-		this.breadCrum = breadCrum;
+	public void setBreadCrumb(int breadCrumb) {
+		this.breadCrumb = breadCrumb;
 	}
 
 	public Date getLogDate() {

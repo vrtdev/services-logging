@@ -10,14 +10,16 @@ import java.util.UUID;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-public class LogTransaction implements Constants{
+public class LogTransaction implements Constants {
 
-	public static void resetThread(){
+	private static String hostname;
+
+	public static void resetThread() {
 		MDC.remove(TRANSACTION_ID);
-		MDC.remove(BREADCRUM_COUNTER);
+		MDC.remove(BREADCRUMB_COUNTER);
 		MDC.remove(FLOW_ID);
 	}
-	
+
 	public static String id() {
 		if (MDC.get(TRANSACTION_ID) == null) {
 			String uuid = generateTransactionId();
@@ -27,37 +29,43 @@ public class LogTransaction implements Constants{
 		return MDC.get(TRANSACTION_ID);
 	}
 
-	public static int breadCrum() {
-		if (MDC.get(BREADCRUM_COUNTER) == null) {
-			MDC.put(BREADCRUM_COUNTER, "0");
+	public static int breadCrumb() {
+		if (MDC.get(BREADCRUMB_COUNTER) == null) {
+			MDC.put(BREADCRUMB_COUNTER, "0");
 		}
-		return Integer.valueOf(MDC.get(BREADCRUM_COUNTER));
+		return Integer.valueOf(MDC.get(BREADCRUMB_COUNTER));
 	}
 
-	public static void increaseBreadCrum() {
-		Integer i = breadCrum();
+	public static void increaseBreadCrumb() {
+		Integer i = breadCrumb();
 		i++;
-		MDC.put(BREADCRUM_COUNTER, "" + i);
+		MDC.put(BREADCRUMB_COUNTER, "" + i);
 	}
 
-	public static void decreaseBreadCrum() {
-		Integer i = breadCrum();
+	public static void decreaseBreadCrumb() {
+		Integer i = breadCrumb();
 		i--;
-		MDC.put(BREADCRUM_COUNTER, "" + i);
+		MDC.put(BREADCRUMB_COUNTER, "" + i);
 	}
 
 	public static String flow() {
 		return MDC.get(FLOW_ID);
 	}
 
-	public static String generateTransactionId() {
-		String hostname;
-		try {
-			hostname = InetAddress.getLocalHost().getHostName();
-		} catch (UnknownHostException ex) {
-			hostname = "[unknown]";
+	private static String hostname() {
+		if (hostname == null) {
+			try {
+				hostname = InetAddress.getLocalHost().getHostName();
+			} catch (UnknownHostException ex) {
+				hostname = "[unknown]";
+			}
 		}
-		String uuid = hostname + "-" + UUID.randomUUID().toString();
+		return hostname;
+	}
+
+	public static String generateTransactionId() {
+
+		String uuid = hostname() + "-" + UUID.randomUUID().toString();
 		return uuid;
 	}
 
@@ -72,6 +80,7 @@ public class LogTransaction implements Constants{
 		}
 		user = user.replaceAll("[^-_.@a-zA-Z0-9]*", "");
 		StringBuffer buffer = new StringBuffer(UUID.randomUUID().toString());
+		buffer.append("000");
 		buffer.append("-").append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		buffer.append("-").append(user);
 		updateFlowId(buffer.toString());

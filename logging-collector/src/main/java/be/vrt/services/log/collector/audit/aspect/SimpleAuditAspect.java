@@ -4,8 +4,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Aspect
 public class SimpleAuditAspect extends AbstractAuditAspect {
@@ -13,7 +11,7 @@ public class SimpleAuditAspect extends AbstractAuditAspect {
 	@Pointcut("within(@be.vrt.services.log.collector.audit.annotation.SimpleAudit *) || @annotation(be.vrt.services.log.collector.audit.annotation.SimpleAudit)")
 	public void anAuditFacade() {
 	}
-	
+
 	@Pointcut("execution(public * *(..))")
 	public void publicMethod() {
 	}
@@ -24,9 +22,8 @@ public class SimpleAuditAspect extends AbstractAuditAspect {
 	}
 
 	@Override
-	protected Logger getLogger() {
-		return LoggerFactory.getLogger(SimpleAuditAspect.class);
+	protected String getType() {
+		return "AUDIT";
 	}
-	
-	
+
 }

@@ -1,17 +1,53 @@
 <div id="rlog-info" class="rlog-info">
-	Find:<input id="rlog-info-search-id" value="">
-	<span id="rlog-info-search-btn" class="rlog-info-show-btn">ID</span>
-	<span id="rlog-info-search-txt-btn" class="rlog-info-show-btn">TEXT</span>
-	<span id="rlog-info-clear-btn" class="rlog-clear-btn">CLEAR</span>
-	<div style="float: right; padding-top: 0px;">
-		ES: <input id="rlog-server-url" value="localhost:9200">
-		Index: <input id="rlog-server-index" value="logging">
-		<span id="rlog-server-save-btn" class="rlog-btn">SAVE</span>
-		<span id="rlog-info-close" class="rlog-btn">CLOSE</span>
+	<div style="height: 25px;">
+		<div style="float: left">
+
+			<input id="rlog-info-search-id" value="">
+			<span id="rlog-info-search-btn" class="rlog-info-show-btn">SEARCH</span>
+		</div>
+		<div style="float: right">
+			<span id="rlog-info-close" class="rlog-btn">X</span>
+		</div>
 	</div>
-	<hr/>
-	<div style="overflow: auto; height: 170px;" >
-		<table id="rlog-info-table" style="width: 100%">
+	<div class="rlog-tabs">
+		<span tab-header="history" onclick="document.rLog.tabs.tab_history.display()" class="selected">History</span>
+		<span tab-header="request" onclick="document.rLog.tabs.tab_request.display()">Requests</span>
+		<span tab-header="failure" onclick="document.rLog.tabs.tab_failure.display()">Failures</span>
+		<span tab-header="error" onclick="document.rLog.tabs.tab_error.display()">Error</span>
+	</div>
+	<div id="rlog-tab-history" class="rlog-tab rlog-tab-selected">
+		<div class="rlog-action-bar" >
+			<span id="rlog-info-clear-btn" class="rlog-clear-btn">CLEAR</span>
+		</div>
+		<div>
+			<table style="width: 100%">
+				<tbody>
+					<tr><td>ABC</td></tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div id="rlog-tab-request" class="rlog-tab">
+		<div class="rlog-action-bar" >
+			<span class="rlog-info-show-btn" onclick="document.rLog.tabs.tab_request.refresh()">REFRESH</span>
+		</div>
+		<table style="width: 100%">
+			<tbody/>
+		</table>
+	</div>
+	<div id="rlog-tab-failure" class="rlog-tab" >
+		<div class="rlog-action-bar" >
+			<span class="rlog-info-show-btn" onclick="document.rLog.tabs.tab_failure.refresh()">REFRESH</span>
+		</div>
+		<table style="width: 100%">
+			<tbody/>
+		</table>
+	</div>
+	<div id="rlog-tab-error" class="rlog-tab">
+		<div class="rlog-action-bar" >
+			<span class="rlog-info-show-btn" onclick="document.rLog.tabs.tab_error.refresh()">REFRESH</span>
+		</div>
+		<table  style="width: 100%">
 			<tbody/>
 		</table>
 	</div>
@@ -21,7 +57,7 @@
 		<span id="rlog-detail-full" class="rlog-btn">Show Details</span> Info:<span id="rlog-detail-server"></span>
 
 		<div style="float: right; padding-top: 0px;">
-			<span id="rlog-detail-close" class="rlog-btn">CLOSE</span>
+			<span id="rlog-detail-close" class="rlog-btn">X</span>
 		</div>
 
 		<hr>

@@ -86,14 +86,14 @@
 
 .rlog-row-time{
 	color: orange;
-	width: 140px;
+	width: 150px;
 }
 .rlog-row-line{
 	/* width: auto
- */}
+	*/}
 .rlog-row-line{
 	/* width: auto
- */}
+	*/}
 .rlog-row-more{
 	width: 40px;
 	text-align: center;
@@ -142,19 +142,27 @@ tr .rlog-info-show-btn{
 	color: black;
 	background-color: red;
 }
-.logr-logLine{
+.logr-logLine, .rlog-logTransaction{
 	text-align: center;
 }
-.logr-logLine-INFO{
+.rlog-logTransaction {
+	width: 70px;
+}
+td.rlog-small-cell{
+	width: 25px;
+	text-align: center;
+}
+
+.logr-logLine-INFO, .rlog-logTransaction-OK{
 	color: black;
 	background-color: lightblue;
 }
-.logr-logLine-WARN{
+.logr-logLine-WARN, .rlog-logTransaction-FAILED{
 	color: black;
 	background-color: orange;
 }
 
-.logr-logLine-ERROR{
+.logr-logLine-ERROR, .rlog-logTransaction-ERROR{
 	color: white;
 	background-color: red;
 }
@@ -181,4 +189,57 @@ tr .rlog-info-show-btn{
 
 .rlog-detail-row-json{
 	display: none;
+}
+
+.rlog-tabs{
+	margin-top: 10px;
+	/*height: 25px;*/
+	border-bottom: 1px solid white;
+	padding-bottom: 3px;
+}
+
+@-moz-document url-prefix() {
+    .rlog-tabs{
+		padding-bottom: 1px;
+	}
+}
+.rlog-tabs span{
+	padding: 3px 10px 3px 10px;
+	border: solid 1px white;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	margin-right: 5px;
+	border-bottom: none;
+}
+
+.rlog-tabs span:hover{
+	color: black;
+	background-color: white;
+}
+
+.rlog-tabs span.selected{
+	color: black;
+	background-color: lightblue;
+	border-bottom: lightblue solid 1px;
+}
+
+@-moz-document url-prefix() {
+    .rlog-tabs span.selected{
+		border-bottom: lightblue solid 1px;
+	}
+}
+
+.rlog-tab{
+	overflow: auto; height: 150px;
+	display: none;
+}
+.rlog-tab-selected{
+	/*overflow: auto; height: 150px;*/
+	display: block;
+}
+
+.rlog-tab .rlog-action-bar{
+	right: 30px; 
+	padding-top: 10px; 
+	position: absolute;
 }

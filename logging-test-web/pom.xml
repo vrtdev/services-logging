@@ -4,12 +4,12 @@
     <parent>
     <artifactId>logging</artifactId>
     <groupId>be.vrt.services.logging</groupId>
-    <version>0.6</version>
+    <version>0.7.0</version>
   </parent>
 
     <groupId>be.vrt.services.logging</groupId>
     <artifactId>logging-test-web</artifactId>
-    <version>0.6</version>
+    <version>0.7.0</version>
     <packaging>war</packaging>
 
     <name>logging-test-web</name>
@@ -22,8 +22,9 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>logging-exposer</artifactId>
-            <version>0.6</version>
+            <artifactId>logging-full</artifactId>
+            <version>0.7.0</version>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

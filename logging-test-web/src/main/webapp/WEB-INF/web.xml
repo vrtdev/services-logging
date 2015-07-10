@@ -1,16 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
-    <servlet>
-        <servlet-name>logging</servlet-name>
-        <servlet-class>be.vrt.services.log.exposer.controller.TransactionLogController</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>logging</servlet-name>
-        <url-pattern>/log/*</url-pattern>
-    </servlet-mapping>
-    <session-config>
-        <session-timeout>
-            30
-        </session-timeout>
-    </session-config>
+	
+	<!-- BEGIN - Default config for Logging-->
+	<filter>
+		<filter-name>TransactionLoggerFilter</filter-name>
+		<filter-class>be.vrt.services.log.collector.transaction.http.TransactionLoggerFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>TransactionLoggerFilter</filter-name>
+		<!-- place here the url-pattern you wich to capture, in this sample app only the rest calls mapped behind /sample => see servlet 'sample' below-->
+		<url-pattern>/sample/*</url-pattern> 
+	</filter-mapping>
+	
+		    
+	<servlet>
+		<servlet-name>logging</servlet-name>
+		<servlet-class>be.vrt.services.log.exposer.controller.TransactionLogController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>logging</servlet-name>
+		<url-pattern>/log/*</url-pattern>
+	</servlet-mapping>
+    <!-- END -->
+	
+	
+	<!-- BEGIN - SampleConfig for testing logging-->
+	<filter>
+		<filter-name>SimpleCORSFilter</filter-name>
+		<filter-class>be.vrt.services.logging.sample.http.SimpleCORSFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>SimpleCORSFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>sample</servlet-name>
+		<servlet-class>be.vrt.services.logging.sample.http.SampleServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>sample</servlet-name>
+		<url-pattern>/sample/*</url-pattern>
+	</servlet-mapping>
+	<!-- END -->
+	
+	<session-config>
+		<session-timeout>
+			30
+		</session-timeout>
+	</session-config>
 </web-app>

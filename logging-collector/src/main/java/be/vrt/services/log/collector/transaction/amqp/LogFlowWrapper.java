@@ -43,7 +43,7 @@ public class LogFlowWrapper implements MessageConverter {
 	@Override
 	public Message toMessage(Object o, MessageProperties mp) throws MessageConversionException {
 		mp.getHeaders().put(Constants.FLOW_ID, LogTransaction.flow());
-		log.debug("Send message AMQP",  o);
+		log.debug("Message send using AMQP",  o, mp);
 		return converter.toMessage(o, mp);
 	}
 

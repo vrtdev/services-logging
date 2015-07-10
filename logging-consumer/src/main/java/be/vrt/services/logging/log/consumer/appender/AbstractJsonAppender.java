@@ -31,7 +31,7 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			dto.setDate(new Date(logEvent.getTimeStamp()));
 			dto.setTransactionId(LogTransaction.id());
 			dto.setFlowId(LogTransaction.flow());
-			dto.setBreadCrum(LogTransaction.breadCrum());
+			dto.setBreadCrumb(LogTransaction.breadCrumb());
 			String hostname;
 			try {
 				hostname = InetAddress.getLocalHost().getHostName();

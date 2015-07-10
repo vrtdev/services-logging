@@ -38,7 +38,7 @@ public class ElasticSearchAppender extends AbstractJsonAppender {
 			out.close();
 
 			if (con.getResponseCode() > 299) {
-				System.err.println(">> Failed to save to ES > [" + con.getResponseCode() + "] :" + con.getResponseMessage() + " || " + esUrl);
+				System.err.println(">> Failed to save to ES > [" + con.getResponseCode() + "] :" + con.getResponseMessage() + " || " + esUrl+" ]");
 				System.err.println(json);
 			}
 		} catch (Exception e) {

@@ -73,8 +73,8 @@ public class TransactionLoggerFilter implements Filter, Constants {
 
 		transaction.setHttpMethod(request.getMethod());
 		transaction.setUser(request.getUserPrincipal() == null ? null : request.getUserPrincipal().getName());
-		transaction.setResource(request.getRequestURL().toString());
-
+		transaction.setResource(request.getPathInfo());
+		transaction.setFullUrl(request.getRequestURL().toString());
 		return transaction;
 	}
 

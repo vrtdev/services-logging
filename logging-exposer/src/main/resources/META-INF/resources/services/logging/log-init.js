@@ -18,10 +18,8 @@ if (typeof jQuery === 'undefined') {
 	loadjscssfile("https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js", "js");
 }
 loadjscssfile("services/logging/logging.css?v=${mvn.timestamp}", "css");
-loadjscssfile("http://fonts.googleapis.com/css?family=Ubuntu+Mono", "css");
+loadjscssfile("https://fonts.googleapis.com/css?family=Ubuntu+Mono", "css");
 loadjscssfile("services/logging/lib/momentjs.js", "js");
-loadjscssfile("services/logging/lib/elasticsearch.js", "js");
-loadjscssfile("services/logging/lib/elasticsearch.jquery.js", "js");
 
 
 loadjscssfile("services/logging/logging.js?v=${mvn.timestamp}", "js");
