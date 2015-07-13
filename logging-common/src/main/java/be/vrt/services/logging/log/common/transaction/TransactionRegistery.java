@@ -4,8 +4,10 @@ import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class TransactionRegistery {
+public class TransactionRegistery extends Observable{
 
 	static TransactionRegistery instance = new TransactionRegistery();
 
@@ -27,11 +29,15 @@ public class TransactionRegistery {
 			case ERROR:
 				addToFixedSizeQueue(transactionErrorLogs, transaction, bufferSize);
 		}
+		setChanged();
+		notifyObservers(transaction);
 	}
 
 	public void registerTransactionId(String id, String flowId) {
 		addToFixedSizeQueue(transactionIds, new TransactionIdLog(id, flowId), bufferSize);
 	}
+
+
 
 	private static <T> void addToFixedSizeQueue(List<T> list, T item, int maxSize) {
 		while (list.size() >= maxSize) {
@@ -47,6 +53,10 @@ public class TransactionRegistery {
 
 	public static void register(String id, String flowId) {
 		instance.registerTransactionId(id, flowId);
+	}
+
+	public static void registerTransactionObserver(Observer observer){
+		instance.addObserver(observer);
 	}
 
 	public static List<AbstractTransactionLog> list() {
