@@ -1,7 +1,6 @@
 package be.vrt.services.log.exposer.controller;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class JsonMap extends HashMap<String, Object>{
 

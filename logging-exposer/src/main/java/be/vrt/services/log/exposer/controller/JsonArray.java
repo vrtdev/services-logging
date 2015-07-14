@@ -1,7 +1,6 @@
 package be.vrt.services.log.exposer.controller;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class JsonArray extends LinkedList<Object>{
 
