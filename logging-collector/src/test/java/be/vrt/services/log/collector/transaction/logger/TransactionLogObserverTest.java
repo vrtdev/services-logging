@@ -2,11 +2,21 @@ package be.vrt.services.log.collector.transaction.logger;
 
 import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
 import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Appender;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.LoggerFactory;
 
 import static be.vrt.services.logging.log.common.dto.AbstractTransactionLog.Type.ERROR;
 import static be.vrt.services.logging.log.common.dto.AbstractTransactionLog.Type.FAILED;
@@ -14,6 +24,8 @@ import static be.vrt.services.logging.log.common.dto.AbstractTransactionLog.Type
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -22,8 +34,28 @@ public class TransactionLogObserverTest {
 	@Mock
 	private AbstractTransactionLog transaction;
 
+	@Mock
+	private Appender appender;
+
+	@Captor
+	private ArgumentCaptor<LoggingEvent> argumentCaptor;
+
+
 	@InjectMocks
 	private TransactionLogObserver transactionLogObserver;
+
+
+	@Before
+	public void setUp(){
+		Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+		logger.addAppender(appender);
+	}
+
+	@After
+	public void tearDown(){
+		Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+		logger.detachAppender(appender);
+	}
 
 	@Test
 	public void update_givenPassedObjIsATransaction_whenStatusIsOk_thenNoMessageIsExtractedFromTransaction() {
@@ -31,7 +63,8 @@ public class TransactionLogObserverTest {
 
 		transactionLogObserver.update(null, transaction);
 
-		verify(transaction, times(0)).getErrorReason();
+		verify(transaction).getStatus();
+		verifyNoMoreInteractions(transaction);
 	}
 
 	@Test
@@ -40,7 +73,9 @@ public class TransactionLogObserverTest {
 
 		transactionLogObserver.update(null, transaction);
 
-		verify(transaction, times(1)).getErrorReason();
+		verify(appender).doAppend(argumentCaptor.capture());
+		LoggingEvent loggingEvent = argumentCaptor.getValue();
+		Assert.assertEquals(loggingEvent.getLevel(), Level.ERROR);
 	}
 
 	@Test
@@ -49,7 +84,9 @@ public class TransactionLogObserverTest {
 
 		transactionLogObserver.update(null, transaction);
 
-		verify(transaction, times(1)).getErrorReason();
+		verify(appender).doAppend(argumentCaptor.capture());
+		LoggingEvent loggingEvent = argumentCaptor.getValue();
+		Assert.assertEquals(loggingEvent.getLevel(), Level.WARN);
 	}
 
 	@Test

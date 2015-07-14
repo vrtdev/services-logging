@@ -19,10 +19,10 @@ public class TransactionLogObserver implements Observer, InitializingBean {
 			AbstractTransactionLog transaction = (AbstractTransactionLog) arg;
 			switch (transaction.getStatus()) {
 				case ERROR:
-					log.error(transaction.getErrorReason());
+					log.error(transaction.toString());
 					break;
 				case FAILED:
-					log.warn(transaction.getErrorReason());
+					log.warn(transaction.toString());
 					break;
 			}
 		}
