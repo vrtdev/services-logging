@@ -1,11 +1,13 @@
 package be.vrt.services.log.collector.transaction.logger;
 
-import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
-import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.Appender;
+import static be.vrt.services.logging.log.common.dto.AbstractTransactionLog.Type.ERROR;
+import static be.vrt.services.logging.log.common.dto.AbstractTransactionLog.Type.FAILED;
+import static be.vrt.services.logging.log.common.dto.AbstractTransactionLog.Type.OK;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,15 +20,12 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
 
-import static be.vrt.services.logging.log.common.dto.AbstractTransactionLog.Type.ERROR;
-import static be.vrt.services.logging.log.common.dto.AbstractTransactionLog.Type.FAILED;
-import static be.vrt.services.logging.log.common.dto.AbstractTransactionLog.Type.OK;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
+import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Appender;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TransactionLogObserverTest {
