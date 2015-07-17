@@ -1,8 +1,6 @@
 package be.vrt.services.log.collector.transaction.dto;
 
 import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class HttpTransactionLogDto extends AbstractTransactionLog {
 
@@ -43,11 +41,6 @@ public class HttpTransactionLogDto extends AbstractTransactionLog {
 			setStatus(Type.ERROR);
 			setErrorReason(" HTTP Server error: "+responseStatus);
 		}
-	}
-
-	@Override
-	public String toString() {
-		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
 	public String getFullUrl() {
