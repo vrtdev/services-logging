@@ -13,7 +13,7 @@ public class EnvironmentSetting {
 	
 	private EnvironmentSetting() {
 		log.put("runtime", "runtime-" + LogTransaction.generateTransactionId());
-		log.put("starup", new Date());
+		log.put("startup", new Date());
 	
 	}
 
