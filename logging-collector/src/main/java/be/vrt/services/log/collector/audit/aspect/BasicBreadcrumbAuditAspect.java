@@ -4,7 +4,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BasicBreadcrumAuditAspect extends AbstractBreadcrumbAuditAspect {
+public class BasicBreadcrumbAuditAspect extends AbstractBreadcrumbAuditAspect {
 
 	@Override
 	protected Object handleJoinPoint(ProceedingJoinPoint joinPoint) throws Throwable {
