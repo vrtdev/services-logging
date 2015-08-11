@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import be.vrt.services.logging.log.common.Constants;
 import be.vrt.services.logging.log.common.DelayedLogObject;
 import be.vrt.services.logging.log.common.LogTransaction;
+import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import be.vrt.services.logging.log.consumer.config.EnvironmentSetting;
 import be.vrt.services.logging.log.consumer.dto.JsonLogWrapperDto;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -17,6 +18,11 @@ import ch.qos.logback.core.AppenderBase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> implements Constants {
+	
+	// Tag startupthread for logging to static flow
+	static {
+		TransactionRegistery.instance();
+	}
 
 	private ObjectMapper mapper = new ObjectMapper();
 

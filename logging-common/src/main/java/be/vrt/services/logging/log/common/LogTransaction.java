@@ -24,7 +24,7 @@ public class LogTransaction implements Constants {
 		if (MDC.get(TRANSACTION_ID) == null) {
 			String uuid = generateTransactionId();
 			MDC.put(TRANSACTION_ID, uuid);
-			TransactionRegistery.register(uuid, flow());
+			TransactionRegistery.registerTransaction();
 		}
 		return MDC.get(TRANSACTION_ID);
 	}
@@ -85,6 +85,15 @@ public class LogTransaction implements Constants {
 		buffer.append("-").append(user);
 		updateFlowId(buffer.toString());
 		return buffer.toString();
+	}
+
+	public static void startNewFlow(String user) {
+		createFlowId(null, user);
+	}
+
+	public static void startNewTransaction() {
+		String uuid = generateTransactionId();
+		MDC.put(TRANSACTION_ID, uuid);
 	}
 
 	public static void updateFlowId(String flowid) {

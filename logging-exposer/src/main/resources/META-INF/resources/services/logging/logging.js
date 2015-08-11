@@ -181,6 +181,62 @@ if (!document.rLog) {
 				, display: function () {
 					document.rLog.tabs.display(this);
 				}
+			}, tab_flows: {
+				name: 'flows'
+				, data: []
+				, refresh: function () {
+					$.ajax(document.rLog.baseUrl + "/flows")
+							.done(function (data) {
+								var flows = {};
+								document.rLog.tabs.tab_flows.data = [];
+								for (var i = 0; i < data.logs.length; i++) {
+									var record = data.logs[i];
+									if (!record.flowId) {
+										record.flowId = "NO_FLOW";
+									}
+									if (!flows[record.flowId]) {
+										flows[record.flowId] = {
+											transactions: []
+										}
+										document.rLog.tabs.tab_flows.data.push({startDate: record.date, flowId: record.flowId, info: flows[record.flowId]})
+									}
+									flows[record.flowId].transactions.push({
+										date: record.date,
+										transactionId: record.transactionId
+									});
+								}
+								document.rLog.tabs.tab_flows.data.sort(function (a, b) {
+									return a.startDate - b.startDate;
+								});
+								$("#rlog-tab-flows table tbody").empty();
+								document.rLog.tabs.tab_flows.data.forEach(function (request) {
+									var newRow = createFlowRow(request);
+									$("#rlog-tab-flows table tbody").prepend(newRow);
+								})
+
+							});
+				}
+				, display: function () {
+					document.rLog.tabs.display(this);
+				}
+			}, tab_static_flows: {
+				name: 'static_flows'
+				, data: []
+				, refresh: function () {
+					$.ajax(document.rLog.baseUrl + "/static-flows")
+							.done(function (data) {
+								document.rLog.tabs.tab_static_flows.data = data.flows;
+								$("#rlog-tab-static_flows table tbody").empty();
+								document.rLog.tabs.tab_static_flows.data.forEach(function (request) {
+									var newRow = createStaticFlowRow(request);
+									$("#rlog-tab-static_flows table tbody").prepend(newRow);
+								})
+
+							});
+				}
+				, display: function () {
+					document.rLog.tabs.display(this);
+				}
 			}
 		}
 		, registerTransaction: function (id, comment) {
@@ -459,6 +515,48 @@ if (!document.rLog) {
 			newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request['amqp-url'] + "" + request.routingKey));
 		}
 
+
+		return newRow;
+	}
+	function createFlowRow(flow) {
+		// {startDate: record.date, flowId: record.flowId, info: flows[record.flowId]}
+		var newRow = $("<tr style='white-space:nowrap'></tr>");
+		newRow.append($("<td class='rlog-row-time'></td>").text(moment(flow.startDate).format("YYYY/MM/DD HH:mm:ss.SSS")));
+
+//		newRow.append($("<td class='rlog-row-more'></td>")
+//				.append($("<span class='rlog-info-show-btn'>SHOW</span>")
+//						.attr("log-id", flow.flowId)
+//						.click(document.rLog.displayDetailClick)
+//						)
+//				);
+		newRow.append(
+				$("<td></td>")
+				.append($("<span class='rlog-btn rlog-info-show-btn' val='" + flow.flowId + "'>" + flow.flowId + "</span>")
+						.attr("log-id", flow.flowId)
+						.click(document.rLog.displayDetailClick)
+						)
+				)
+		var transactionRow = $("<td style='width:100%'/>");
+		flow.info.transactions.forEach(function (transaction) {
+			transactionRow.append($("<span class='rlog-btn rlog-info-show-btn-green' val='" + transaction.transactionId + "'>" + transaction.transactionId + "</span>")
+					.attr("log-id", transaction.transactionId)
+					.click(document.rLog.displayDetailClick)
+					);
+		});
+		newRow.append(transactionRow);
+		return newRow;
+	}
+
+	function createStaticFlowRow(flow) {
+		var newRow = $("<tr style='white-space:nowrap'></tr>");
+		newRow.append($("<td ></td>").text(flow.name));
+		newRow.append(
+				$("<td style='width:100%'></td>")
+				.append($("<span class='rlog-btn rlog-info-show-btn' val='" + flow.id + "'>" + flow.id + "</span>")
+						.attr("log-id", flow.id)
+						.click(document.rLog.displayDetailClick)
+						)
+				)
 
 		return newRow;
 	}

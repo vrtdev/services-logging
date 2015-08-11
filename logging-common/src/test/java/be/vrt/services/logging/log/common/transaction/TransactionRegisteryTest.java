@@ -1,5 +1,6 @@
 package be.vrt.services.logging.log.common.transaction;
 
+import be.vrt.services.logging.log.common.LogTransaction;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -105,7 +106,7 @@ public class TransactionRegisteryTest {
 	@Test
 	public void testRegister_String_String() {
 		
-		TransactionRegistery.register("anId", "aFlowId");
+		TransactionRegistery.registerTransaction();
 		
 		registery = TransactionRegistery.instance;
 		
@@ -157,11 +158,11 @@ public class TransactionRegisteryTest {
 	
 	@Test
 	public void testListIds() {
-		TransactionRegistery.register("anId", "aFlowId");
+		LogTransaction.id();
 		
 		registery = TransactionRegistery.instance;
 		List<TransactionIdLog> l = TransactionRegistery.listIds();
-		TransactionRegistery.register("anId", "aFlowId");
+		TransactionRegistery.registerTransaction();
 		
 		assertEquals(1, l.size());
 		assertEquals(2, registery.transactionIds.size());

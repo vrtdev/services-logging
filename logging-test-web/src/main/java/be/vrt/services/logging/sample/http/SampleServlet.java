@@ -20,6 +20,12 @@ public class SampleServlet extends HttpServlet {
 
     Logger log = LoggerFactory.getLogger("SampleServlet");
 
+	public SampleServlet() {
+		log.info("Startup of the Sample Servlet - Is this love?");
+	}
+	
+	
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ObjectMapper mapper = new ObjectMapper();

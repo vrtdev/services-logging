@@ -6,6 +6,7 @@
 			<span id="rlog-info-search-btn" class="rlog-info-show-btn">SEARCH</span>
 		</div>
 		<div style="float: right">
+			<span id="rlog-info-close" class="rlog-btn" style="padding: 3px 2px">&#9881;</span>
 			<span id="rlog-info-close" class="rlog-btn">X</span>
 		</div>
 	</div>
@@ -14,6 +15,8 @@
 		<span tab-header="request" onclick="document.rLog.tabs.tab_request.display()">Requests</span>
 		<span tab-header="failure" onclick="document.rLog.tabs.tab_failure.display()">Failures</span>
 		<span tab-header="error" onclick="document.rLog.tabs.tab_error.display()">Error</span>
+		<span tab-header="flows" onclick="document.rLog.tabs.tab_flows.display()">Flows</span>
+		<span tab-header="static_flows" onclick="document.rLog.tabs.tab_static_flows.display()">Static Flows</span>
 	</div>
 	<div id="rlog-tab-history" class="rlog-tab rlog-tab-selected">
 		<div class="rlog-action-bar" >
@@ -46,6 +49,22 @@
 	<div id="rlog-tab-error" class="rlog-tab">
 		<div class="rlog-action-bar" >
 			<span class="rlog-info-show-btn" onclick="document.rLog.tabs.tab_error.refresh()">REFRESH</span>
+		</div>
+		<table  style="width: 100%">
+			<tbody/>
+		</table>
+	</div>
+	<div id="rlog-tab-flows" class="rlog-tab">
+		<div class="rlog-action-bar" >
+			<span class="rlog-info-show-btn" onclick="document.rLog.tabs.tab_flows.refresh()">REFRESH</span>
+		</div>
+		<table  style="width: 100%">
+			<tbody/>
+		</table>
+	</div>
+	<div id="rlog-tab-static_flows" class="rlog-tab">
+		<div class="rlog-action-bar" >
+			<span class="rlog-info-show-btn" onclick="document.rLog.tabs.tab_static_flows.refresh()">REFRESH</span>
 		</div>
 		<table  style="width: 100%">
 			<tbody/>

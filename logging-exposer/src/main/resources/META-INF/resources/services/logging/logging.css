@@ -51,6 +51,9 @@
 	top: 0px;
 	border-bottom: #800 3px solid;
 }
+.rlog-info tr {
+	white-space: nowrap;
+}
 
 #rlog-detail{
 	padding: 10px;display: none;
@@ -87,6 +90,7 @@
 .rlog-row-time{
 	color: orange;
 	width: 150px;
+	white-space: nowrap;
 }
 .rlog-row-line{
 	/* width: auto
@@ -127,6 +131,11 @@
 tr .rlog-info-show-btn{
 	border: none;
 	color: lightblue;
+}
+
+tr .rlog-info-show-btn-green{
+	border: none;
+	color: greenyellow;
 }
 
 .rlog-info-show-btn:hover{

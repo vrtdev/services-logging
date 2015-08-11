@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collection;
+import java.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +49,21 @@ public class TransactionLogController extends HttpServlet {
 				case "/fail":
 					logs = TransactionRegistery.listFailures();
 					break;
-				case "/ids":
+				case "/flows":
 					logs = TransactionRegistery.listIds();
+					break;
+				case "/static-flows":
+					logs = new LinkedList();
+					List flows  = new LinkedList();
+					for (Map.Entry<String, String> entrySet : TransactionRegistery.listStaticFlows().entrySet()) {
+						String key = entrySet.getKey();
+						String value = entrySet.getValue();
+						Map<String,String> m = new HashMap<>();
+						m.put("name", key);
+						m.put("id", value);
+						flows.add(m);
+					}
+					map.put("flows", flows);
 					break;
 			}
 			map.put("logs", logs);
