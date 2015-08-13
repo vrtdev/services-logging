@@ -54,11 +54,11 @@ public class TransactionLogController extends HttpServlet {
 					break;
 				case "/static-flows":
 					logs = new LinkedList();
-					List flows  = new LinkedList();
+					List flows = new LinkedList();
 					for (Map.Entry<String, String> entrySet : TransactionRegistery.listStaticFlows().entrySet()) {
 						String key = entrySet.getKey();
 						String value = entrySet.getValue();
-						Map<String,String> m = new HashMap<>();
+						Map<String, String> m = new HashMap<>();
 						m.put("name", key);
 						m.put("id", value);
 						flows.add(m);
@@ -76,9 +76,8 @@ public class TransactionLogController extends HttpServlet {
 				concatResults(result, results);
 			}
 			map.put("hits", results);
-			map.put("info", JsonMap.with("urls", connectionUrls));
 		}
-
+		map.put("info", JsonMap.with("urls", connectionUrls));
 
 		resp.setContentType("application/json");
 		String json = mapper.writeValueAsString(map);
