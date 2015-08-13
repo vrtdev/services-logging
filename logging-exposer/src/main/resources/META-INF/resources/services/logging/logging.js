@@ -47,10 +47,13 @@ if (!document.rLog) {
 			$('#rlog-info').fadeOut();
 			document.rLog.displayTransactions();
 		},
-		displayInfo: function () {
+		displayInfo: function (transId) {
 			document.rLog.infoVisible = true;
 			$('#rlog-info').fadeIn();
 			document.rLog.displayTransactions();
+			if (transId) {
+				document.rLog.displayDetail(transId);
+			}
 		}
 		, tabs: {
 			display: function (tab) {
