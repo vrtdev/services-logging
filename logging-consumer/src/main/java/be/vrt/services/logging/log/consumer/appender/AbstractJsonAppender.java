@@ -16,6 +16,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Arrays;
 
 public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> implements Constants {
 	
@@ -46,6 +47,13 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			}
 			dto.setHostName(hostname);
 
+			if(logEvent.getThrowableProxy() != null){
+				dto.getContent().put("STACKTRACE-MSG", logEvent.getThrowableProxy().getMessage());
+				dto.getContent().put("STACKTRACE-CLASS", logEvent.getThrowableProxy().getClassName());
+				dto.getContent().put("STACKTRACE-TOP", logEvent.getThrowableProxy().getStackTraceElementProxyArray()[0]);
+				dto.getContent().put("STACKTRACE-FULL", Arrays.toString(logEvent.getThrowableProxy().getStackTraceElementProxyArray()));
+			}
+			
 			if (objects != null) {
 				int counter = 1;
 				for (Object object : objects) {
