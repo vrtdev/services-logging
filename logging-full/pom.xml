@@ -4,7 +4,7 @@
     <parent>
         <groupId>be.vrt.services.logging</groupId>
         <artifactId>logging</artifactId>
-        <version>0.8.0</version>
+        <version>1.0.0</version>
     </parent>
     <artifactId>logging-full</artifactId>
     <packaging>pom</packaging>

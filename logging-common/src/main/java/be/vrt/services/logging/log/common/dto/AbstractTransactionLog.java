@@ -1,6 +1,9 @@
 package be.vrt.services.logging.log.common.dto;
 
 import be.vrt.services.logging.log.common.DelayedLogObject;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import java.util.Date;
 import java.util.Map;
 
@@ -103,5 +106,10 @@ public abstract class AbstractTransactionLog implements DelayedLogObject{
 
 	public void setErrorReason(String errorReason) {
 		this.errorReason = errorReason;
+	}
+
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 }
