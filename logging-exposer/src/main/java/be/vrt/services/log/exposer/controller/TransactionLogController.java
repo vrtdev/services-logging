@@ -68,7 +68,11 @@ public class TransactionLogController extends HttpServlet {
 			}
 			map.put("logs", logs);
 		} else if (path.matches("/transaction/[^/]*")) {
-			String id = path.substring("/transaction/".length());
+
+			// Apache replace space by + => Known issue
+			String id = path.substring("/transaction/".length()).trim();
+			id = id.replaceAll(" ", "+");
+
 			Map<String, Object> query = createEsQuery(id);
 			Map<String, Object> results = new HashMap<>();
 			for (String connectionUrl : connectionUrls) {
