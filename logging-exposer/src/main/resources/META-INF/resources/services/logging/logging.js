@@ -330,7 +330,7 @@ if (!document.rLog) {
 			$('#rlog-detail-close').click(document.rLog.hideDetail);
 			$('#rlog-detail-server').text("searching >> " + logId)
 
-			$.ajax(this.baseUrl + '/transaction/' + logId)
+			$.ajax(this.baseUrl + '/transaction/' + encodeURIComponent(logId))
 					.done(function (data) {
 						document.rLog.displayResults(data.hits);
 					});
