@@ -8,6 +8,7 @@ public interface Constants {
 
 	public final static String FLOW_ID = "X-Log-Flow-Id";
 	public final static String ORIGIN_USER = "X-Log-Origin-User";
-
+	
+	public final static String USER = "X-Log-User";
 
 }
