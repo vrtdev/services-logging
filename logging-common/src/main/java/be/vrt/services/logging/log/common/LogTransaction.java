@@ -18,6 +18,12 @@ public class LogTransaction implements Constants {
 		MDC.remove(TRANSACTION_ID);
 		MDC.remove(BREADCRUMB_COUNTER);
 		MDC.remove(FLOW_ID);
+		MDC.remove(USER);
+
+	}
+	
+	public static void user(String user) {
+		MDC.put(USER, user);
 	}
 
 	public static String id() {
