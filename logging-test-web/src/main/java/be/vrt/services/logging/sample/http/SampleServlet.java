@@ -70,11 +70,10 @@ public class SampleServlet extends HttpServlet {
             ObjectMapper mapper = new ObjectMapper();
 
             String id = "sabayon.lan.rto.be-11b13cc8-63ad-42d2-8791-6e0138f9e7ea";
-            Map<String, Object> query = JsonMap.with("query",
-                JsonMap.with("bool",
-                    JsonMap.with("should",
-                        JsonArray.with(
-                            JsonMap.with("match_phrase", JsonMap.with("transactionId", id)), JsonMap.with("match_phrase", JsonMap.with("flowId", id))
+            Map<String, Object> query = JsonMap.mapWith("query",
+                JsonMap.mapWith("bool",
+                    JsonMap.mapWith("should",
+                        JsonArray.with(JsonMap.mapWith("match_phrase", JsonMap.mapWith("transactionId", id)), JsonMap.mapWith("match_phrase", JsonMap.mapWith("flowId", id))
                         )
                     )));
             URL url = new URL("http://localhost:9200/logg*/_search");

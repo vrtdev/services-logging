@@ -14,6 +14,8 @@ public class LoggingProperties {
 	static LoggingProperties instance = new LoggingProperties();
 
 	public final static String URLS = "log.connection.urls";
+	public final static String STATS_URL = "log.connection.stat.url";
+
 	private static final String LOGGING_PROPERTIES = "logging.properties";
 
 	private Properties prop = new Properties();
@@ -24,7 +26,7 @@ public class LoggingProperties {
 			try {
 				prop.load(this.getClass().getClassLoader().getResourceAsStream(LOGGING_PROPERTIES));
 			} catch (Exception ex) {
-				log.warn("Failed to load properties for logging ({})",LOGGING_PROPERTIES);
+				log.warn("Failed to load properties for logging ({})", LOGGING_PROPERTIES);
 			}
 		}
 	}
@@ -41,7 +43,7 @@ public class LoggingProperties {
 		}
 		try {
 			prop.load(new FileInputStream(fileName));
-			log.info("Propertyfile loaded: "+fileName);
+			log.info("Propertyfile loaded: " + fileName);
 			return true;
 		} catch (IOException ex) {
 			log.warn("Propertyfile accessible: [{}] - {}", fileName, ex.getMessage(), ex);
@@ -62,6 +64,15 @@ public class LoggingProperties {
 		}
 		urls = urls.trim().replaceAll("\\s", "");
 		return urls.split(",");
+	}
+
+	public static String connectionStatUrl() {
+		String url = instance.prop.getProperty(STATS_URL);
+		if (url == null) {
+			log.warn("Property not defined " + STATS_URL);
+			url = "";
+		}
+		return url;
 	}
 
 }

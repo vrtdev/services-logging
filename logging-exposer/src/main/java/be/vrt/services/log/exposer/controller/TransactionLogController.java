@@ -1,6 +1,7 @@
 package be.vrt.services.log.exposer.controller;
 
 import be.vrt.services.log.exposer.LoggingProperties;
+import static be.vrt.services.log.exposer.controller.JsonMap.mapWith;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -69,19 +70,32 @@ public class TransactionLogController extends HttpServlet {
 			map.put("logs", logs);
 		} else if (path.matches("/transaction/[^/]*")) {
 
-			// Apache replace space by + => Known issue
 			String id = path.substring("/transaction/".length()).trim();
+			// Apache replace + by spaces => Known issue
 			id = id.replaceAll(" ", "+");
 
-			Map<String, Object> query = createEsQuery(id);
+			Map<String, Object> query = createEsDetailQuery(id);
 			Map<String, Object> results = new HashMap<>();
 			for (String connectionUrl : connectionUrls) {
-				Map result = searchEsByQuery(connectionUrl, query);
+				Map result = (Map) searchEsByQuery(connectionUrl, query).get("hits");
 				concatResults(result, results);
 			}
 			map.put("hits", results);
+		} else if (path.matches("/stats/overview/[^/]*")) {
+			String date = path.substring("/stats/overview/".length()).trim();
+
+			Map<String, Object> query = createEsStatsQuery(date);
+			String connectionUrl = LoggingProperties.connectionStatUrl();
+			Map result = (Map) searchEsByQuery(connectionUrl, query).get("aggregations");
+			
+			map.put("agg", result);
 		}
-		map.put("info", JsonMap.with("urls", connectionUrls));
+
+		map.put("info", 
+			mapWith("urls", connectionUrls)
+			.mapAnd("statUrl", LoggingProperties.connectionStatUrl())
+		
+		);
 
 		resp.setContentType("application/json");
 		String json = mapper.writeValueAsString(map);
@@ -119,26 +133,114 @@ public class TransactionLogController extends HttpServlet {
 			con.setRequestMethod("POST");
 			con.setDoOutput(true);
 
+			String wtf = mapper.writeValueAsString(query);
+
+			mapper.writeValue(con.getOutputStream(), query);
+			if (con.getResponseCode() > 299) {
+				log.info(">> Failed to query ES > " + connectionUrl + " [" + con.getResponseCode() + "] :" + con.getResponseMessage());
+				log.info(">> Failed to query ES > " + wtf);
+			} else {
+				return (Map<String, Object>) mapper.readValue(con.getInputStream(), HashMap.class);
+			}
+		} catch (Exception ex) {
+		}
+		return new HashMap<>();
+	}
+
+	Map<String, Object> searchAggEsByQuery(String connectionUrl, Map<String, Object> query) {
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+
+			URL url = new URL(connectionUrl);
+
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setConnectTimeout(5000);
+			con.setRequestMethod("POST");
+			con.setDoOutput(true);
+
+			String wtf = mapper.writeValueAsString(query);
+			System.out.println("QUERY: " + wtf);
+
 			mapper.writeValue(con.getOutputStream(), query);
 			if (con.getResponseCode() > 299) {
 				log.info(">> Failed to query ES > " + connectionUrl + " [" + con.getResponseCode() + "] :" + con.getResponseMessage());
 			} else {
-				return (Map<String, Object>) mapper.readValue(con.getInputStream(), HashMap.class).get("hits");
+				return (Map<String, Object>) mapper.readValue(con.getInputStream(), HashMap.class).get("aggregations");
 			}
 		} catch (Exception ex) {
 		}
 		return null;
 	}
 
-	Map<String, Object> createEsQuery(String id) {
-		Map<String, Object> query = JsonMap.with("query",
-			JsonMap.with("bool",
-				JsonMap.with("should",
-					JsonArray.with(
-						JsonMap.with("match_phrase", JsonMap.with("transactionId", id)), JsonMap.with("match_phrase", JsonMap.with("flowId", id))
+	Map<String, Object> createEsDetailQuery(String id) {
+		Map<String, Object> query = mapWith("query",
+			mapWith("bool",
+				mapWith("should",
+					JsonArray.with(mapWith("match_phrase", mapWith("transactionId", id)), mapWith("match_phrase", mapWith("flowId", id))
 					)
 				)));
 		return query;
 	}
 
+	Map<String, Object> createEsStatsQuery(String date) {
+		Map<String, Object> query = mapWith("aggs",
+			mapWith("time",
+				mapWith("date_histogram",
+					mapWith("field", "date")
+					.mapAnd("interval", "hour")
+				).mapAnd("aggs",
+					mapWith("hosts",
+						mapWith("terms",
+							mapWith("field", "hostName")
+							.mapAnd("size", 50)
+						).mapAnd("aggs",
+							mapWith("Methods",
+								mapWith("terms",
+									mapWith("field", "content.[4] AuditLogDto.method")
+									.mapAnd("size", 50)
+								).mapAnd("aggs",
+									mapWith("Avg_Duration",
+										mapWith("avg",
+											mapWith("field", "content.[4] AuditLogDto.duration")
+										)
+									).mapAnd("Status",
+										mapWith("terms",
+											mapWith("field", "content.[4] AuditLogDto.auditLevel")
+											.mapAnd("size", 50)
+										)
+									)
+								)
+							)
+						)
+					)
+				)
+			)
+		).mapAnd("query",
+			mapWith("filtered",
+				mapWith("query",
+					mapWith("wildcard",
+						mapWith("content.[4] AuditLogDto.method", "*Facade*")
+					)
+				).mapAnd("filter",
+					mapWith("bool",
+						mapWith("must",
+							JsonArray.with(
+								mapWith("range",
+									mapWith("logDate",
+										mapWith("gte", date + "T00:00:00")
+										.mapAnd("lte", date + "T00:00:00||+1d")
+										.mapAnd("time_zone", "CET")
+									)
+								),
+								mapWith("exists",
+									mapWith("field", "content.[4] AuditLogDto.method")
+								)
+							)
+						)
+					)
+				)
+			)
+		);
+		return query;
+	}
 }
