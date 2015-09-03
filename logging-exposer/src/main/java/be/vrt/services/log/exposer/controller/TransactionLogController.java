@@ -89,11 +89,27 @@ public class TransactionLogController extends HttpServlet {
 			Map result = (Map) searchEsByQuery(connectionUrl, query).get("aggregations");
 
 			map.put("agg", result);
+		} else if (path.matches("/stats/overview/[^/]*")) {
+			String date = path.substring("/stats/overview/".length()).trim();
+
+			Map<String, Object> query = createEsStatsQuery(date);
+			String connectionUrl = LoggingProperties.connectionStatUrl();
+			Map result = (Map) searchEsByQuery(connectionUrl, query).get("aggregations");
+
+			map.put("agg", result);
 
 		} else if (path.matches("/stats/errors/[^/]*")) {
 			String date = path.substring("/stats/errors/".length()).trim();
 
 			Map<String, Object> query = createEsDailyProblemQuery(date, "ERROR");
+			String connectionUrl = LoggingProperties.connectionStatUrl();
+			Map result = (Map) searchEsByQuery(connectionUrl, query).get("hits");
+
+			map.put("statshits", result);
+		} else if (path.matches("/stats/failures/[^/]*")) {
+			String date = path.substring("/stats/failures/".length()).trim();
+
+			Map<String, Object> query = createEsDailyProblemQuery(date, "FAIL");
 			String connectionUrl = LoggingProperties.connectionStatUrl();
 			Map result = (Map) searchEsByQuery(connectionUrl, query).get("hits");
 
@@ -184,7 +200,11 @@ public class TransactionLogController extends HttpServlet {
 		Map<String, Object> query = mapWith("query",
 			mapWith("bool",
 				mapWith("should",
-					JsonArray.with(mapWith("match_phrase", mapWith("transactionId", id)), mapWith("match_phrase", mapWith("flowId", id))
+					JsonArray.with(
+						mapWith("match_phrase", mapWith("transactionId", id)), // <-- backwards compatibility -> remove this on 10/10/2015
+						mapWith("match_phrase_prefix", mapWith("transactionId", id)), 
+						mapWith("match_phrase", mapWith("flowId", id)), // <-- backwards compatibility -> remove this on 10/10/2015
+						mapWith("match_phrase_prefix", mapWith("flowId", id))
 					)
 				)));
 		return query;

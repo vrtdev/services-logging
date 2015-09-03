@@ -4,12 +4,19 @@
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<script>
-			var logBaseUrl = "http://localhost:8080/logging-test-web-1.1.2-SNAPSHOT/log";</script>
+		<!--		<script>
+					var logBaseUrl = "http://localhost:8080/logging-test-web-1.1.2-SNAPSHOT/log";</script>-->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<script src="services/logging/log-init.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
-		<script src="http://code.highcharts.com/highcharts.js"></script>
+		<!--<script src="http://code.highcharts.com/highcharts.js"></script>-->
+
+		<script src="services/logging/lib/highcharts.js"></script>
+		<script src="services/logging/lib/bootstrap.min.js"></script>
+		<link href="services/logging/lib/bootstrap.min.css" rel="stylesheet" />
+		<link href="services/logging/lib/bootstrap-darkly.min.css" rel="stylesheet" />
+
+
         <style>
 			pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
 			.string { color: green; }
@@ -53,6 +60,210 @@
     <body>
 
 		<script>
+			// Load the fonts
+//			Highcharts.createElement('link', {
+//				href: '//fonts.googleapis.com/css?family=Unica+One',
+//				rel: 'stylesheet',
+//				type: 'text/css'
+//			}, null, document.getElementsByTagName('head')[0]);
+
+			Highcharts.theme = {
+				colors: ["#2b908f", "#90ee7e", "#f45b5b", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
+					"#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+				chart: {
+					backgroundColor: {
+						linearGradient: {x1: 0, y1: 0, x2: 1, y2: 1},
+						stops: [
+							[0, '#2a2a2b'],
+							[1, '#3e3e40']
+						]
+					},
+					style: {
+						fontFamily: "'Unica One', sans-serif"
+					},
+					plotBorderColor: '#606063'
+				},
+				title: {
+					style: {
+						color: '#E0E0E3',
+						textTransform: 'uppercase',
+						fontSize: '20px'
+					}
+				},
+				subtitle: {
+					style: {
+						color: '#E0E0E3',
+						textTransform: 'uppercase'
+					}
+				},
+				xAxis: {
+					gridLineColor: '#707073',
+					labels: {
+						style: {
+							color: '#E0E0E3'
+						}
+					},
+					lineColor: '#707073',
+					minorGridLineColor: '#505053',
+					tickColor: '#707073',
+					title: {
+						style: {
+							color: '#A0A0A3'
+
+						}
+					}
+				},
+				yAxis: {
+					gridLineColor: '#707073',
+					labels: {
+						style: {
+							color: '#E0E0E3'
+						}
+					},
+					lineColor: '#707073',
+					minorGridLineColor: '#505053',
+					tickColor: '#707073',
+					tickWidth: 1,
+					title: {
+						style: {
+							color: '#A0A0A3'
+						}
+					}
+				},
+				tooltip: {
+					backgroundColor: 'rgba(0, 0, 0, 0.85)',
+					style: {
+						color: '#F0F0F0'
+					}
+				},
+				plotOptions: {
+					series: {
+						dataLabels: {
+							color: '#B0B0B3'
+						},
+						marker: {
+							lineColor: '#333'
+						}
+					},
+					boxplot: {
+						fillColor: '#505053'
+					},
+					candlestick: {
+						lineColor: 'white'
+					},
+					errorbar: {
+						color: 'white'
+					}
+				},
+				legend: {
+					itemStyle: {
+						color: '#E0E0E3'
+					},
+					itemHoverStyle: {
+						color: '#FFF'
+					},
+					itemHiddenStyle: {
+						color: '#606063'
+					}
+				},
+				credits: {
+					style: {
+						color: '#666'
+					}
+				},
+				labels: {
+					style: {
+						color: '#707073'
+					}
+				},
+				drilldown: {
+					activeAxisLabelStyle: {
+						color: '#F0F0F3'
+					},
+					activeDataLabelStyle: {
+						color: '#F0F0F3'
+					}
+				},
+				navigation: {
+					buttonOptions: {
+						symbolStroke: '#DDDDDD',
+						theme: {
+							fill: '#505053'
+						}
+					}
+				},
+				// scroll charts
+				rangeSelector: {
+					buttonTheme: {
+						fill: '#505053',
+						stroke: '#000000',
+						style: {
+							color: '#CCC'
+						},
+						states: {
+							hover: {
+								fill: '#707073',
+								stroke: '#000000',
+								style: {
+									color: 'white'
+								}
+							},
+							select: {
+								fill: '#000003',
+								stroke: '#000000',
+								style: {
+									color: 'white'
+								}
+							}
+						}
+					},
+					inputBoxBorderColor: '#505053',
+					inputStyle: {
+						backgroundColor: '#333',
+						color: 'silver'
+					},
+					labelStyle: {
+						color: 'silver'
+					}
+				},
+				navigator: {
+					handles: {
+						backgroundColor: '#666',
+						borderColor: '#AAA'
+					},
+					outlineColor: '#CCC',
+					maskFill: 'rgba(255,255,255,0.1)',
+					series: {
+						color: '#7798BF',
+						lineColor: '#A6C7ED'
+					},
+					xAxis: {
+						gridLineColor: '#505053'
+					}
+				},
+				scrollbar: {
+					barBackgroundColor: '#808083',
+					barBorderColor: '#808083',
+					buttonArrowColor: '#CCC',
+					buttonBackgroundColor: '#606063',
+					buttonBorderColor: '#606063',
+					rifleColor: '#FFF',
+					trackBackgroundColor: '#404043',
+					trackBorderColor: '#404043'
+				},
+				// special colors for some of the
+				legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+				background2: '#505053',
+				dataLabelsColor: '#B0B0B3',
+				textColor: '#C0C0C0',
+				contrastTextColor: '#F0F0F3',
+				maskColor: 'rgba(255,255,255,0.3)'
+			};
+
+// Apply the theme
+			Highcharts.setOptions(Highcharts.theme);
+
+
 			var chart, chartDetail;
 			Highcharts.setOptions({
 				global: {
@@ -78,15 +289,30 @@
 			document.logDisplay = {
 				dateBar: {
 					display: function (divId) {
-						var dateBar = $("<ul class='dates'/>");
+						var dateBar = $("<ul class='nav nav-pills'/>");
 						$("#" + divId).append(dateBar);
 						var date = new Date();
 						for (var i = 0; i < 10; i++) {
 							var fDate = this.formatDate(date);
-							$("<li onclick=\"loadDate('" + fDate + "')\">" + fDate + "</li>").appendTo(dateBar);
+							$("<li style='margin-left:15px' class='btn btn-primary' onclick=\"loadDate('" + fDate + "')\">" + fDate + "</li>").appendTo(dateBar);
 							date.setTime(date.getTime() - 1000 * 60 * 60 * 24)
 						}
-
+						$("<li style='margin-left:15px'>"
+//								+ "<div class='form-group'>"
+//								+ "<label class='control-label'>Input addons</label>"
+								+ "<div class='input-group' style='position:absolute'>"
+								+ "    <input type='date' class='form-control' id='log_load_date_txt'>"
+								+ "    <span class='input-group-btn'>"
+								+ "      <button class='btn btn-default' type='button' id='log_load_date_btn'>Load Data</button>"
+								+ "    </span>"
+								+ "  </div>"
+//								+ "</div>"
+								+ "</li>").appendTo(dateBar);
+						$("#log_load_date_btn").click(function () {
+							if ($("#log_load_date_txt").val()) {
+								loadDate($("#log_load_date_txt").val());
+							}
+						})
 
 					},
 					formatDate: function (date) {
@@ -320,9 +546,9 @@
 									data: data
 								}]
 						});
-						$("#" + chart_info.location.id + "_details").append("<div id='" + chart_info.location.id + "_detail_table' >")
+						$("#" + chart_info.location.id + "_details").append("<div id='" + chart_info.location.id + "_detail_table' >");
 
-//						$("#" + chart_info.location.id + "_detail_table").append()
+						$("#" + chart_info.location.id + "_detail_table").append();
 
 					}
 				}
@@ -331,20 +557,52 @@
 
 				$("#container").empty();
 				$("#logLoading").show();
-				$("#container").append("<div id='logStatsErrors' />");
-				$("#container").append("<hr>");
+				$("#container").append('<div class="panel panel-danger"><div class="panel-heading"><h3 class="panel-title">Error Listing</h3></div><div class="panel-body"><div id="logStatsErrors" /></div></div>');
+				$("#logStatsErrors").parent().parent().hide();
 				$.get(document.logInfo.statsUrl + "errors/" + date, null, function (data) {
-					$("#logStatsErrors").append("<table style='width: 100%'><tbody></tbody></table>");
-					$("#logStatsErrors tbody").append("<tr><th>Time</th><th>FlowId</th><th>Call</th><th>ErrorMessage</th></tr>");
+					if (!data.statshits.hits || data.statshits.hits.length == 0) {
+						return;
+					}
+					$("#container").append("<hr>");
+					$("#logStatsErrors").parent().parent().show();
 
+					$("#logStatsErrors").append("<table style='width: 100%' class='table table-hover'><tbody></tbody></table>");
+					$("#logStatsErrors tbody").append("<tr class='error'><th>#</th><th>Time</th><th>FlowId</th><th>Call</th><th>ErrorMessage</th></tr>");
+					var i = 0;
 					data.statshits.hits.forEach(function (hit) {
 						var source = hit._source;
 						console.log(hit);
 						$("#logStatsErrors tbody").append("<tr/>");
+						$("#logStatsErrors tbody tr:last").append("<td>" + ++i + "</td>");
 						$("#logStatsErrors tbody tr:last").append("<td>" + Highcharts.dateFormat('%H:%M:%S', source.logDate) + "</td>");
-						$("#logStatsErrors tbody tr:last").append("<td>" + source.flowId + "</td>");
+						$("#logStatsErrors tbody tr:last").append("<td onclick='document.rLog.displayInfo(\"" + source.flowId + "\")'>" + source.flowId + "</td>");
 						$("#logStatsErrors tbody tr:last").append("<td>" + source.content['[4] AuditLogDto'].method + "</td>");
 						$("#logStatsErrors tbody tr:last").append("<td>" + source.content['[4] AuditLogDto'].response.message + "</td>");
+					})
+				});
+			
+				$("#container").append('<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title">Failure Listing</h3></div><div class="panel-body"><div id="logStatsFails" /></div></div>');
+						$("#logStatsFails").parent().parent().hide();
+				$.get(document.logInfo.statsUrl + "failures/" + date, null, function (data) {
+					if (!data.statshits.hits || data.statshits.hits.length == 0) {
+						$("#logStatsFails").parent().parent().hide();
+						return;
+					}
+					$("#logStatsFails").parent().parent().show();
+					$("#container").append("<hr>");
+					$("#logStatsFails").append("<table style='width: 100%' class='table table-hover'><tbody></tbody></table>");
+					$("#logStatsFails tbody").append("<tr><th>#</th><th>Time</th><th>FlowId</th><th>Call</th><th>ErrorMessage</th></tr>");
+					var i = 0;
+					console.log()
+					data.statshits.hits.forEach(function (hit) {
+						var source = hit._source;
+						console.log(hit);
+						$("#logStatsFails tbody").append("<tr/>");
+						$("#logStatsFails tbody tr:last").append("<td>" + ++i + "</td>");
+						$("#logStatsFails tbody tr:last").append("<td>" + Highcharts.dateFormat('%H:%M:%S', source.logDate) + "</td>");
+						$("#logStatsFails tbody tr:last").append("<td onclick='document.rLog.displayInfo(\"" + source.flowId + "\")'>" + source.flowId + "</td>");
+						$("#logStatsFails tbody tr:last").append("<td>" + source.content['[4] AuditLogDto'].method + "</td>");
+						$("#logStatsFails tbody tr:last").append("<td>" + source.content['[4] AuditLogDto'].response.message + "</td>");
 					})
 				});
 				$.get(document.logInfo.statsUrl + "overview/" + date, null, function (data) {
@@ -384,8 +642,11 @@
 
 		</script>
 		<div id="logLoading"><center><img src="services/logging/loading.gif" style="margin: auto; opacity: 1;margin-top: 250px;"/></center></div>
-		<h1>Graph</h1>
+		<h1 style="margin-bottom: 20px; margin-left: 20px;" id='log-stat-title'>Monitoring Stats</h1>
 		<div id="bar"></div>
-		<div id="container"></div>
+		<hr/>
+		<div class="container-fluid">
+			<div id="container"></div>
+		</div>
     </body>
 </html>

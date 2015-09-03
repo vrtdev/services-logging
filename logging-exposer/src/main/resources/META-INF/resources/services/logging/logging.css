@@ -104,6 +104,10 @@
 
 }
 
+tr.rlog-detail-row-json td {
+	max-width: 1400px;
+}
+
 .rlog-btn ,.rlog-info-show-btn, .rlog-clear-btn{
 	border: 1px solid greenyellow; 
 	padding:2px 4px;
