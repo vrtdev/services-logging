@@ -87,14 +87,22 @@ public class TransactionLogController extends HttpServlet {
 			Map<String, Object> query = createEsStatsQuery(date);
 			String connectionUrl = LoggingProperties.connectionStatUrl();
 			Map result = (Map) searchEsByQuery(connectionUrl, query).get("aggregations");
-			
+
 			map.put("agg", result);
+
+		} else if (path.matches("/stats/errors/[^/]*")) {
+			String date = path.substring("/stats/errors/".length()).trim();
+
+			Map<String, Object> query = createEsDailyProblemQuery(date, "ERROR");
+			String connectionUrl = LoggingProperties.connectionStatUrl();
+			Map result = (Map) searchEsByQuery(connectionUrl, query).get("hits");
+
+			map.put("statshits", result);
 		}
 
-		map.put("info", 
+		map.put("info",
 			mapWith("urls", connectionUrls)
 			.mapAnd("statUrl", LoggingProperties.connectionStatUrl())
-		
 		);
 
 		resp.setContentType("application/json");
@@ -151,7 +159,7 @@ public class TransactionLogController extends HttpServlet {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 
-			URL url = new URL(connectionUrl);
+			URL url = new URL(connectionUrl + "?search_type=count");
 
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setConnectTimeout(5000);
@@ -182,8 +190,46 @@ public class TransactionLogController extends HttpServlet {
 		return query;
 	}
 
+	Map<String, Object> createEsDailyProblemQuery(String date, String level) {
+		return mapWith("query",
+			mapWith("filtered",
+				mapWith("query",
+					mapWith("wildcard",
+						mapWith("content.[4] AuditLogDto.method", "*Facade*")
+					)
+				).mapAnd("filter",
+					mapWith("bool",
+						mapWith("must",
+							JsonArray.with(
+								mapWith("exists",
+									mapWith("field", "content.[4] AuditLogDto.method")
+								),
+								mapWith("range",
+									mapWith("logDate",
+										mapWith("gte", date + "T00:00:00")
+										.mapAnd("lte", date + "T00:00:00||+1d")
+										.mapAnd("time_zone", "CET")
+									)
+								),
+								mapWith("term",
+									mapWith("content.[4] AuditLogDto.auditLevel", level)
+								)
+							)
+						)
+					)
+				)
+			)
+		).mapAnd("sort",
+			JsonArray.with(
+				mapWith("logDate",
+					mapWith("order", "desc")
+				)
+			)
+		);
+	}
+
 	Map<String, Object> createEsStatsQuery(String date) {
-		Map<String, Object> query = mapWith("aggs",
+		return mapWith("aggs",
 			mapWith("time",
 				mapWith("date_histogram",
 					mapWith("field", "date")
@@ -194,19 +240,23 @@ public class TransactionLogController extends HttpServlet {
 							mapWith("field", "hostName")
 							.mapAnd("size", 50)
 						).mapAnd("aggs",
-							mapWith("Methods",
+							mapWith("methods",
 								mapWith("terms",
 									mapWith("field", "content.[4] AuditLogDto.method")
 									.mapAnd("size", 50)
 								).mapAnd("aggs",
-									mapWith("Avg_Duration",
-										mapWith("avg",
+									mapWith("statistics",
+										mapWith("extended_stats",
 											mapWith("field", "content.[4] AuditLogDto.duration")
 										)
 									).mapAnd("Status",
 										mapWith("terms",
 											mapWith("field", "content.[4] AuditLogDto.auditLevel")
 											.mapAnd("size", 50)
+										)
+									).mapAnd("distribution",
+										mapWith("percentiles",
+											mapWith("field", "content.[4] AuditLogDto.duration")
 										)
 									)
 								)
@@ -241,6 +291,5 @@ public class TransactionLogController extends HttpServlet {
 				)
 			)
 		);
-		return query;
 	}
 }

@@ -37,6 +37,17 @@
 				color: white;
 				padding: 3px 8px;
 			}
+
+			#logLoading {
+				display: none;
+				background: black;
+				opacity: 0.4;
+				position: fixed;
+				top: 0px;
+				bottom: 0px;
+				left: 0px;
+				right: 0px;
+			}
         </style>
     </head>
     <body>
@@ -55,16 +66,40 @@
 					'mezoappprod1.servers.vrt.be': "mezoappprod",
 					'mezoappprod2.servers.vrt.be': "mezoappprod"
 				},
-				statsUrl: "log/stats/overview/",
-				knownHost: function (name) {
-					return this.hosts[name];
+				statsUrl: "log/stats/",
+				knownHost: function (name, info) {
+					if (info && info.hosts) {
+						return info.hosts[name];
+					}
+					return name;
 				}
 			}
 
+			document.logDisplay = {
+				dateBar: {
+					display: function (divId) {
+						var dateBar = $("<ul class='dates'/>");
+						$("#" + divId).append(dateBar);
+						var date = new Date();
+						for (var i = 0; i < 10; i++) {
+							var fDate = this.formatDate(date);
+							$("<li onclick=\"loadDate('" + fDate + "')\">" + fDate + "</li>").appendTo(dateBar);
+							date.setTime(date.getTime() - 1000 * 60 * 60 * 24)
+						}
 
+
+					},
+					formatDate: function (date) {
+						var year = date.getFullYear();
+						var month = date.getMonth() + 1;
+						var day = date.getDate();
+						return year + "-" + (month < 10 ? "0" : "") + month + "-" + (day < 10 ? "0" : "") + day;
+					}
+				}
+			}
 			document.logChart = {
 				hosts: {
-					displayData: function (data, date) {
+					displayData: function (data, info) {
 						this.chartData = {
 							labels: [],
 							datasets: [],
@@ -78,9 +113,8 @@
 							var chartData = document.logChart.hosts.chartData;
 							chartData.labels.push(new Date(time.key_as_string));
 							time.hosts.buckets.forEach(function (host, index) {
-								host.rel_key = document.logInfo.knownHost(host.key);
+								host.rel_key = document.logInfo.knownHost(host.key, info);
 								if (!host.rel_key) {
-									console.log("skipping host  " + host.key)
 									return;
 								}
 
@@ -99,9 +133,10 @@
 								var detailData = chartData.dataset_map[host.rel_key].data[i];
 								// Set data in dataset.
 								detailData.y += host.doc_count;
+								host.chart_info = info;
 								detailData.info.push(host);
 
-								host.Methods.buckets.forEach(function (m) {
+								host.methods.buckets.forEach(function (m) {
 									m.Status.buckets.forEach(function (s) {
 										if (s.key === 'ERROR') {
 											detailData.errors += s.doc_count;
@@ -120,14 +155,18 @@
 
 							})
 						});
+						if ($("#" + info.location.id).length === 0) {
+							$("#" + info.location.parent).append("<div id='" + info.location.id + "'/>");
+							$("#" + info.location.parent).append("<div id='" + info.location.id + "_details'/>");
+						}
 
 						chart = new Highcharts.Chart({
 							chart: {
-								renderTo: 'container',
+								renderTo: info.location.id,
 								type: 'column'
 							},
 							title: {
-								text: ' [' + date + '] Calls / Hour'
+								text: info.location.id + ' -  [' + info.date + '] Calls / Hour'
 							},
 							xAxis: {
 								categories: document.logChart.hosts.chartData.labels,
@@ -172,9 +211,15 @@
 										data.forEach(function (detail) {
 											rtnValue += '<tr><td colspan="2">' + detail.key + '</td><td>' + detail.doc_count + '</td></tr>';
 										});
-										rtnValue += '<tr><td colspan="3"><hr></td></tr>';
-										rtnValue += '<tr><td colspan="2">FAIL</td><td>' + this.point.failures + '</td></tr>';
-										rtnValue += '<tr><td colspan="2">ERROR</td><td>' + this.point.errors + '</td></tr>';
+										if (this.point.failures + this.point.errors > 0) {
+											rtnValue += '<tr><td colspan="3"><hr></td></tr>';
+										}
+										if (this.point.failures > 0) {
+											rtnValue += '<tr><td colspan="2">FAIL</td><td>' + this.point.failures + '</td></tr>';
+										}
+										if (this.point.errors > 0) {
+											rtnValue += '<tr><td colspan="2">ERROR</td><td>' + this.point.errors + '</td></tr>';
+										}
 
 									}
 									rtnValue += '</table>';
@@ -195,7 +240,7 @@
 									point: {
 										events: {
 											click: function () {
-												console.log(this);
+												document.logChart.hosts.detailPieChart(this.info);
 											}
 										}
 									}
@@ -204,27 +249,143 @@
 							series: document.logChart.hosts.chartData.datasets
 
 						});
+					},
+					detailPieChart: function (info) {
+						if (!(info && info[0])) {
+							return;
+						}
+						var chart_info = info[0].chart_info;
+						var callMethods = {};
+						info.forEach(function (host) {
+							console.log(host);
+							host.methods.buckets.forEach(function (method) {
+								if (callMethods[method.key]) {
+									callMethods[method.key].count += method.doc_count;
+								} else {
+									callMethods[method.key] = {
+										key: method.key,
+										count: method.doc_count
+									};
+								}
+							})
+						});
+						var data = []
+						for (var property in callMethods) {
+							var method = callMethods[property];
+							if (method.count) {
+								data.push({y: method.count, name: method.key})
 
+							}
+						}
+						$("#" + chart_info.location.id + "_details").empty();
+						$("#" + chart_info.location.id + "_details").append("<div id='" + chart_info.location.id + "_detail_calls' >")
+						$("#" + chart_info.location.id + "_detail_calls").highcharts({
+							chart: {
+								plotBackgroundColor: null,
+								plotBorderWidth: null,
+								plotShadow: false,
+								type: 'pie'
+							},
+							title: {
+								text: 'Calls'
+							},
+							tooltip: {
+								pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+							},
+							plotOptions: {
+								pie: {
+									allowPointSelect: true,
+									showInLegend: true,
+									cursor: 'pointer',
+									dataLabels: {
+										enabled: true,
+										format: '<b>{point.name}</b>: {point.y} ({point.percentage:.1f}%)',
+										style: {
+											color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+										}
+									}
+								}
+							},
+							legend: {
+								layout: "vertical",
+								align: "right",
+								verticalAlign: 'middle',
+								labelFormatter: function () {
+									return '<b>' + this.name + '</b>: ' + this.y
+								},
+							},
+							series: [{
+									name: "Calls",
+									colorByPoint: true,
+									data: data
+								}]
+						});
+						$("#" + chart_info.location.id + "_details").append("<div id='" + chart_info.location.id + "_detail_table' >")
+
+//						$("#" + chart_info.location.id + "_detail_table").append()
 
 					}
 				}
 			}
 			function loadDate(date) {
-				$.get(document.logInfo.statsUrl + date, null, function (data) {
-					document.logChart.hosts.displayData(data.agg, date);
+
+				$("#container").empty();
+				$("#logLoading").show();
+				$("#container").append("<div id='logStatsErrors' />");
+				$("#container").append("<hr>");
+				$.get(document.logInfo.statsUrl + "errors/" + date, null, function (data) {
+					$("#logStatsErrors").append("<table style='width: 100%'><tbody></tbody></table>");
+					$("#logStatsErrors tbody").append("<tr><th>Time</th><th>FlowId</th><th>Call</th><th>ErrorMessage</th></tr>");
+
+					data.statshits.hits.forEach(function (hit) {
+						var source = hit._source;
+						console.log(hit);
+						$("#logStatsErrors tbody").append("<tr/>");
+						$("#logStatsErrors tbody tr:last").append("<td>" + Highcharts.dateFormat('%H:%M:%S', source.logDate) + "</td>");
+						$("#logStatsErrors tbody tr:last").append("<td>" + source.flowId + "</td>");
+						$("#logStatsErrors tbody tr:last").append("<td>" + source.content['[4] AuditLogDto'].method + "</td>");
+						$("#logStatsErrors tbody tr:last").append("<td>" + source.content['[4] AuditLogDto'].response.message + "</td>");
+					})
+				});
+				$.get(document.logInfo.statsUrl + "overview/" + date, null, function (data) {
+					document.logChart.hosts.displayData(data.agg,
+							{
+								date: date,
+								hosts: {
+									mzbeprod1: "mzbeprod",
+									mzbeprod2: "mzbeprod"
+								},
+								location: {
+									parent: 'container',
+									id: 'mzbeprod'
+								}
+							}
+					);
+					document.logChart.hosts.displayData(data.agg,
+							{
+								date: date,
+								hosts: {
+									'mezoappprod1.servers.vrt.be': "mezoappprod",
+									'mezoappprod2.servers.vrt.be': "mezoappprod"
+								},
+								location: {
+									parent: 'container',
+									id: 'mezoappprod'
+								}
+							}
+					);
+				}).always(function () {
+					$("#logLoading").hide()
 				})
 			}
-
+			$(function () {
+				document.logDisplay.dateBar.display("bar");
+			})
 
 		</script>
+		<div id="logLoading"><center><img src="services/logging/loading.gif" style="margin: auto; opacity: 1;margin-top: 250px;"/></center></div>
 		<h1>Graph</h1>
-		<ul class="dates">
-			<li onclick="loadDate('2015-08-25')">2015-08-25</li>
-			<li onclick="loadDate('2015-08-26')">2015-08-26</li>
-			<li onclick="loadDate('2015-08-27')">2015-08-27</li>
-			<li onclick="loadDate('2015-08-28')">2015-08-28</li>
-		</ul>
+		<div id="bar"></div>
 		<div id="container"></div>
-		<div id="container_details"></div>
     </body>
 </html>
