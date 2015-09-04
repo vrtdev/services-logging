@@ -1,6 +1,6 @@
 package be.vrt.services.log.exposer.controller;
 
-import be.vrt.services.log.exposer.LoggingProperties;
+import be.vrt.services.logging.log.common.LoggingProperties;
 import static be.vrt.services.log.exposer.controller.JsonMap.mapWith;
 import java.io.IOException;
 import java.util.HashMap;

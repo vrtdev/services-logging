@@ -1,4 +1,4 @@
-package be.vrt.services.log.exposer;
+package be.vrt.services.logging.log.common;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +15,8 @@ public class LoggingProperties {
 
 	public final static String URLS = "log.connection.urls";
 	public final static String STATS_URL = "log.connection.stat.url";
+	public final static String APPLICATION = "log.app";
+	public final static String ENVIRONEMENT = "log.env";
 
 	private static final String LOGGING_PROPERTIES = "logging.properties";
 
@@ -29,6 +31,15 @@ public class LoggingProperties {
 				log.warn("Failed to load properties for logging ({})", LOGGING_PROPERTIES);
 			}
 		}
+	}
+	
+	String getProperty(String key){
+		String val = prop.getProperty(key);
+		if (val == null) {
+			log.warn("Property not defined " + key);
+			val = "??"+key+"??";
+		}
+		return val;
 	}
 
 	boolean loadPropertiesFromFile() {
@@ -50,6 +61,14 @@ public class LoggingProperties {
 			return false;
 		}
 
+	}
+	
+	public static String env(){
+		return instance.getProperty(ENVIRONEMENT);
+	}
+	
+	public static String app(){
+		return instance.getProperty(APPLICATION);
 	}
 
 	public static String[] connectionUrls() {

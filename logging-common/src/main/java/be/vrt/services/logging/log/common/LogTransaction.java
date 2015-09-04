@@ -22,8 +22,12 @@ public class LogTransaction implements Constants {
 
 	}
 	
-	public static void user(String user) {
+	public static void registerUser(String user) {
 		MDC.put(USER, user);
+	}
+	
+	public static String user() {
+		return MDC.get(USER);
 	}
 
 	public static String id() {

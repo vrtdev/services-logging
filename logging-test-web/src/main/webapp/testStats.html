@@ -20,37 +20,10 @@
 
 
         <style>
-			pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
-			.string { color: green; }
-			.number { color: darkorange; }
-			.boolean { color: blue; }
-			.null { color: magenta; }
-			.key { color: red; }
-
-			ul.dates{
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			.dates li {
-				display: inline-block;
-				padding: 3px 10px;
-				width:  100px;
-				text-align: center;
-				color: white;
-				margin: 5px;
-				background-color: darkblue
-			}
-			.log-tooltip-serie {
-				background: black;
-				color: white;
-				padding: 3px 8px;
-			}
-
 			#logLoading {
 				display: none;
 				background: black;
-				opacity: 0.4;
+				opacity: 0.7;
 				position: fixed;
 				top: 0px;
 				bottom: 0px;
@@ -65,7 +38,7 @@
 
 
 
-			var chart, chartDetail;
+//			var chart, chartDetail;
 			document.logInfo = {
 				statsUrl: "log/stats/",
 				knownHost: function (name, info) {
@@ -111,7 +84,85 @@
 						var day = date.getDate();
 						return year + "-" + (month < 10 ? "0" : "") + month + "-" + (day < 10 ? "0" : "") + day;
 					}
+				}	,
+				failurePanel: function (date, containerId) {
+					$("#" + containerId).append('<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title"><button type="button" class="btn btn-warning btn-xs btn-open">+</button><button type="button" class="btn btn-warning btn-xs btn-close">-</button> [' + date + '] Failure Listing  <span class="badge">0</span></h3></div><div class="panel-body"><div id="logStatsFails" /></div></div>');
+					$("#logStatsFails").parent().parent().hide();
+					$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").hide();
+					$.get(document.logInfo.statsUrl + "failures/" + date, null, function (data) {
+						if (!data.statshits.hits || data.statshits.hits.length == 0) {
+							$("#logStatsFails").parent().parent().hide();
+							return;
+						}
+						$("#logStatsFails").parent().parent().show();
+						$("#logStatsFails").append("<table style='width: 100%' class='table table-hover'><tbody></tbody></table>");
+						$("#logStatsFails tbody").append("<tr><th>#</th><th>Time</th><th>FlowId</th><th>Call</th><th>ErrorMessage</th></tr>");
+						var i = 0;
+						data.statshits.hits.forEach(function (hit) {
+							var source = hit._source;
+							$("#logStatsFails tbody").append("<tr/>");
+							$("#logStatsFails tbody tr:last").append("<td>" + ++i + "</td>");
+							$("#logStatsFails tbody tr:last").append("<td>" + Highcharts.dateFormat('%H:%M:%S', source.logDate) + "</td>");
+							$("#logStatsFails tbody tr:last").append("<td onclick='document.rLog.displayInfo(\"" + source.flowId + "\")'>" + source.flowId + "</td>");
+							$("#logStatsFails tbody tr:last").append("<td>" + source.content['[4] AuditLogDto'].method + "</td>");
+							$("#logStatsFails tbody tr:last").append("<td>" + source.content['[4] AuditLogDto'].response.message + "</td>");
+						})
+						$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".badge").text(i);
+
+						$("#logStatsFails").parent().parent().children(".panel-body").hide();
+						$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-open").click(function () {
+							$("#logStatsFails").parent().parent().children(".panel-body").show();
+							$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-open").hide();
+							$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").show();
+						});
+						$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").click(function () {
+							$("#logStatsFails").parent().parent().children(".panel-body").hide();
+							$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").hide();
+							$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-open").show();
+						});
+					});
+				},
+				errorPanel: function (date, containerId) {
+					$("#" + containerId).append('<div class="panel panel-danger"><div class="panel-heading"><h3 class="panel-title"><button type="button" class="btn btn-danger btn-xs btn-open">+</button><button type="button" class="btn btn-danger btn-xs btn-close">-</button> [' + date + '] Error Listing  <span class="badge">0</span></h3></div><div class="panel-body"><div id="logStatsErrors" /></div></div>');
+					$("#logStatsErrors").parent().parent().hide();
+					$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").hide();
+
+
+					$.get(document.logInfo.statsUrl + "errors/" + date, null, function (data) {
+						if (!data.statshits.hits || data.statshits.hits.length == 0) {
+							return;
+						}
+						$("#logStatsErrors").parent().parent().show();
+
+						$("#logStatsErrors").append("<table style='width: 100%' class='table table-hover'><tbody></tbody></table>");
+						$("#logStatsErrors tbody").append("<tr class='error'><th>#</th><th>Time</th><th>FlowId</th><th>Call</th><th>ErrorMessage</th></tr>");
+						var i = 0;
+						data.statshits.hits.forEach(function (hit) {
+							var source = hit._source;
+							$("#logStatsErrors tbody").append("<tr/>");
+							$("#logStatsErrors tbody tr:last").append("<td>" + ++i + "</td>");
+							$("#logStatsErrors tbody tr:last").append("<td>" + Highcharts.dateFormat('%H:%M:%S', source.logDate) + "</td>");
+							$("#logStatsErrors tbody tr:last").append("<td onclick='document.rLog.displayInfo(\"" + source.flowId + "\")'>" + source.flowId + "</td>");
+							$("#logStatsErrors tbody tr:last").append("<td>" + source.content['[4] AuditLogDto'].method + "</td>");
+							$("#logStatsErrors tbody tr:last").append("<td>" + source.content['[4] AuditLogDto'].response.message + "</td>");
+						})
+						$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".badge").text(i);
+
+						$("#logStatsErrors").parent().parent().children(".panel-body").hide();
+						$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-open").click(function () {
+							$("#logStatsErrors").parent().parent().children(".panel-body").show();
+							$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-open").hide();
+							$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").show();
+						});
+						$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").click(function () {
+							$("#logStatsErrors").parent().parent().children(".panel-body").hide();
+							$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").hide();
+							$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-open").show();
+						});
+
+					});
 				}
+
 			}
 			document.logChart = {
 				hosts: {
@@ -169,8 +220,13 @@
 									detailData.color = "red";
 								}
 
-							})
+							});
 						});
+
+						if (this.chartData.datasets.length == 0) {
+							return;
+						}
+
 						if ($("#" + info.location.id).length === 0) {
 							$("#" + info.location.parent).append("<hr>");
 							$("#" + info.location.parent).append("<div id='" + info.location.id + "'/>");
@@ -274,7 +330,6 @@
 						var chart_info = info[0].chart_info;
 						var callMethods = {};
 						info.forEach(function (host) {
-							console.log(host);
 							host.methods.buckets.forEach(function (method) {
 								if (callMethods[method.key]) {
 									callMethods[method.key].count += method.doc_count;
@@ -344,95 +399,17 @@
 					}
 				}
 			}
-			function createPanel(type, title, contentId, badge) {
-				var div = $('<div class="panel panel-'+type+'"><div class="panel-heading"><h3 class="panel-title"><button type="button" class="btn btn-'+type+' btn-xs btn-open">+</button><button type="button" class="btn btn-'+type+' btn-xs btn-close">-</button> '+title+ (badge ? '':' <span class="badge">'+badge+'</span>')+'</h3></div><div class="panel-body"><div id="'+contentId+'" /></div></div>');
-				
-			}
 
 			function loadDate(date) {
 
 				$("#container").empty();
 				$("#logLoading").show();
-				$("#container").append('<div class="panel panel-danger"><div class="panel-heading"><h3 class="panel-title"><button type="button" class="btn btn-danger btn-xs btn-open">+</button><button type="button" class="btn btn-danger btn-xs btn-close">-</button> Error Listing <span class="badge">0</span></h3></div><div class="panel-body"><div id="logStatsErrors" /></div></div>');
-				$("#logStatsErrors").parent().parent().hide();
-				$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").hide();
 
-					
-				$.get(document.logInfo.statsUrl + "errors/" + date, null, function (data) {
-					if (!data.statshits.hits || data.statshits.hits.length == 0) {
-						return;
-					}
-					$("#logStatsErrors").parent().parent().show();
-
-					$("#logStatsErrors").append("<table style='width: 100%' class='table table-hover'><tbody></tbody></table>");
-					$("#logStatsErrors tbody").append("<tr class='error'><th>#</th><th>Time</th><th>FlowId</th><th>Call</th><th>ErrorMessage</th></tr>");
-					var i = 0;
-					data.statshits.hits.forEach(function (hit) {
-						var source = hit._source;
-						console.log(hit);
-						$("#logStatsErrors tbody").append("<tr/>");
-						$("#logStatsErrors tbody tr:last").append("<td>" + ++i + "</td>");
-						$("#logStatsErrors tbody tr:last").append("<td>" + Highcharts.dateFormat('%H:%M:%S', source.logDate) + "</td>");
-						$("#logStatsErrors tbody tr:last").append("<td onclick='document.rLog.displayInfo(\"" + source.flowId + "\")'>" + source.flowId + "</td>");
-						$("#logStatsErrors tbody tr:last").append("<td>" + source.content['[4] AuditLogDto'].method + "</td>");
-						$("#logStatsErrors tbody tr:last").append("<td>" + source.content['[4] AuditLogDto'].response.message + "</td>");
-					})
-					$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".badge").text(i);
-
-					$("#logStatsErrors").parent().parent().children(".panel-body").hide();
-					$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-open").click(function () {
-						$("#logStatsErrors").parent().parent().children(".panel-body").show();
-						$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-open").hide();
-						$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").show();
-					});
-					$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").click(function () {
-						$("#logStatsErrors").parent().parent().children(".panel-body").hide();
-						$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").hide();
-						$("#logStatsErrors").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-open").show();
-					});
-
-				});
+				document.logDisplay.errorPanel(date, "container");
+				document.logDisplay.failurePanel(date, "container");
 
 
-				$("#container").append('<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title"><button type="button" class="btn btn-warning btn-xs btn-open">+</button><button type="button" class="btn btn-warning btn-xs btn-close">-</button> Failure Listing <span class="badge">0</span></h3></div><div class="panel-body"><div id="logStatsFails" /></div></div>');
-				$("#logStatsFails").parent().parent().hide();
-				$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").hide();
-				$.get(document.logInfo.statsUrl + "failures/" + date, null, function (data) {
-					if (!data.statshits.hits || data.statshits.hits.length == 0) {
-						$("#logStatsFails").parent().parent().hide();
-						return;
-					}
-					$("#logStatsFails").parent().parent().show();
-					$("#logStatsFails").append("<table style='width: 100%' class='table table-hover'><tbody></tbody></table>");
-					$("#logStatsFails tbody").append("<tr><th>#</th><th>Time</th><th>FlowId</th><th>Call</th><th>ErrorMessage</th></tr>");
-					var i = 0;
-					console.log()
-					data.statshits.hits.forEach(function (hit) {
-						var source = hit._source;
-						console.log(hit);
-						$("#logStatsFails tbody").append("<tr/>");
-						$("#logStatsFails tbody tr:last").append("<td>" + ++i + "</td>");
-						$("#logStatsFails tbody tr:last").append("<td>" + Highcharts.dateFormat('%H:%M:%S', source.logDate) + "</td>");
-						$("#logStatsFails tbody tr:last").append("<td onclick='document.rLog.displayInfo(\"" + source.flowId + "\")'>" + source.flowId + "</td>");
-						$("#logStatsFails tbody tr:last").append("<td>" + source.content['[4] AuditLogDto'].method + "</td>");
-						$("#logStatsFails tbody tr:last").append("<td>" + source.content['[4] AuditLogDto'].response.message + "</td>");
-					})
-					$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".badge").text(i);
 
-					$("#logStatsFails").parent().parent().children(".panel-body").hide();
-					$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-open").click(function () {
-						$("#logStatsFails").parent().parent().children(".panel-body").show();
-						$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-open").hide();
-						$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").show();
-					});
-					$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").click(function () {
-						$("#logStatsFails").parent().parent().children(".panel-body").hide();
-						$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-close").hide();
-						$("#logStatsFails").parent().parent().children(".panel-heading").children(".panel-title").children(".btn-open").show();
-					});
-
-
-				});
 				$.get(document.logInfo.statsUrl + "overview/" + date, null, function (data) {
 					document.logChart.hosts.displayData(data.agg,
 							{
@@ -468,15 +445,14 @@
 			$(function () {
 				document.logDisplay.dateBar.display("bar");
 				loadDate(document.logDisplay.dateBar.formatDate(new Date()));
-				//document.logDisplay.dateBar.display("bar");
 			})
 
 		</script>
-		<div id="logLoading"><center><img src="services/logging/loading.gif" style="margin: auto; opacity: 1;margin-top: 250px;"/></center></div>
-		<h1 style="margin-bottom: 20px; margin-left: 20px;" id='log-stat-title'>Monitoring Stats</h1>
-		<div id="bar"></div>
-		<hr/>
+		<div id="logLoading" ><center><img src="services/logging/loading.gif" style="margin: auto; opacity: 1;margin-top: 250px;"/></center></div>
 		<div class="container-fluid">
+			<h1 style="margin-bottom: 20px;" id='log-stat-title'>Monitoring Stats</h1>
+			<div id="bar"></div>
+			<hr/>
 			<div id="container"></div>
 		</div>
     </body>

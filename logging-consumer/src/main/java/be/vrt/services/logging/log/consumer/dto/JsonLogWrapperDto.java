@@ -18,6 +18,7 @@ public class JsonLogWrapperDto {
 	private int breadCrumb;
 	private int lineNumber;
 	
+	private String user;
 	private String logLevel;
 	
 	private String loggerName;
@@ -146,4 +147,14 @@ public class JsonLogWrapperDto {
 	public void setLogDate(Date logDate) {
 		this.logDate = logDate;
 	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+	
+	
 }

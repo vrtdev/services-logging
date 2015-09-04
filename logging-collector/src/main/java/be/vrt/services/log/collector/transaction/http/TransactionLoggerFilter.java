@@ -45,7 +45,7 @@ public class TransactionLoggerFilter implements Filter, Constants {
 
 		response.setHeader(TRANSACTION_ID, transaction.getTransactionId());
 		response.setHeader(FLOW_ID, transaction.getFlowId());
-		LogTransaction.user(((HttpServletRequest)req).getRemoteUser());
+		LogTransaction.registerUser(((HttpServletRequest)req).getRemoteUser());
 		try {
 			chain.doFilter(request, response);
 		} finally {
