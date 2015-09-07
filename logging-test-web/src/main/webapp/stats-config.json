@@ -1,0 +1,25 @@
+{
+	"hostChart": [
+		{
+			"hosts": {
+				"mzbeprod1": "mzbeprod",
+				"mzbeprod2": "mzbeprod"
+			},
+			"location": {
+				"parent": "container",
+				"id": "mzbeprod"
+			}
+		},
+		{
+			"hosts": {
+				"mezoappprod1.servers.vrt.be": "mezoappprod",
+				"mezoappprod2.servers.vrt.be": "mezoappprod"
+			},
+			"location": {
+				"parent": "container",
+				"id": "mezoappprod"
+			}
+		}
+
+	]
+}

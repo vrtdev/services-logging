@@ -1,5 +1,5 @@
 var logBaseUrl = logBaseUrl || 'log';
-
+var rootContextUrl = document.rootContextUrl || '';
 if (!document.rLog) {
 	document.rLog = {
 		baseUrl: logBaseUrl,
@@ -8,7 +8,7 @@ if (!document.rLog) {
 		resultSize: 500,
 		client: null,
 		init: function () {
-			$.get("services/logging/logging.html",
+			$.get( rootContextUrl + "services/logging/logging.html",
 					function (data) {
 						$("body").append(data);
 						$("#rlog-info-clear-btn").click(function () {

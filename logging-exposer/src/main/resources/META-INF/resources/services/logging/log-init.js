@@ -1,17 +1,22 @@
+if (!document.rootContextUrl) {
+	document.rootContextUrl = "";
+}
+
 function loadjscssfile(filename, filetype) {
+	var context = filename.search(/\/\//) !== -1 ? "" : document.rootContextUrl;
 	if (filetype == "js") { //if filename is a external JavaScript file
-		var fileref = document.createElement('script')
-		fileref.setAttribute("type", "text/javascript")
-		fileref.setAttribute("src", filename)
+		var fileref = document.createElement('script');
+		fileref.setAttribute("type", "text/javascript");
+		fileref.setAttribute("src", context + filename);
 	}
 	else if (filetype == "css") { //if filename is an external CSS file
-		var fileref = document.createElement("link")
-		fileref.setAttribute("rel", "stylesheet")
-		fileref.setAttribute("type", "text/css")
-		fileref.setAttribute("href", filename)
+		var fileref = document.createElement("link");
+		fileref.setAttribute("rel", "stylesheet");
+		fileref.setAttribute("type", "text/css");
+		fileref.setAttribute("href", context + filename);
 	}
 	if (typeof fileref != "undefined")
-		document.getElementsByTagName("head")[0].appendChild(fileref)
+		document.getElementsByTagName("head")[0].appendChild(fileref);
 }
 
 if (typeof jQuery === 'undefined') {
@@ -20,6 +25,9 @@ if (typeof jQuery === 'undefined') {
 loadjscssfile("services/logging/logging.css?v=${mvn.timestamp}", "css");
 loadjscssfile("https://fonts.googleapis.com/css?family=Ubuntu+Mono", "css");
 loadjscssfile("services/logging/lib/momentjs.js", "js");
+loadjscssfile("services/logging/lib/highcharts.js", "js");
+loadjscssfile("services/logging/lib/highcharts-config.js", "js");
 
 
 loadjscssfile("services/logging/logging.js?v=${mvn.timestamp}", "js");
+loadjscssfile("services/logging/log-stats.js?v=${mvn.timestamp}", "js");
