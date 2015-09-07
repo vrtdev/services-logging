@@ -44,8 +44,12 @@
 				$.get("../../stats-config.json", null, function (data) {
 					console.log(data);
 					document.logInfo.statsConfig = data;
+					
 					if (document.logInfo.statsConfig.statsUrl) {
 						document.logInfo.statsUrl = document.logInfo.statsConfig.statsUrl;
+					} else if(!document.logInfo.statsUrlOk){
+						document.logInfo.statsUrl = document.rootContextUrl + document.logInfo.statsUrl;
+						document.logInfo.statsUrlOk = true;
 					}
 
 					document.logDisplay.errorPanel(date, "container");
