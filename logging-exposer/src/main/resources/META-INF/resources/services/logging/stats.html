@@ -10,7 +10,7 @@
 			document.rootContextUrl = "../../";
 		</script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-		<script src="log-init.js"></script>
+		<script src="log-init.js?abc"></script>
 
 
 
@@ -73,10 +73,8 @@
 				});
 			}
 
-			$(function () {
+			document.afterLoad.push(function () {
 
-//				document.logInfo.statsUrl = "../../" + document.logInfo.statsUrl;
-//				document.logInfo.statsUrl = "http://localhost:8080/mz-engine-web/";
 				document.logDisplay.dateBar.display("bar");
 				loadDate(document.logDisplay.dateBar.formatDate(new Date()));
 			})
