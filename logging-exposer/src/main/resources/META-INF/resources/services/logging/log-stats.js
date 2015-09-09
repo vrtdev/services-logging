@@ -90,6 +90,7 @@ document.logDisplay = {
 
 		$.get(document.logInfo.statsUrl + "errors/" + date, null, function (data) {
 			if (!data.statshits.hits || data.statshits.hits.length == 0) {
+				$("#logStatsErrors").parent().parent().hide();
 				return;
 			}
 			$("#logStatsErrors").parent().parent().show();

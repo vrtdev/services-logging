@@ -123,7 +123,7 @@ if (!document.rLog) {
 				name: 'request'
 				, data: []
 				, refresh: function () {
-					$.ajax(document.rLog.baseUrl + "/list")
+					$.ajax(rootContextUrl +  document.rLog.baseUrl + "/list")
 							.done(function (data) {
 								document.rLog.tabs.tab_request.data = data.logs;
 								document.rLog.tabs.tab_request.data.sort(function (a, b) {
@@ -145,7 +145,7 @@ if (!document.rLog) {
 				name: 'failure'
 				, data: []
 				, refresh: function () {
-					$.ajax(document.rLog.baseUrl + "/fail")
+					$.ajax(rootContextUrl + document.rLog.baseUrl + "/fail")
 							.done(function (data) {
 								document.rLog.tabs.tab_failure.data = data.logs;
 								document.rLog.tabs.tab_failure.data.sort(function (a, b) {
@@ -167,7 +167,7 @@ if (!document.rLog) {
 				name: 'error'
 				, data: []
 				, refresh: function () {
-					$.ajax(document.rLog.baseUrl + "/error")
+					$.ajax(rootContextUrl + document.rLog.baseUrl + "/error")
 							.done(function (data) {
 								document.rLog.tabs.tab_failure.data = data.logs;
 								document.rLog.tabs.tab_failure.data.sort(function (a, b) {
@@ -188,7 +188,7 @@ if (!document.rLog) {
 				name: 'flows'
 				, data: []
 				, refresh: function () {
-					$.ajax(document.rLog.baseUrl + "/flows")
+					$.ajax(rootContextUrl + document.rLog.baseUrl + "/flows")
 							.done(function (data) {
 								var flows = {};
 								document.rLog.tabs.tab_flows.data = [];
@@ -226,7 +226,7 @@ if (!document.rLog) {
 				name: 'static_flows'
 				, data: []
 				, refresh: function () {
-					$.ajax(document.rLog.baseUrl + "/static-flows")
+					$.ajax(rootContextUrl + document.rLog.baseUrl + "/static-flows")
 							.done(function (data) {
 								document.rLog.tabs.tab_static_flows.data = data.flows;
 								$("#rlog-tab-static_flows table tbody").empty();
@@ -330,7 +330,7 @@ if (!document.rLog) {
 			$('#rlog-detail-close').click(document.rLog.hideDetail);
 			$('#rlog-detail-server').text("searching >> " + logId)
 
-			$.ajax(this.baseUrl + '/transaction/' + encodeURIComponent(logId))
+			$.ajax(rootContextUrl + this.baseUrl + '/transaction/' + encodeURIComponent(logId))
 					.done(function (data) {
 						document.rLog.displayResults(data.hits);
 					});
