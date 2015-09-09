@@ -21,7 +21,7 @@ public class ElasticSearchAppender extends AbstractJsonAppender {
 
 	@Override
 	protected void persist(String json) {
-		String esUrl = "http://" + host + ":" + port + "/logging/log/"+UUID.randomUUID().toString();
+		String esUrl = "http://" + host + ":" + port + "/logging/logs/"+UUID.randomUUID().toString();
 		try {
 			
 			
