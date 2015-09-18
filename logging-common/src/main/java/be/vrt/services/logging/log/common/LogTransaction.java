@@ -23,6 +23,9 @@ public class LogTransaction implements Constants {
 	}
 	
 	public static void registerUser(String user) {
+		if(user==null) { // We do this as the morons of JBoss logging cannot handle a simple thing as null values in a Set...
+			user = "UNKNOWN";
+		}
 		MDC.put(USER, user);
 	}
 	
