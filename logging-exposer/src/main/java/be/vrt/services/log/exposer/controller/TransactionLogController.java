@@ -86,15 +86,7 @@ public class TransactionLogController extends HttpServlet {
 
 			Map<String, Object> query = createEsStatsQuery(date);
 			String connectionUrl = LoggingProperties.connectionStatUrl();
-			Map result = (Map) searchEsByQuery(connectionUrl, query).get("aggregations");
-
-			map.put("agg", result);
-		} else if (path.matches("/stats/overview/[^/]*")) {
-			String date = path.substring("/stats/overview/".length()).trim();
-
-			Map<String, Object> query = createEsStatsQuery(date);
-			String connectionUrl = LoggingProperties.connectionStatUrl();
-			Map result = (Map) searchEsByQuery(connectionUrl, query).get("aggregations");
+			Map result = (Map) searchAggEsByQuery(connectionUrl, query).get("aggregations");
 
 			map.put("agg", result);
 
