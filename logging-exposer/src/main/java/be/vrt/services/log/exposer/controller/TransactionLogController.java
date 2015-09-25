@@ -86,7 +86,7 @@ public class TransactionLogController extends HttpServlet {
 
 			Map<String, Object> query = createEsStatsQuery(date);
 			String connectionUrl = LoggingProperties.connectionStatUrl();
-			Map result = (Map) searchAggEsByQuery(connectionUrl, query).get("aggregations");
+			Map result = (Map) searchAggEsByQuery(connectionUrl, query);
 
 			map.put("agg", result);
 
@@ -184,6 +184,7 @@ public class TransactionLogController extends HttpServlet {
 				return (Map<String, Object>) mapper.readValue(con.getInputStream(), HashMap.class).get("aggregations");
 			}
 		} catch (Exception ex) {
+			log.error("Failed to query ES", ex);
 		}
 		return null;
 	}
