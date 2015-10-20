@@ -55,6 +55,7 @@
 				<groupId>org.springframework.amqp</groupId>
 				<artifactId>spring-rabbit</artifactId>
 				<version>${org.springframework.amqp-version}</version>
+				<scope>provided</scope>
 				<exclusions>
 					<exclusion>
 						<groupId>commons-logging</groupId>
