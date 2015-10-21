@@ -31,7 +31,7 @@ public class LogFlowWrapper implements MessageConverter {
 		LogTransaction.createFlowId(headerFlowId,originUser );
 		try{
 			Object o = converter.fromMessage(msg);
-			log.debug("Message recieved on {}", msg.getMessageProperties().getConsumerQueue(), o);
+			log.debug("Message received on {}", msg.getMessageProperties().getConsumerQueue(), o);
 			return o;
 		} catch (Exception e){
 			log.error("Failed to process message from {}", msg.getMessageProperties().getConsumerQueue(), e);
