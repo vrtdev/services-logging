@@ -4,6 +4,7 @@ import be.vrt.services.log.collector.exception.FailureException;
 import be.vrt.services.log.collector.transaction.dto.AmqpTransactionLogDto;
 import be.vrt.services.log.collector.transaction.dto.JobTransactionLogDto;
 import be.vrt.services.logging.log.common.LogTransaction;
+import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
 import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -15,6 +16,7 @@ public class JobRegister {
 		T result = null;
 		LogTransaction.startNewTransaction();
 		JobTransactionLogDto transaction = new JobTransactionLogDto();
+		transaction.setStatus(AbstractTransactionLog.Type.OK);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		transaction.setStartDate(new Date(stopWatch.getStartTime()));
