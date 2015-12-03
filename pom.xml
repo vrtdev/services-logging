@@ -42,7 +42,7 @@
 		<aopalliance-version>1.0</aopalliance-version>
 		<org.springframework.amqp-version>1.4.3.RELEASE</org.springframework.amqp-version>
 		<javax.servlet-version>3.0.1</javax.servlet-version>
-		<org.jacoco-version>0.7.4.201502262128</org.jacoco-version>
+		<org.jacoco-version>0.7.5.201505241946</org.jacoco-version>
 
 		<!-- sonar -->
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
