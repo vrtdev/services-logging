@@ -4,8 +4,10 @@ import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
+import org.slf4j.Logger;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -13,6 +15,7 @@ import org.slf4j.MDC;
 public class LogTransaction implements Constants {
 
 	private static String hostname;
+	private final static String TAG_LIST = "tags";
 
 	public static void resetThread() {
 		MDC.remove(TRANSACTION_ID);
@@ -21,14 +24,34 @@ public class LogTransaction implements Constants {
 		MDC.remove(USER);
 
 	}
-	
+
 	public static void registerUser(String user) {
-		if(user==null) { // We do this as the morons of JBoss logging cannot handle a simple thing as null values in a Set...
+		if (user == null) { // We do this as the morons of JBoss logging cannot handle a simple thing as null values in a Set...
 			user = "UNKNOWN";
 		}
 		MDC.put(USER, user);
 	}
-	
+
+	public static void tagTransaction(String tag) {
+
+		String tagList = MDC.get(TAG_LIST);
+		if (tagList == null) {
+			tagList = tag;
+		} else {
+			tagList += "," + tag;
+		}
+		MDC.put(TAG_LIST, tagList);
+	}
+
+	public static boolean isTaggedWith(String tag) {
+		String tagList = MDC.get(TAG_LIST);
+		if (tagList == null) {
+			return false;
+		} else {
+			return Arrays.asList(tagList.split(",")).contains(tag);
+		}
+	}
+
 	public static String user() {
 		return MDC.get(USER);
 	}
