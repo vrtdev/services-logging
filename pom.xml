@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>be.vrt.services.logging</groupId>
 	<artifactId>logging</artifactId>
-	<version>1.7.0</version>
+	<version>1.8.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<parent>
@@ -55,6 +55,7 @@
 				<groupId>org.springframework.amqp</groupId>
 				<artifactId>spring-rabbit</artifactId>
 				<version>${org.springframework.amqp-version}</version>
+				<scope>provided</scope>
 				<exclusions>
 					<exclusion>
 						<groupId>commons-logging</groupId>
