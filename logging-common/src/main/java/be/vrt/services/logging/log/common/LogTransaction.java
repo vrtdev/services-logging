@@ -6,10 +6,10 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 
 import org.slf4j.LoggerFactory;
@@ -111,7 +111,8 @@ public class LogTransaction implements Constants {
 		if (tagist.isEmpty()) {
 			MDC.remove(TAG_LIST);
 		} else {
-			MDC.put(TAG_LIST, tagist.stream().collect(Collectors.joining(TAG_SEPERATOR)));
+
+			MDC.put(TAG_LIST, join(tagist, TAG_SEPERATOR));
 		}
 
 	}
@@ -159,6 +160,23 @@ public class LogTransaction implements Constants {
 
 	public static String flow() {
 		return MDC.get(FLOW_ID);
+	}
+
+	private static String join(List<String> strings, String d) {
+		if (strings.size() == 0) {
+			return "";
+		}
+		Iterator<String> sit = strings.iterator();
+		String s = sit.next();
+		if (strings.size() == 1) {
+			return s;
+		}
+
+		String rtnValue = s;
+		while (sit.hasNext()) {
+			d += d + sit.next();
+		}
+		return rtnValue;
 	}
 
 	private static String hostname() {
