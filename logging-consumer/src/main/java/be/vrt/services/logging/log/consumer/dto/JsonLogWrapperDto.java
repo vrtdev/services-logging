@@ -25,6 +25,7 @@ public class JsonLogWrapperDto {
 	private String logComment;
 	
 	private List<String> ids = new LinkedList<>();
+	private List<String> tags = new LinkedList<>();
 	private Map<String, Object> content = new HashMap<>();
 	private Object environmentInfo;
 
@@ -155,6 +156,15 @@ public class JsonLogWrapperDto {
 	public void setUser(String user) {
 		this.user = user;
 	}
+
+	public List<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
+	}
+	
 	
 	
 }

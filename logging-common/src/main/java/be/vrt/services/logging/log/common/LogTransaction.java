@@ -6,7 +6,11 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import org.slf4j.LoggerFactory;
@@ -15,13 +19,20 @@ import org.slf4j.MDC;
 public class LogTransaction implements Constants {
 
 	private static String hostname;
-	private final static String TAG_LIST = "tags";
+	private static final String TAG_LIST = "tags";
+	private static final String TAG_SEPERATOR = ",";
+	private static final String ID_LIST = "ids";
+	private static final String ID_SEPERATOR = ",";
+
+	private static final String DATA_CLEANUP_REGEX = "[^-_\\w]";
 
 	public static void resetThread() {
 		MDC.remove(TRANSACTION_ID);
 		MDC.remove(BREADCRUMB_COUNTER);
 		MDC.remove(FLOW_ID);
 		MDC.remove(USER);
+		MDC.remove(TAG_LIST);
+		MDC.remove(ID_LIST);
 
 	}
 
@@ -32,15 +43,76 @@ public class LogTransaction implements Constants {
 		MDC.put(USER, user);
 	}
 
+	public static void registerId(String id) {
+		id = id == null ? null : id.replaceAll(DATA_CLEANUP_REGEX, "");
+		if (StringUtils.isEmpty(id)) {
+			return;
+		}
+
+		String tagList = MDC.get(ID_LIST);
+		if (tagList == null) {
+			tagList = id;
+		} else {
+			tagList += ID_SEPERATOR + id;
+		}
+		MDC.put(ID_LIST, tagList);
+	}
+
+	public static List<String> listIds() {
+
+		String tagList = MDC.get(ID_LIST);
+		if (StringUtils.isEmpty(tagList)) {
+			return new LinkedList<>();
+		} else {
+			return new LinkedList<>(Arrays.asList(tagList.split(ID_SEPERATOR)));
+		}
+	}
+
 	public static void tagTransaction(String tag) {
+		tag = tag == null ? null : tag.replaceAll(DATA_CLEANUP_REGEX, "");
+
+		if (StringUtils.isEmpty(tag)) {
+			return;
+		}
 
 		String tagList = MDC.get(TAG_LIST);
 		if (tagList == null) {
 			tagList = tag;
 		} else {
-			tagList += "," + tag;
+			tagList += TAG_SEPERATOR + tag;
 		}
 		MDC.put(TAG_LIST, tagList);
+	}
+
+	public static List<String> listTags() {
+
+		String tagList = MDC.get(TAG_LIST);
+		if (StringUtils.isEmpty(tagList)) {
+			return new LinkedList<>();
+		} else {
+			return new LinkedList<>(Arrays.asList(tagList.split(TAG_SEPERATOR)));
+		}
+	}
+
+	public static void untagTransaction(String tag) {
+
+		tag = tag == null ? null : tag.replaceAll(DATA_CLEANUP_REGEX, "");
+
+		String tags = MDC.get(TAG_LIST);
+
+		if (tags == null || tag == null) {
+			return;
+		}
+
+		List<String> tagist = new LinkedList<>(Arrays.asList(tags.split(TAG_SEPERATOR)));
+		tagist.remove(tag);
+
+		if (tagist.isEmpty()) {
+			MDC.remove(TAG_LIST);
+		} else {
+			MDC.put(TAG_LIST, tagist.stream().collect(Collectors.joining(TAG_SEPERATOR)));
+		}
+
 	}
 
 	public static boolean isTaggedWith(String tag) {
@@ -48,7 +120,7 @@ public class LogTransaction implements Constants {
 		if (tagList == null) {
 			return false;
 		} else {
-			return Arrays.asList(tagList.split(",")).contains(tag);
+			return Arrays.asList(tagList.split(TAG_SEPERATOR)).contains(tag);
 		}
 	}
 
