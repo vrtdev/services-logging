@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import org.slf4j.LoggerFactory;
@@ -45,23 +44,23 @@ public class LogTransaction implements Constants {
 
 	public static void registerId(String id) {
 		id = id == null ? null : id.replaceAll(DATA_CLEANUP_REGEX, "");
-		if (StringUtils.isEmpty(id)) {
+		if (isEmpty(id)) {
 			return;
 		}
 
-		String tagList = MDC.get(ID_LIST);
-		if (tagList == null) {
-			tagList = id;
-		} else {
-			tagList += ID_SEPERATOR + id;
+		String idList = MDC.get(ID_LIST);
+		if (idList == null) {
+			idList = id;
+		} else if (!idList.contains(id)) {
+			idList += ID_SEPERATOR + id;
 		}
-		MDC.put(ID_LIST, tagList);
+		MDC.put(ID_LIST, idList);
 	}
 
 	public static List<String> listIds() {
 
 		String tagList = MDC.get(ID_LIST);
-		if (StringUtils.isEmpty(tagList)) {
+		if (isEmpty(tagList)) {
 			return new LinkedList<>();
 		} else {
 			return new LinkedList<>(Arrays.asList(tagList.split(ID_SEPERATOR)));
@@ -71,15 +70,17 @@ public class LogTransaction implements Constants {
 	public static void tagTransaction(String tag) {
 		tag = tag == null ? null : tag.replaceAll(DATA_CLEANUP_REGEX, "");
 
-		if (StringUtils.isEmpty(tag)) {
+		if (isEmpty(tag)) {
 			return;
 		}
 
 		String tagList = MDC.get(TAG_LIST);
+
 		if (tagList == null) {
 			tagList = tag;
-		} else {
+		} else if (!tagList.contains(tag)) {
 			tagList += TAG_SEPERATOR + tag;
+
 		}
 		MDC.put(TAG_LIST, tagList);
 	}
@@ -87,7 +88,7 @@ public class LogTransaction implements Constants {
 	public static List<String> listTags() {
 
 		String tagList = MDC.get(TAG_LIST);
-		if (StringUtils.isEmpty(tagList)) {
+		if (isEmpty(tagList)) {
 			return new LinkedList<>();
 		} else {
 			return new LinkedList<>(Arrays.asList(tagList.split(TAG_SEPERATOR)));
@@ -210,6 +211,10 @@ public class LogTransaction implements Constants {
 			LoggerFactory.getLogger(LogTransaction.class).info("update FlowId : [{}] ==> [{}]", flow(), flowid);
 		}
 		MDC.put(FLOW_ID, flowid);
+	}
+
+	private static boolean isEmpty(String s) {
+		return s == null || s.length() == 0;
 	}
 
 }

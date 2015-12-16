@@ -14,7 +14,7 @@ public class LogTransactionTest {
 
 	@Test
 	public void testTags() {
-
+		LogTransaction.resetThread();
 		assertFalse(LogTransaction.isTaggedWith("test1"));
 
 		LogTransaction.tagTransaction("test1");
@@ -49,18 +49,33 @@ public class LogTransactionTest {
 
 	@Test
 	public void testTagsRegex() {
+		LogTransaction.resetThread();
 		LogTransaction.tagTransaction("test[][][]1");
 		assertTrue(LogTransaction.isTaggedWith("test1"));
 		LogTransaction.untagTransaction("test1");
-		
+
 		LogTransaction.tagTransaction("test-1");
 		assertTrue(LogTransaction.isTaggedWith("test-1"));
 		LogTransaction.untagTransaction("test-1");
-		
+
 		LogTransaction.tagTransaction("!!!test-1???   ");
 		assertTrue(LogTransaction.isTaggedWith("test-1"));
 		LogTransaction.untagTransaction("test-1");
-		
+
 	}
-	
+
+	@Test
+	public void testAsSet() {
+		LogTransaction.resetThread();
+		LogTransaction.tagTransaction("test1");
+		LogTransaction.tagTransaction("test1");
+		assertTrue(LogTransaction.isTaggedWith("test1"));
+		assertEquals(1, LogTransaction.listTags().size());
+
+		LogTransaction.resetThread();
+		LogTransaction.registerId("test1");
+		LogTransaction.registerId("test1");
+		assertEquals(1, LogTransaction.listIds().size());
+
+	}
 }
