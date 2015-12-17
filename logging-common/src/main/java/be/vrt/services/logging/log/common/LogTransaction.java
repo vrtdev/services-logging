@@ -1,6 +1,5 @@
 package be.vrt.services.logging.log.common;
 
-import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -10,10 +9,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import org.slf4j.Logger;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+
+import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 
 public class LogTransaction implements Constants {
 
