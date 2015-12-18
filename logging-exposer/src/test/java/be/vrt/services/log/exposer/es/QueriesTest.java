@@ -72,32 +72,78 @@ public class QueriesTest {
 	}
 
 	@Test
-	public void testDailyProblemQuery_onlyRetrieveFacadeInTimeRangeWithLevel() throws Exception {
-		String contentKey = "[4] AuditLogDto";
+	public void testDailyProblemQuery_onlyRetrieveFacadeInTimeRangeWithLevel_noAppAndEnv() throws Exception {
 		index(
-				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0)).addContent(contentKey, new BasicAuditLog("thisFacadeThing", "WARN")),
-				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0)).addContent(contentKey, new BasicAuditLog("thisServiceThing", "WARN")),
-				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0)).addContent(contentKey, new BasicAuditLog("thisFacadeThing", "ERROR")),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0)).addContent(contentKey, new BasicAuditLog("thisFacadeThing", "WARN")),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0)).addContent(contentKey, new BasicAuditLog("thisServiceThing", "WARN")),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0)).addContent(contentKey, new BasicAuditLog("thisFacadeThing", "ERROR")),
-				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0)).addContent(contentKey, new BasicAuditLog("thisFacadeThing", "WARN")),
-				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0)).addContent(contentKey, new BasicAuditLog("thisServiceThing", "WARN")),
-				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0)).addContent(contentKey, new BasicAuditLog("thisFacadeThing", "ERROR"))
+				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR"),
+
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR"),
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("otherAPP", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "DEV")).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app2", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
+
+				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR")
 		);
 		DailyProblemQuery query = new DailyProblemQuery("2015-01-02", "WARN");
+		ElasticSearchResult elasticSearchResult = elasticSearchQueryExecutor.executeSearchQuery(query);
+		assertHasNumberOfHits(elasticSearchResult, 4);
+	}
+
+	@Test
+	public void testDailyProblemQuery_onlyRetrieveFacadeInTimeRangeWithLevelAppAndEnv() throws Exception {
+		index(
+				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR"),
+
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR"),
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("otherAPP", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "DEV")).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app2", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
+
+				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR")
+		);
+		DailyProblemQuery query = new DailyProblemQuery("2015-01-02", "WARN", "TEST", new String[]{"app2", "app1"});
+		ElasticSearchResult elasticSearchResult = elasticSearchQueryExecutor.executeSearchQuery(query);
+		assertHasNumberOfHits(elasticSearchResult, 2);
+	}
+
+	@Test
+	public void testDailyProblemQuery_onlyRetrieveFacadeInTimeRangeWithLevelAppAndEnv_oldIndex() throws Exception {
+		index(
+				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0)).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0)).addAuditLog("thisServiceThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0)).addAuditLog("thisFacadeThing", "ERROR"),
+
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0)).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0)).addAuditLog("thisServiceThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0)).addAuditLog("thisFacadeThing", "ERROR"),
+
+				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0)).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0)).addAuditLog("thisServiceThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0)).addAuditLog("thisFacadeThing", "ERROR")
+		);
+		DailyProblemQuery query = new DailyProblemQuery("2015-01-02", "WARN", "TEST", new String[]{"app2", "app1"});
 		ElasticSearchResult elasticSearchResult = elasticSearchQueryExecutor.executeSearchQuery(query);
 		assertHasNumberOfHits(elasticSearchResult, 1);
 	}
 
 	@Test
 	public void testDailyProblemQuery_whenMultipleHits_thenSortByDate() throws Exception {
-		String contentKey = "[4] AuditLogDto";
 		index(
-				new DailyLogEntry("first", new DateTime(2015, 1, 2, 12, 0)).addContent(contentKey, new BasicAuditLog("thisFacadeThing", "WARN")),
-				new DailyLogEntry("second", new DateTime(2015, 1, 2, 12, 3)).addContent(contentKey, new BasicAuditLog("thisFacadeThing", "WARN"))
+				new DailyLogEntry("first",  new DateTime(2015, 1, 2, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry("second", new DateTime(2015, 1, 2, 12, 3), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN")
 		);
-		DailyProblemQuery query = new DailyProblemQuery("2015-01-02", "WARN");
+		DailyProblemQuery query = new DailyProblemQuery("2015-01-02", "WARN", "TEST", new String[]{"app1"});
 		ElasticSearchResult elasticSearchResult = elasticSearchQueryExecutor.executeSearchQuery(query);
 		assertHasNumberOfHits(elasticSearchResult, 2);
 		assertHitsIdsInOrder(elasticSearchResult, "second", "first");
@@ -129,25 +175,47 @@ public class QueriesTest {
 		private Date logDate;
 		@JsonProperty
 		private Map<String, Object> content = new HashMap<>();
+		@JsonProperty
+		private EnvironmentLogInfo environmentInfo;
 
-		public DailyLogEntry(String id, DateTime logDate) {
+		public DailyLogEntry(String id, DateTime logDate, EnvironmentLogInfo environmentInfo) {
 			this.id = id;
 			this.logDate = logDate.toDate();
+			this.environmentInfo = environmentInfo;
+		}
+
+		public DailyLogEntry(DateTime logDate, EnvironmentLogInfo environmentInfo) {
+			this(UUID.randomUUID().toString(), logDate, environmentInfo);
 		}
 
 		public DailyLogEntry(DateTime logDate) {
-			this.id = UUID.randomUUID().toString();
-			this.logDate = logDate.toDate();
+			this(UUID.randomUUID().toString(), logDate, null);
 		}
 
-		public DailyLogEntry addContent(String key, Object content) {
-			this.content.put(key, content);
+		public DailyLogEntry addAuditLog(String method, String auditLevel) {
+			this.content.put("[4] AuditLogDto", new BasicAuditLog(method, auditLevel));
 			return this;
 		}
 
 		@Override
 		public String getId() {
 			return id;
+		}
+	}
+
+	private EnvironmentLogInfo log(String app, String env) {
+		return new EnvironmentLogInfo(app, env);
+	}
+
+	private static class EnvironmentLogInfo {
+		@JsonProperty
+		private String app;
+		@JsonProperty
+		private String env;
+
+		public EnvironmentLogInfo(String app, String env) {
+			this.app = app;
+			this.env = env;
 		}
 	}
 

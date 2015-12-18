@@ -87,13 +87,13 @@ public class TransactionLogController extends HttpServlet {
 		} else if (path.matches("/stats/errors/[^/]*")) {
 			String date = path.substring("/stats/errors/".length()).trim();
 
-			Map result = elasticSearchQueryExecutor.executeSearchQuery(new DailyProblemQuery(date, "ERROR")).getData();
+			Map result = getDailyProblemsWithLevelAndDate(date, "ERROR");
 
 			map.put("statshits", result);
 		} else if (path.matches("/stats/failures/[^/]*")) {
 			String date = path.substring("/stats/failures/".length()).trim();
 
-			Map result = elasticSearchQueryExecutor.executeSearchQuery(new DailyProblemQuery(date, "FAIL")).getData();
+			Map result = getDailyProblemsWithLevelAndDate(date, "FAIL");
 
 			map.put("statshits", result);
 		}
@@ -107,6 +107,16 @@ public class TransactionLogController extends HttpServlet {
 		String json = mapper.writeValueAsString(map);
 		resp.getWriter().print(json);
 
+	}
+
+	private Map getDailyProblemsWithLevelAndDate(String date, String level) {
+		String[] statsApps = LoggingProperties.statsApps();
+		String statsEnv = LoggingProperties.statsEnv();
+		if(statsApps == null || statsEnv == null) {
+			return elasticSearchQueryExecutor.executeSearchQuery(new DailyProblemQuery(date, level)).getData();
+		} else {
+			return elasticSearchQueryExecutor.executeSearchQuery(new DailyProblemQuery(date, level, statsEnv, statsApps)).getData();
+		}
 	}
 
 }

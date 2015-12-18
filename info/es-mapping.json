@@ -181,6 +181,14 @@
 						"startup": {
 							"type": "date",
 							"format": "dateOptionalTime"
+						},
+						"app": {
+							"type": "string",
+							"index": "not_analyzed"
+						},
+						"env": {
+							"type": "string",
+							"index": "not_analyzed"
 						}
 					}
 				},
