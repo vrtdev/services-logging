@@ -17,6 +17,8 @@ public class LoggingProperties {
 	public final static String STATS_URL = "log.connection.stat.url";
 	public final static String APPLICATION = "log.app";
 	public final static String ENVIRONEMENT = "log.env";
+	public final static String STATS_APPLICATIONS = "log.stats.apps";
+	public final static String STATS_ENV = "log.stats.env";
 
 	private static final String LOGGING_PROPERTIES = "logging.properties";
 
@@ -66,7 +68,7 @@ public class LoggingProperties {
 	public static String env(){
 		return instance.getProperty(ENVIRONEMENT);
 	}
-	
+
 	public static String app(){
 		return instance.getProperty(APPLICATION);
 	}
@@ -94,4 +96,15 @@ public class LoggingProperties {
 		return url;
 	}
 
+	public static String statsEnv(){
+		return instance.prop.getProperty(STATS_ENV);
+	}
+
+	public static String[] statsApps(){
+		String statsApps = instance.prop.getProperty(STATS_APPLICATIONS);
+		if (statsApps == null) {
+			return null;
+		}
+		return statsApps.split(",");
+	}
 }

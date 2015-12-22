@@ -1,0 +1,23 @@
+{
+	"date": 1450225995558,
+	"logDate": 1450225995558,
+	"transactionId": "mezoapptest2.servers.vrt.be-10ce184d-b79f-4ec4-b75e-24b7135a175c",
+	"hostName": "mezoapptest2.servers.vrt.be",
+	"flowId": "other-ab7e-4077-8810-846ab5eefa26000-2015-11-30T16:14:46.766+01:00-SYSTEM-FOLDERWATCH",
+	"className": "be.vrt.services.log.collector.audit.aspect.BasicBreadcrumbAuditAspect",
+	"methodName": "handleJoinPoint",
+	"breadCrumb": 3,
+	"lineNumber": 11,
+	"user": null,
+	"logLevel": "DEBUG",
+	"loggerName": "be.vrt.services.common.plugins.appinstance.dao.AppInstanceRepositoryImpl",
+	"logComment": "[BREADCRUMB] AppInstanceRepository.findOne(..)",
+	"ids": [],
+	"content": {},
+	"environmentInfo": {
+		"app": "encoding",
+		"runtime": "runtime-mezoapptest1.servers.vrt.be-ab0710a4-e6dd-4c98-8237-4b886ba7029c",
+		"env": "TEST",
+		"startup": 1448896470455
+	}
+}
