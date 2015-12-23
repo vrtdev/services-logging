@@ -1,14 +1,13 @@
 package be.vrt.services.log.exposer.es;
 
-import be.vrt.services.log.exposer.util.FileSystemUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URL;
+import java.nio.file.Paths;
+
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
 import org.elasticsearch.action.admin.indices.get.GetIndexResponse;
-import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.ClusterName;
@@ -19,9 +18,10 @@ import org.elasticsearch.common.util.concurrent.EsExecutors;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 
-import java.net.URL;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import be.vrt.services.log.exposer.util.FileSystemUtils;
 
 /*
  * Source: https://github.com/tlrx/elasticsearch-test/blob/master/src/main/java/com/github/tlrx/elasticsearch/test/provider/LocalClientProvider.java

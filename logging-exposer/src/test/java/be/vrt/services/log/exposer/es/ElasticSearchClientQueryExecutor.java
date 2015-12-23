@@ -1,21 +1,17 @@
 package be.vrt.services.log.exposer.es;
 
-import be.vrt.services.log.exposer.es.query.ElasticSearchQuery;
-import be.vrt.services.log.exposer.es.result.ElasticSearchCountResult;
-import be.vrt.services.log.exposer.es.result.ElasticSearchResult;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.Map;
+
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.collect.Maps;
-import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.index.query.TermQueryBuilder;
-import org.elasticsearch.search.sort.FieldSortBuilder;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import be.vrt.services.log.exposer.es.query.ElasticSearchQuery;
+import be.vrt.services.log.exposer.es.result.ElasticSearchCountResult;
+import be.vrt.services.log.exposer.es.result.ElasticSearchResult;
 
 public class ElasticSearchClientQueryExecutor implements ElasticSearchQueryExecutor {
 
