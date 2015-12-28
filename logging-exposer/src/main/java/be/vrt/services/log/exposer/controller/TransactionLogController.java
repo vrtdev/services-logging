@@ -6,6 +6,7 @@ import be.vrt.services.log.exposer.es.query.DailyProblemQuery;
 import be.vrt.services.log.exposer.es.query.DetailQuery;
 import be.vrt.services.log.exposer.es.query.StatsQuery;
 import be.vrt.services.log.exposer.es.result.ElasticSearchCountResult;
+import be.vrt.services.logging.log.common.AppWithEnv;
 import be.vrt.services.logging.log.common.LoggingProperties;
 import static be.vrt.services.log.exposer.controller.JsonMap.mapWith;
 import java.io.IOException;
@@ -110,12 +111,11 @@ public class TransactionLogController extends HttpServlet {
 	}
 
 	private Map getDailyProblemsWithLevelAndDate(String date, String level) {
-		String[] statsApps = LoggingProperties.statsApps();
-		String statsEnv = LoggingProperties.statsEnv();
-		if(statsApps == null || statsEnv == null) {
+		List<AppWithEnv> appWithEnvs = LoggingProperties.statsAppsWithEnv();
+		if(appWithEnvs == null || appWithEnvs.isEmpty()) {
 			return elasticSearchQueryExecutor.executeSearchQuery(new DailyProblemQuery(date, level)).getData();
 		} else {
-			return elasticSearchQueryExecutor.executeSearchQuery(new DailyProblemQuery(date, level, statsEnv, statsApps)).getData();
+			return elasticSearchQueryExecutor.executeSearchQuery(new DailyProblemQuery(date, level, appWithEnvs)).getData();
 		}
 	}
 

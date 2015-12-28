@@ -3,7 +3,11 @@ package be.vrt.services.logging.log.common;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,18 +21,16 @@ public class LoggingProperties {
 	public final static String STATS_URL = "log.connection.stat.url";
 	public final static String APPLICATION = "log.app";
 	public final static String ENVIRONEMENT = "log.env";
-	public final static String STATS_APPLICATIONS = "log.stats.apps";
-	public final static String STATS_ENV = "log.stats.env";
+	public final static String STATS_APPLICATIONS_ENV = "log.stats.apps.env"; //APP@ENV,APP2@ENV2,...
 
 	private static final String LOGGING_PROPERTIES = "logging.properties";
 
 	private Properties prop = new Properties();
 
 	LoggingProperties() {
-
 		if (!loadPropertiesFromFile()) {
-			try {
-				prop.load(this.getClass().getClassLoader().getResourceAsStream(LOGGING_PROPERTIES));
+			try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(LOGGING_PROPERTIES)) {
+					prop.load(inputStream);
 			} catch (Exception ex) {
 				log.warn("Failed to load properties for logging ({})", LOGGING_PROPERTIES);
 			}
@@ -96,15 +98,11 @@ public class LoggingProperties {
 		return url;
 	}
 
-	public static String statsEnv(){
-		return instance.prop.getProperty(STATS_ENV);
-	}
-
-	public static String[] statsApps(){
-		String statsApps = instance.prop.getProperty(STATS_APPLICATIONS);
+	public static List<AppWithEnv> statsAppsWithEnv(){
+		String statsApps = instance.prop.getProperty(STATS_APPLICATIONS_ENV);
 		if (statsApps == null) {
-			return null;
+			return Collections.emptyList();
 		}
-		return statsApps.split(",");
+		return AppWithEnv.toListFromString(statsApps);
 	}
 }

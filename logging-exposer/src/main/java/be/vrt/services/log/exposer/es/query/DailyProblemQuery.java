@@ -1,7 +1,9 @@
 package be.vrt.services.log.exposer.es.query;
 
 import be.vrt.services.log.exposer.controller.JsonArray;
+import be.vrt.services.logging.log.common.AppWithEnv;
 
+import java.util.List;
 import java.util.Map;
 
 import static be.vrt.services.log.exposer.controller.JsonMap.mapWith;
@@ -48,7 +50,7 @@ public class DailyProblemQuery implements ElasticSearchQuery {
 		);
 	}
 
-	public DailyProblemQuery(String date, String level, String env, String[] apps) {
+	public DailyProblemQuery(String date, String level, List<AppWithEnv> appWithEnvList) {
 		query = mapWith("query",
 				mapWith("filtered",
 						mapWith("query",
@@ -73,22 +75,7 @@ public class DailyProblemQuery implements ElasticSearchQuery {
 																mapWith("content.[4] AuditLogDto.auditLevel", level)
 														),
 														mapWith("bool",
-																mapWith("should",
-																	JsonArray.with(
-																			mapWith("missing", mapWith("field", "environmentInfo.app")),
-																			mapWith("bool",
-																					mapWith("must",
-																						JsonArray.with(
-																								mapWith("term",
-																										mapWith("environmentInfo.env", env)
-																								),
-																								mapWith("terms",
-																										mapWith("environmentInfo.app", apps)
-																								)
-																						)
-																					)
-																			)
-																	)
+																mapWith("should", createAppEnvSubQuery(appWithEnvList)
 																)
 														)
 												)
@@ -103,6 +90,26 @@ public class DailyProblemQuery implements ElasticSearchQuery {
 						)
 				)
 		);
+	}
+
+	private JsonArray createAppEnvSubQuery(List<AppWithEnv> appWithEnvList) {
+		JsonArray array = new JsonArray();
+		array.add(mapWith("missing", mapWith("field", "environmentInfo.app")));
+		for (AppWithEnv appWithEnv : appWithEnvList) {
+			array.add(mapWith("bool",
+					mapWith("must",
+							JsonArray.with(
+									mapWith("term",
+											mapWith("environmentInfo.env", appWithEnv.getEnv())
+									),
+									mapWith("term",
+											mapWith("environmentInfo.app", appWithEnv.getApp())
+									)
+							)
+					)
+			));
+		}
+		return array;
 	}
 
 	@Override
