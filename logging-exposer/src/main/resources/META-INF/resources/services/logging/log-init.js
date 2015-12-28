@@ -3,6 +3,7 @@ if (!document.rootContextUrl) {
 }
 
 var loadFiles = [
+	"https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js",
 	"services/logging/lib/momentjs.js",
 	"services/logging/lib/highcharts.js",
 	"services/logging/lib/highcharts-config.js",
@@ -32,21 +33,17 @@ function loadjscssfile(filename, filetype) {
 loadjscssfile("services/logging/logging.css?v=${mvn.timestamp}", "css");
 loadjscssfile("https://fonts.googleapis.com/css?family=Ubuntu+Mono", "css");
 
-if (typeof jQuery === 'undefined') {
-	loadjscssfile("https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js", "js");
-	setTimeout(function (){loadScript(0)}, 1000)
-} else {
-	loadScript(0);
-}
-
 function loadScript(i){
 	if (i>= loadFiles.length){
 		setTimeout(function (){
 		document.afterLoad.forEach(function (func){
 			func();
-		})}, 1000);;
-		return
+		})}, 1000);
+		return;
 	}
 	var context = loadFiles[i].search(/\/\//) !== -1 ? "" : document.rootContextUrl;
 	$.getScript(context + loadFiles[i], function (){loadScript(++i)});
 }
+
+loadScript(0);
+$.noConflict(true);
