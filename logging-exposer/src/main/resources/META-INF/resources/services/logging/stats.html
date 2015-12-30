@@ -72,12 +72,11 @@
 			};
 
 			document.afterLoad.push(function () {
-
-				document.logDisplay.dateBar.display("bar");
-				loadDate(document.logDisplay.dateBar.formatDate(new Date()));
+				setTimeout(function() {
+					document.logDisplay.dateBar.display("bar");
+					loadDate(document.logDisplay.dateBar.formatDate(new Date()));
+				}, 1000);
 			});
-
-
 
 		</script>
 		<div id="logLoading" ><center><img src="loading.gif" style="margin: auto; opacity: 1;margin-top: 250px;"/></center></div>
