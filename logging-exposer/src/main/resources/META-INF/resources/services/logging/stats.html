@@ -71,11 +71,18 @@
 				});
 			};
 
-			document.afterLoad.push(function () {
+			function waitForIt() {
 				setTimeout(function() {
+					if (typeof jQuery == 'undefined') {
+						waitForIt();
+					}
 					document.logDisplay.dateBar.display("bar");
 					loadDate(document.logDisplay.dateBar.formatDate(new Date()));
-				}, 1000);
+				}, 200);
+			}
+
+			document.afterLoad.push(function () {
+				waitForIt();
 			});
 
 		</script>

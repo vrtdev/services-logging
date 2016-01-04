@@ -46,4 +46,3 @@ function loadScript(i){
 }
 
 loadScript(0);
-$.noConflict(true);
