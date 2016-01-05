@@ -75,6 +75,7 @@
 				setTimeout(function() {
 					if (typeof jQuery == 'undefined') {
 						waitForIt();
+						return;
 					}
 					document.logDisplay.dateBar.display("bar");
 					loadDate(document.logDisplay.dateBar.formatDate(new Date()));
