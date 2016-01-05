@@ -25,7 +25,7 @@ public class AppWithEnv {
 		List<AppWithEnv> list = new ArrayList<>();
 		for (String app : apps) {
 			String[] appEnv = app.split("@");
-			if(appEnv.length == 2 && StringUtils.isNoneBlank(appEnv[0]) && StringUtils.isNoneBlank(appEnv[1])) {
+			if(appEnv.length == 2 && StringUtils.isNoneBlank(appEnv)) {
 				list.add(new AppWithEnv(appEnv));
 			}
 		}
