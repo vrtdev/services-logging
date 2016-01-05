@@ -34,11 +34,12 @@ loadjscssfile("services/logging/logging.css?v=${mvn.timestamp}", "css");
 loadjscssfile("https://fonts.googleapis.com/css?family=Ubuntu+Mono", "css");
 
 function loadScript(i){
-	if (i>= loadFiles.length){
-		setTimeout(function (){
-		document.afterLoad.forEach(function (func){
-			func();
-		})}, 1000);
+	if (i>= loadFiles.length) {
+		setTimeout(function() {
+			document.afterLoad.forEach(function(func) {
+				func();
+			});
+		}, 1000);
 		return;
 	}
 	var context = loadFiles[i].search(/\/\//) !== -1 ? "" : document.rootContextUrl;

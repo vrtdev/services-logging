@@ -81,9 +81,19 @@
 				});
 			};
 
+			function waitForIt() {
+				setTimeout(function() {
+					if (!document.logDisplay) {
+						waitForIt();
+						return;
+					}
+					document.logDisplay.dateBar.display("bar");
+					loadDate(document.logDisplay.dateBar.formatDate(new Date()));
+				}, 200);
+			}
+
 			$(document).ready(function() {
-				document.logDisplay.dateBar.display("bar");
-				loadDate(document.logDisplay.dateBar.formatDate(new Date()));
+				waitForIt();
 			});
 
 		</script>
