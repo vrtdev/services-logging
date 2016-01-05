@@ -31,7 +31,17 @@
         </style>
     </head>
     <body>
+		<div id="logLoading" ><center><img src="loading.gif" style="margin: auto; opacity: 1;margin-top: 250px;"/></center></div>
+		<div class="container-fluid">
 
+			<h1 style="margin-bottom: 0px; display: inline-block" id='log-stat-title'> Monitoring Stats</h1>
+			<h1 style="float: right"><span onclick="document.location='../../'" onmouseover="this.innerHTML='&#10062;'" onmouseout="this.innerHTML='&#10060;'"> &#10060;</span></h1>
+			<hr/>
+			<div id="bar"></div>
+			<hr/>
+			<div id="container"></div>
+		</div>
+		
 		<script>
 			function loadDate(date) {
 
@@ -71,31 +81,11 @@
 				});
 			};
 
-			function waitForIt() {
-				setTimeout(function() {
-					if (typeof jQuery == 'undefined') {
-						waitForIt();
-						return;
-					}
-					document.logDisplay.dateBar.display("bar");
-					loadDate(document.logDisplay.dateBar.formatDate(new Date()));
-				}, 200);
-			}
-
-			document.afterLoad.push(function () {
-				waitForIt();
+			$(document).ready(function() {
+				document.logDisplay.dateBar.display("bar");
+				loadDate(document.logDisplay.dateBar.formatDate(new Date()));
 			});
 
 		</script>
-		<div id="logLoading" ><center><img src="loading.gif" style="margin: auto; opacity: 1;margin-top: 250px;"/></center></div>
-		<div class="container-fluid">
-
-			<h1 style="margin-bottom: 0px; display: inline-block" id='log-stat-title'> Monitoring Stats</h1>
-			<h1 style="float: right"><span onclick="document.location='../../'" onmouseover="this.innerHTML='&#10062;'" onmouseout="this.innerHTML='&#10060;'"> &#10060;</span></h1>
-			<hr/>
-			<div id="bar"></div>
-			<hr/>
-			<div id="container"></div>
-		</div>
     </body>
 </html>
