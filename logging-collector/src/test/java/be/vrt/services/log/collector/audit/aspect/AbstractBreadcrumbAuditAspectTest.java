@@ -29,6 +29,6 @@ public class AbstractBreadcrumbAuditAspectTest {
 
 
         Object obj = abstractBreadcrumbAuditAspect.logAround(joinPoint);
-        assertTrue(obj instanceof String && obj.toString().equals(RETURN_VALUE));
+        assertTrue(obj instanceof String && obj.equals(RETURN_VALUE));
     }
 }
