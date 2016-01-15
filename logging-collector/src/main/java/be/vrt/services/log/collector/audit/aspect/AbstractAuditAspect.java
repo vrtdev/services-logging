@@ -33,7 +33,7 @@ public abstract class AbstractAuditAspect extends AbstractBreadcrumbAuditAspect 
 			auditLogDto.setStartDate(new Date(stopWatch.getStartTime()));
 
 			Object[] arguments = joinPoint.getArgs();
-			List<Object> cloneArguments = new ArrayList<Object>();
+			List<Object> cloneArguments = new ArrayList<>();
 			for (int i = 0; i < arguments.length; i++) {
 				cloneArguments.add(cloneArgument("[" + i + "]", arguments[i]));
 			}
