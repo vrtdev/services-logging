@@ -30,7 +30,7 @@ public class TransactionLogController extends HttpServlet {
 
 	private String[] connectionUrls = LoggingProperties.connectionUrls();
 
-	private final ElasticSearchQueryExecutor elasticSearchQueryExecutor = new ElasticSearchSearchQueryHttpExecutor();
+	private ElasticSearchQueryExecutor elasticSearchQueryExecutor = new ElasticSearchSearchQueryHttpExecutor();
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Override
