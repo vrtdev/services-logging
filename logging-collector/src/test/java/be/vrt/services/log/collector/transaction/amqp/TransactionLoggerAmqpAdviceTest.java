@@ -57,16 +57,16 @@ public class TransactionLoggerAmqpAdviceTest {
         when(methodInvocation.proceed()).thenThrow(new FailureException("aMessage"));
 
         TransactionLoggerAmqpAdvice amqpAdvice = new TransactionLoggerAmqpAdvice();
-
-        amqpAdvice.invoke(methodInvocation);
-
-
-        for (AbstractTransactionLog abstractTransactionLog : TransactionRegistery.list()) {
-            if(abstractTransactionLog instanceof AmqpTransactionLogDto){
-                AmqpTransactionLogDto amqpTransactionLogDto = (AmqpTransactionLogDto) abstractTransactionLog;
-                if(A_QUEUE.equals(amqpTransactionLogDto.getQueueName())
-                        && AmqpTransactionLogDto.Type.FAILED == amqpTransactionLogDto.getStatus()){
-                    return;
+        try {
+            amqpAdvice.invoke(methodInvocation);
+        } catch (FailureException fex){
+            for (AbstractTransactionLog abstractTransactionLog : TransactionRegistery.list()) {
+                if (abstractTransactionLog instanceof AmqpTransactionLogDto) {
+                    AmqpTransactionLogDto amqpTransactionLogDto = (AmqpTransactionLogDto) abstractTransactionLog;
+                    if (A_QUEUE.equals(amqpTransactionLogDto.getQueueName())
+                            && AmqpTransactionLogDto.Type.FAILED == amqpTransactionLogDto.getStatus()) {
+                        throw fex;
+                    }
                 }
             }
         }
@@ -82,15 +82,16 @@ public class TransactionLoggerAmqpAdviceTest {
 
         TransactionLoggerAmqpAdvice amqpAdvice = new TransactionLoggerAmqpAdvice();
 
-        amqpAdvice.invoke(methodInvocation);
-
-
-        for (AbstractTransactionLog abstractTransactionLog : TransactionRegistery.list()) {
-            if(abstractTransactionLog instanceof AmqpTransactionLogDto){
-                AmqpTransactionLogDto amqpTransactionLogDto = (AmqpTransactionLogDto) abstractTransactionLog;
-                if(A_QUEUE.equals(amqpTransactionLogDto.getQueueName())
-                        && AmqpTransactionLogDto.Type.ERROR == amqpTransactionLogDto.getStatus()){
-                    return;
+        try {
+            amqpAdvice.invoke(methodInvocation);
+        } catch (ErrorException eex){
+            for (AbstractTransactionLog abstractTransactionLog : TransactionRegistery.list()) {
+                if (abstractTransactionLog instanceof AmqpTransactionLogDto) {
+                    AmqpTransactionLogDto amqpTransactionLogDto = (AmqpTransactionLogDto) abstractTransactionLog;
+                    if (A_QUEUE.equals(amqpTransactionLogDto.getQueueName())
+                            && AmqpTransactionLogDto.Type.ERROR == amqpTransactionLogDto.getStatus()) {
+                        throw eex;
+                    }
                 }
             }
         }
