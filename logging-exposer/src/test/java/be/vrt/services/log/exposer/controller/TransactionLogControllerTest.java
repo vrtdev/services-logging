@@ -54,7 +54,10 @@ public class TransactionLogControllerTest {
 		transactionLogController.doGet(aRequest, aResponse);
 
 		verify(aResponse).setContentType("application/json");
-		verify(printWriter).print("{\"request-path\":\"aPathInfo\",\"info\":{\"statUrl\":\"\",\"urls\":[]}}");
+		ArgumentCaptor<String> json = ArgumentCaptor.forClass(String.class);
+		verify(printWriter).print(json.capture());
+		String value = json.getValue();
+		Assert.assertTrue(value.contains("\"request-path\":\"aPathInfo\""));
 
 	}
 
