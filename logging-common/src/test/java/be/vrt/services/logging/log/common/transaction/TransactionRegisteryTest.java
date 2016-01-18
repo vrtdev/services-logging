@@ -7,7 +7,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -158,6 +161,7 @@ public class TransactionRegisteryTest {
 	
 	@Test
 	public void testListIds() {
+		LogTransaction.resetThread();
 		LogTransaction.id();
 		
 		registery = TransactionRegistery.instance;
@@ -184,6 +188,21 @@ public class TransactionRegisteryTest {
 	public void testGetSetBufferSizeIds() {
 		registery.setBufferSizeIds(5);
 		assertEquals(5, registery.getBufferSizeIds());
+	}
+
+	@Test
+	public void registerTransactionObserver(){
+		int count = TransactionRegistery.instance.countObservers();
+
+		Observer observer = new Observer() {
+			@Override
+			public void update(Observable o, Object arg) {
+			}
+		};
+		TransactionRegistery.registerTransactionObserver(observer);
+		Assert.assertEquals(count + 1, TransactionRegistery.instance.countObservers());
+
+		TransactionRegistery.instance.deleteObserver(observer);
 	}
 	
 }
