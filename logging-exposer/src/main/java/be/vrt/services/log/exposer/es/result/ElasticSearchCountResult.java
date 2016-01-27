@@ -1,5 +1,6 @@
 package be.vrt.services.log.exposer.es.result;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class ElasticSearchCountResult {
 
 	public static ElasticSearchCountResult from(Map<String, Object> data) {
 		if(data != null && data.containsKey("aggregations")) {
-			return new ElasticSearchCountResult((Map<String, Object>) data.get("aggregations"));
+			return new ElasticSearchCountResult(data);
 		}
 		return ElasticSearchCountResult.empty();
 	}
@@ -27,6 +28,12 @@ public class ElasticSearchCountResult {
 	}
 
 	public Map<String, Object> getAggregations(){
-		return data;
+		Map<String, Object> aggregations = (Map<String, Object>) data.get("aggregations");
+		return aggregations == null ? Collections.<String, Object>emptyMap() : aggregations;
+	}
+
+	public Map<String, Object> getHits(){
+		Map<String, Object> hits = (Map<String, Object>) data.get("hits");
+		return hits;
 	}
 }

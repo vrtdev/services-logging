@@ -3,8 +3,8 @@ package be.vrt.services.log.exposer.es;
 import be.vrt.services.log.exposer.es.query.DailyProblemQuery;
 import be.vrt.services.log.exposer.es.query.DetailQuery;
 import be.vrt.services.log.exposer.es.query.StatsQuery;
+import be.vrt.services.log.exposer.es.result.ElasticSearchCountResult;
 import be.vrt.services.log.exposer.es.result.ElasticSearchResult;
-import be.vrt.services.log.exposer.es.result.TestElasticSearchCountResult;
 import be.vrt.services.logging.log.common.AppWithEnv;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.elasticsearch.client.Client;
@@ -181,7 +181,7 @@ public class QueriesTest {
 				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR")
 		);
 		StatsQuery query = new StatsQuery("2015-01-02", Lists.newArrayList(new AppWithEnv("app1", "TEST"), new AppWithEnv("app2", "STAG")));
-		TestElasticSearchCountResult elasticSearchResult = elasticSearchQueryExecutor.executeCountQuery(query);
+		ElasticSearchCountResult elasticSearchResult = elasticSearchQueryExecutor.executeCountQuery(query);
 		assertHasNumberOfHits(elasticSearchResult, 3);
 	}
 
@@ -204,9 +204,9 @@ public class QueriesTest {
 		Assert.assertEquals(expectedNumberOfHits, hitList.size());
 	}
 
-	private void assertHasNumberOfHits(TestElasticSearchCountResult elasticSearchResult, int expectedNumberOfHits) {
-		Map hits = elasticSearchResult.getData();
-		Integer totalHits = (Integer) ((Map) hits.get("hits")).get("total");
+	private void assertHasNumberOfHits(ElasticSearchCountResult elasticSearchResult, int expectedNumberOfHits) {
+		Map hits = elasticSearchResult.getHits();
+		Integer totalHits = (Integer) hits.get("total");
 		Assert.assertEquals(expectedNumberOfHits, totalHits.intValue());
 	}
 

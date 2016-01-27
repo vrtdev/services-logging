@@ -1,8 +1,8 @@
 package be.vrt.services.log.exposer.es;
 
 import be.vrt.services.log.exposer.es.query.ElasticSearchQuery;
+import be.vrt.services.log.exposer.es.result.ElasticSearchCountResult;
 import be.vrt.services.log.exposer.es.result.ElasticSearchResult;
-import be.vrt.services.log.exposer.es.result.TestElasticSearchCountResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -39,13 +39,13 @@ public class ElasticSearchClientQueryExecutor implements ElasticSearchQueryExecu
 	}
 
 	@Override
-	public TestElasticSearchCountResult executeCountQuery(ElasticSearchQuery query) {
+	public ElasticSearchCountResult executeCountQuery(ElasticSearchQuery query) {
 		try {
 			SearchRequestBuilder request = client.prepareSearch("logging").setSearchType(SearchType.COUNT)
 					.setQuery(mapper.writeValueAsString(query.getData().get("query")))
 					.setAggregations(new BytesArray(mapper.writeValueAsString(query.getData().get("aggs")).getBytes()));
 			SearchResponse response = request.execute().actionGet();
-			return new TestElasticSearchCountResult(mapper.readValue(response.toString(), Map.class));
+			return ElasticSearchCountResult.from(mapper.readValue(response.toString(), Map.class));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
