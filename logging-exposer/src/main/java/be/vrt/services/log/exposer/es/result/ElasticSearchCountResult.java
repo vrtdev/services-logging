@@ -11,7 +11,7 @@ public class ElasticSearchCountResult {
 		this.data = new HashMap<>();
 	}
 
-	private ElasticSearchCountResult(Map<String, Object> data) {
+	protected ElasticSearchCountResult(Map<String, Object> data) {
 		this.data = data;
 	}
 

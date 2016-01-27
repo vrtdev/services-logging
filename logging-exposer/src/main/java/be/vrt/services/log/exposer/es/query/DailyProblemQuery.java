@@ -8,7 +8,7 @@ import java.util.Map;
 
 import static be.vrt.services.log.exposer.controller.JsonMap.mapWith;
 
-public class DailyProblemQuery implements ElasticSearchQuery {
+public class DailyProblemQuery extends AppWithEnvsElasticSearchQuery implements ElasticSearchQuery {
 
 	private final Map<String, Object> query;
 
@@ -90,26 +90,6 @@ public class DailyProblemQuery implements ElasticSearchQuery {
 						)
 				)
 		);
-	}
-
-	private JsonArray createAppEnvSubQuery(List<AppWithEnv> appWithEnvList) {
-		JsonArray array = new JsonArray();
-		array.add(mapWith("missing", mapWith("field", "environmentInfo.app")));
-		for (AppWithEnv appWithEnv : appWithEnvList) {
-			array.add(mapWith("bool",
-					mapWith("must",
-							JsonArray.with(
-									mapWith("term",
-											mapWith("environmentInfo.env", appWithEnv.getEnv())
-									),
-									mapWith("term",
-											mapWith("environmentInfo.app", appWithEnv.getApp())
-									)
-							)
-					)
-			));
-		}
-		return array;
 	}
 
 	@Override

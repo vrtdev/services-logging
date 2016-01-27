@@ -8,22 +8,21 @@ import be.vrt.services.log.exposer.es.query.StatsQuery;
 import be.vrt.services.log.exposer.es.result.ElasticSearchCountResult;
 import be.vrt.services.logging.log.common.AppWithEnv;
 import be.vrt.services.logging.log.common.LoggingProperties;
-import static be.vrt.services.log.exposer.controller.JsonMap.mapWith;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import static be.vrt.services.log.exposer.controller.JsonMap.mapWith;
 
 @SuppressWarnings("serial")
 public class TransactionLogController extends HttpServlet {
@@ -81,7 +80,13 @@ public class TransactionLogController extends HttpServlet {
 		} else if (path.matches("/stats/overview/[^/]*")) {
 			String date = path.substring("/stats/overview/".length()).trim();
 
-			ElasticSearchCountResult result = elasticSearchQueryExecutor.executeCountQuery(new StatsQuery(date));
+			List<AppWithEnv> appWithEnvs = LoggingProperties.statsAppsWithEnv();
+			ElasticSearchCountResult result;
+			if(appWithEnvs == null || appWithEnvs.isEmpty()) {
+				result = elasticSearchQueryExecutor.executeCountQuery(new StatsQuery(date));
+			} else {
+				result = elasticSearchQueryExecutor.executeCountQuery(new StatsQuery(date, appWithEnvs));
+			}
 
 			map.put("agg", result.getAggregations());
 
@@ -101,7 +106,8 @@ public class TransactionLogController extends HttpServlet {
 
 		map.put("info",
 			mapWith("urls", connectionUrls)
-			.mapAnd("statUrl", LoggingProperties.connectionStatUrl())
+				.mapAnd("statUrl", LoggingProperties.connectionStatUrl())
+				.mapAnd("statsAppsWithEnv", LoggingProperties.statsAppsWithEnv())
 		);
 
 		resp.setContentType("application/json");
