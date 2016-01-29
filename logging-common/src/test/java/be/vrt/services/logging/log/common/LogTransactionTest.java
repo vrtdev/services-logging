@@ -4,17 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.MDC;
-import sun.rmi.runtime.Log;
-
-import java.util.LinkedList;
-import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LogTransactionTest {

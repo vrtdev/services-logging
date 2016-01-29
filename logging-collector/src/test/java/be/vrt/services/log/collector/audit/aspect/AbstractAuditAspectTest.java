@@ -1,32 +1,27 @@
 package be.vrt.services.log.collector.audit.aspect;
 
-import be.vrt.services.log.collector.audit.AuditLevelType;
-import be.vrt.services.log.collector.exception.ErrorException;
-import be.vrt.services.log.collector.exception.FailureException;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.Appender;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Method;
-
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import be.vrt.services.log.collector.audit.AuditLevelType;
+import be.vrt.services.log.collector.exception.ErrorException;
+import be.vrt.services.log.collector.exception.FailureException;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Appender;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractAuditAspectTest {
