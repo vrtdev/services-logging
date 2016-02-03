@@ -255,7 +255,7 @@ if (!document.rLog) {
 			this.displayTransactions();
 		},
 		clearTransactionHistory: function () {
-			if (confirm("Clear history?")) {
+			if (confirm("Clear browser log?")) {
 				localStorage.setItem('rLog.transaction-log-lines', JSON.stringify(new Array()));
 				this.displayTransactions();
 			}
