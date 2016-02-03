@@ -14,7 +14,6 @@ public abstract class AppWithEnvsElasticSearchQuery implements ElasticSearchQuer
 
 	protected JsonArray createAppEnvSubQuery(List<AppWithEnv> appWithEnvList) {
 		JsonArray array = new JsonArray();
-		array.add(mapWith("missing", mapWith("field", "environmentInfo.app")));
 		for (AppWithEnv appWithEnv : appWithEnvList) {
 			array.add(mapWith("bool",
 					mapWith("must",

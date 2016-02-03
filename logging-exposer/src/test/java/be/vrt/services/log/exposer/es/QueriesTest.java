@@ -126,26 +126,6 @@ public class QueriesTest {
 	}
 
 	@Test
-	public void testDailyProblemQuery_onlyRetrieveFacadeInTimeRangeWithLevelAppAndEnv_oldIndex() throws Exception {
-		index(
-				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0)).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0)).addAuditLog("thisServiceThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0)).addAuditLog("thisFacadeThing", "ERROR"),
-
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0)).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0)).addAuditLog("thisServiceThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0)).addAuditLog("thisFacadeThing", "ERROR"),
-
-				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0)).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0)).addAuditLog("thisServiceThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0)).addAuditLog("thisFacadeThing", "ERROR")
-		);
-		DailyProblemQuery query = new DailyProblemQuery("2015-01-02", "WARN", Lists.newArrayList(new AppWithEnv("app1", "TEST"), new AppWithEnv("app2", "STAG")));
-		ElasticSearchResult elasticSearchResult = elasticSearchQueryExecutor.executeSearchQuery(query);
-		assertHasNumberOfHits(elasticSearchResult, 1);
-	}
-
-	@Test
 	public void testDailyProblemQuery_whenMultipleHits_thenSortByDate() throws Exception {
 		index(
 				new DailyLogEntry("first",  new DateTime(2015, 1, 2, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
