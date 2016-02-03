@@ -55,6 +55,10 @@
 	white-space: nowrap;
 }
 
+.rlog-info td, .rlog-detail td {
+	padding: 0px;
+}
+
 #rlog-detail{
 	padding: 10px;display: none;
 	position: fixed; 

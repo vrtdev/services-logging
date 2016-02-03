@@ -509,9 +509,9 @@ if (!document.rLog) {
 		switch (request.type) {
 		    case "HTTP":
 		        newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
-                newRow.append($("<td class='rlog-small-cell'></td>").text(request.httpMethod));
-                newRow.append($("<td class='rlog-small-cell'></td>").text(request.responseStatus);
-                newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request.resource));
+    			newRow.append($("<td class='rlog-small-cell'>" + request.httpMethod + "</td>"));
+    			newRow.append($("<td class='rlog-small-cell'>" + request.responseStatus + "</td>"));
+    			newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request.resource));
 		        break;
 		    case "AMQP":
 		        newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
@@ -520,8 +520,10 @@ if (!document.rLog) {
                 newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request.headers['amqp-url'] + "" + request.routingKey));
 		        break;
             default:
-		        newRow.append($("<td colspan='2' class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
-                newRow.append($("<td colspan='2' class='rlog-small-cell'>JOB</td>"));
+		        newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
+                newRow.append($("<td class='rlog-small-cell'></td>"));
+                newRow.append($("<td class='rlog-small-cell'>" + request.type + "</td>"));
+                newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "]"));
                 break;
 		}
 		return newRow;
