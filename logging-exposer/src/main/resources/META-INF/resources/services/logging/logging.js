@@ -506,19 +506,24 @@ if (!document.rLog) {
 						.click(document.rLog.displayDetailClick)
 						)
 				);
-		if (request.httpMethod) {
-			newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
-			newRow.append($("<td class='rlog-small-cell'>" + request.httpMethod + "</td>"));
-			newRow.append($("<td class='rlog-small-cell'>" + request.responseStatus + "</td>"));
-			newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request.resource));
-		} else {
-			newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
-			newRow.append($("<td class='rlog-small-cell'>" + request.headers['amqp-method'] + "</td>"));
-			newRow.append($("<td class='rlog-small-cell'>AMQP</td>"));
-			newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request['amqp-url'] + "" + request.routingKey));
+		switch (request.type) {
+		    case "HTTP":
+		        newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
+                newRow.append($("<td class='rlog-small-cell'></td>").text(request.httpMethod));
+                newRow.append($("<td class='rlog-small-cell'></td>").text(request.responseStatus);
+                newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request.resource));
+		        break;
+		    case "AMQP":
+		        newRow.append($("<td class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
+                newRow.append($("<td class='rlog-small-cell'>" + request.headers['amqp-method'] + "</td>"));
+                newRow.append($("<td class='rlog-small-cell'>AMQP</td>"));
+                newRow.append($("<td class='rlog-row-line'></td>").text("[" + request.transactionId + "] " + request.headers['amqp-url'] + "" + request.routingKey));
+		        break;
+            default:
+		        newRow.append($("<td colspan='2' class='rlog-logTransaction rlog-logTransaction-" + request.status + "'></td>").text(request.status));
+                newRow.append($("<td colspan='2' class='rlog-small-cell'>JOB</td>"));
+                break;
 		}
-
-
 		return newRow;
 	}
 	function createFlowRow(flow) {
