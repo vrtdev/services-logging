@@ -4,7 +4,7 @@
 			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd">
 
-	<name>vrt-logging-exposer-web-fragment</name>
+	<name>VrtLogExposer</name>
 	<servlet>
 		<servlet-name>logging</servlet-name>
 		<servlet-class>be.vrt.services.log.exposer.controller.TransactionLogController</servlet-class>
