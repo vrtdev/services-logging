@@ -51,32 +51,32 @@ public class TransactionLoggerFilterTest {
 
 	@InjectMocks
 	private TransactionLoggerFilter transactionLoggerFilter;
+//
+//	@SuppressWarnings("unchecked")
+//	@Test
+//	public void doFilter_checkLog() throws IOException, ServletException {
+//		Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+//		logger.addAppender(appender);
+//
+//		UserPrincipal userPrincipal = new UserPrincipal("testUser");
+//		when(httpServletRequest.getUserPrincipal()).thenReturn(userPrincipal);
+//		when(httpServletRequest.getMethod()).thenReturn(HttpMethod.GET);
+//		when(httpServletRequest.getServerName()).thenReturn("mediazone-dev");
+//		when(httpServletRequest.getRequestURL()).thenReturn(new StringBuffer("http://mediazone-admin-dev.vrt.be/rest/client/v1/assestsources"));
+//		Map<String, String> httpParameters = new HashMap<>();
+//		when(httpServletRequest.getParameterNames()).thenReturn(new IteratorEnumeration(httpParameters.keySet().iterator()));
+//
+//		transactionLoggerFilter.doFilter(httpServletRequest, httpServletResponse, filterChain);
+//
+//		ArgumentCaptor<LoggingEvent> captorLoggingEvent = ArgumentCaptor.forClass(LoggingEvent.class);
+//		verify(appender, times(2)).doAppend(captorLoggingEvent.capture());
+//		LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+//		assertEquals(loggingEvent.getLevel(), (Level.INFO));
+//		assertNull(MDC.get(Constants.TRANSACTION_ID));
+//		
+//	}
 
-	@SuppressWarnings("unchecked")
-	@Test
-	public void doFilter_checkLog() throws IOException, ServletException {
-		Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-		logger.addAppender(appender);
-
-		UserPrincipal userPrincipal = new UserPrincipal("testUser");
-		when(httpServletRequest.getUserPrincipal()).thenReturn(userPrincipal);
-		when(httpServletRequest.getMethod()).thenReturn(HttpMethod.GET);
-		when(httpServletRequest.getServerName()).thenReturn("mediazone-dev");
-		when(httpServletRequest.getRequestURL()).thenReturn(new StringBuffer("http://mediazone-admin-dev.vrt.be/rest/client/v1/assestsources"));
-		Map<String, String> httpParameters = new HashMap<>();
-		when(httpServletRequest.getParameterNames()).thenReturn(new IteratorEnumeration(httpParameters.keySet().iterator()));
-
-		transactionLoggerFilter.doFilter(httpServletRequest, httpServletResponse, filterChain);
-
-		ArgumentCaptor<LoggingEvent> captorLoggingEvent = ArgumentCaptor.forClass(LoggingEvent.class);
-		verify(appender, times(2)).doAppend(captorLoggingEvent.capture());
-		LoggingEvent loggingEvent = captorLoggingEvent.getValue();
-		assertEquals(loggingEvent.getLevel(), (Level.INFO));
-		assertNull(MDC.get(Constants.TRANSACTION_ID));
-		
-	}
-
-	@SuppressWarnings("unchecked")
+ 	@SuppressWarnings("unchecked")
 	@Test
 	public void doFilter_checkAddTransactionUUIDToHeaderOfResponse() throws IOException, ServletException {
 		Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
