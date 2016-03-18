@@ -1,19 +1,13 @@
 package be.vrt.services.logging.log.common;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
-
+import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class LogTransaction implements Constants {
 
@@ -159,7 +153,7 @@ public class LogTransaction implements Constants {
 	}
 
 	public static String flow() {
-		return MDC.get(FLOW_ID);
+		return MDC.get(FLOW_ID) == null ? createFlowId(null, null) : MDC.get(FLOW_ID);
 	}
 
 	private static String join(List<String> strings, String d) {
@@ -224,7 +218,7 @@ public class LogTransaction implements Constants {
 	}
 
 	public static void updateFlowId(String flowid) {
-		String currentFlowId = flow();
+		String currentFlowId =  MDC.get(FLOW_ID);
 		if (currentFlowId != null && !currentFlowId.equals(flowid)) {
 			LoggerFactory.getLogger(LogTransaction.class).info("update FlowId : [{}] ==> [{}]", flow(), flowid);
 		}
