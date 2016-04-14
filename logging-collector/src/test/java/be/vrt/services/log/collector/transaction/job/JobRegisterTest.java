@@ -23,10 +23,15 @@ public class JobRegisterTest {
 
     @Test
     public void execute_givenNoExceptionThenResultIsReturned() throws FailureException {
-        String result = JobRegister.execute(new JobCallable<String>() {
+        String result = JobRegister.execute("testJob", new JobCallable<String>() {
             @Override
             public String call() throws FailureException {
                 return RESULT;
+            }
+
+            @Override
+            public AbstractTransactionLog.Type onError() {
+                return AbstractTransactionLog.Type.ERROR;
             }
         });
 
@@ -38,7 +43,7 @@ public class JobRegisterTest {
         Mockito.when(jobCallable.call()).thenThrow(new FailureException("aMessage"));
 
         try {
-            JobRegister.execute(jobCallable);
+            JobRegister.execute("testJob", jobCallable);
         } catch (FailureException fex){
             for (AbstractTransactionLog abstractTransactionLog : TransactionRegistery.list()) {
                 if (abstractTransactionLog instanceof JobTransactionLogDto) {
@@ -55,9 +60,10 @@ public class JobRegisterTest {
     @Test(expected = ErrorException.class)
     public void execute_givenErrorExceptionThenExceptionIsRethrown() throws FailureException {
         Mockito.when(jobCallable.call()).thenThrow(new ErrorException("aMessage"));
+        Mockito.when(jobCallable.onError()).thenReturn(AbstractTransactionLog.Type.ERROR);
 
         try {
-            JobRegister.execute(jobCallable);
+            JobRegister.execute("testJob", jobCallable);
         } catch (ErrorException eex){
             for (AbstractTransactionLog abstractTransactionLog : TransactionRegistery.list()) {
                 if (abstractTransactionLog instanceof JobTransactionLogDto) {
