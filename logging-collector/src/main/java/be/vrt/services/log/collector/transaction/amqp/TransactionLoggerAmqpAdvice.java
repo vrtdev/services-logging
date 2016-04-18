@@ -1,12 +1,11 @@
 package be.vrt.services.log.collector.transaction.amqp;
 
 import be.vrt.services.log.collector.exception.FailureException;
-import be.vrt.services.logging.log.common.LogTransaction;
-import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import be.vrt.services.log.collector.transaction.dto.AmqpTransactionLogDto;
 import be.vrt.services.logging.log.common.Constants;
-import java.net.InetAddress;
-import java.util.Date;
+import be.vrt.services.logging.log.common.LogTransaction;
+import be.vrt.services.logging.log.common.dto.LogType;
+import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.time.StopWatch;
@@ -14,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
+
+import java.net.InetAddress;
+import java.util.Date;
 
 public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 
@@ -26,16 +28,16 @@ public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		transaction.setStartDate(new Date(stopWatch.getStartTime()));
-		transaction.setStatus(AmqpTransactionLogDto.Type.OK);
+		transaction.setStatus(LogType.OK);
 		try {
 			return mi.proceed();
 		} catch (FailureException e) {
 			transaction.setErrorReason(e.getMessage());
-			transaction.setStatus(AmqpTransactionLogDto.Type.FAILED);
+			transaction.setStatus(LogType.FAILED);
 			throw e;
 		} catch (Throwable e) {
 			transaction.setErrorReason(e.getMessage());
-			transaction.setStatus(AmqpTransactionLogDto.Type.ERROR);
+			transaction.setStatus(LogType.ERROR);
 			throw e;
 		} finally {
 			stopWatch.stop();

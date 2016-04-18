@@ -5,6 +5,7 @@ import be.vrt.services.log.collector.exception.FailureException;
 import be.vrt.services.log.collector.transaction.dto.AmqpTransactionLogDto;
 import be.vrt.services.logging.log.common.Constants;
 import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
+import be.vrt.services.logging.log.common.dto.LogType;
 import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Assert;
@@ -64,13 +65,13 @@ public class TransactionLoggerAmqpAdviceTest {
                 if (abstractTransactionLog instanceof AmqpTransactionLogDto) {
                     AmqpTransactionLogDto amqpTransactionLogDto = (AmqpTransactionLogDto) abstractTransactionLog;
                     if (A_QUEUE.equals(amqpTransactionLogDto.getQueueName())
-                            && AmqpTransactionLogDto.Type.FAILED == amqpTransactionLogDto.getStatus()) {
+                            && amqpTransactionLogDto.getStatus() == LogType.FAILED) {
                         throw fex;
                     }
                 }
             }
         }
-        Assert.fail("The transactionRegistery should contain an AmqpTransactionLogDto having queue " + A_QUEUE + " and status " + AmqpTransactionLogDto.Type.FAILED);
+        Assert.fail("The transactionRegistery should contain an AmqpTransactionLogDto having queue " + A_QUEUE + " and status " + LogType.FAILED);
     }
 
 
@@ -89,13 +90,13 @@ public class TransactionLoggerAmqpAdviceTest {
                 if (abstractTransactionLog instanceof AmqpTransactionLogDto) {
                     AmqpTransactionLogDto amqpTransactionLogDto = (AmqpTransactionLogDto) abstractTransactionLog;
                     if (A_QUEUE.equals(amqpTransactionLogDto.getQueueName())
-                            && AmqpTransactionLogDto.Type.ERROR == amqpTransactionLogDto.getStatus()) {
+                            && amqpTransactionLogDto.getStatus() == LogType.ERROR) {
                         throw eex;
                     }
                 }
             }
         }
-        Assert.fail("The transactionRegistery should contain an AmqpTransactionLogDto having queue " + A_QUEUE + " and status " + AmqpTransactionLogDto.Type.ERROR);
+        Assert.fail("The transactionRegistery should contain an AmqpTransactionLogDto having queue " + A_QUEUE + " and status " + LogType.ERROR);
     }
 
     private MessageProperties createMessageProperties(){

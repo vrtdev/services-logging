@@ -1,6 +1,7 @@
 package be.vrt.services.log.collector.transaction.dto;
 
 import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
+import be.vrt.services.logging.log.common.dto.LogType;
 
 public class HttpTransactionLogDto extends AbstractTransactionLog {
 
@@ -33,12 +34,12 @@ public class HttpTransactionLogDto extends AbstractTransactionLog {
 	public void responseStatus(int responseStatus) {
 		this.responseStatus = responseStatus;
 		if (responseStatus < 400) {
-			setStatus(Type.OK);
+			setStatus(LogType.OK);
 		} else if (responseStatus < 500) {
-			setStatus(Type.FAILED);
+			setStatus(LogType.FAILED);
 			setErrorReason(" HTTP Client error: "+responseStatus);
 		} else {
-			setStatus(Type.ERROR);
+			setStatus(LogType.ERROR);
 			setErrorReason(" HTTP Server error: "+responseStatus);
 		}
 	}

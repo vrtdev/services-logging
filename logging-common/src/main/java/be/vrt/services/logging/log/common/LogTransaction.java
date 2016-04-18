@@ -173,7 +173,7 @@ public class LogTransaction implements Constants {
 		return rtnValue;
 	}
 
-	private static String hostname() {
+	public static String hostname() {
 		if (hostname == null) {
 			try {
 				hostname = InetAddress.getLocalHost().getHostName();

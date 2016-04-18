@@ -7,6 +7,7 @@ import be.vrt.services.log.exposer.es.query.StatsQuery;
 import be.vrt.services.log.exposer.es.result.ElasticSearchCountResult;
 import be.vrt.services.log.exposer.es.result.ElasticSearchResult;
 import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
+import be.vrt.services.logging.log.common.dto.LogType;
 import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import be.vrt.services.logging.log.common.transaction.TransactionRegisteryMock;
 import org.junit.Assert;
@@ -72,7 +73,7 @@ public class TransactionLogControllerTest {
 				return "aType";
 			}
 		};
-		transactionLog.setStatus(AbstractTransactionLog.Type.ERROR);
+		transactionLog.setStatus(LogType.ERROR);
 		transactionLog.setErrorReason("aReason");
 		instance.registerTransactionLocal(transactionLog);
 
@@ -98,7 +99,7 @@ public class TransactionLogControllerTest {
 				return "aType";
 			}
 		};
-		transactionLog.setStatus(AbstractTransactionLog.Type.FAILED);
+		transactionLog.setStatus(LogType.FAILED);
 		transactionLog.setErrorReason("aReason");
 		instance.registerTransactionLocal(transactionLog);
 

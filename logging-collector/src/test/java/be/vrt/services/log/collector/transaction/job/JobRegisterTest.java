@@ -4,6 +4,7 @@ import be.vrt.services.log.collector.exception.ErrorException;
 import be.vrt.services.log.collector.exception.FailureException;
 import be.vrt.services.log.collector.transaction.dto.JobTransactionLogDto;
 import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
+import be.vrt.services.logging.log.common.dto.LogType;
 import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,8 +31,8 @@ public class JobRegisterTest {
             }
 
             @Override
-            public AbstractTransactionLog.Type onError() {
-                return AbstractTransactionLog.Type.ERROR;
+            public LogType onError() {
+                return LogType.ERROR;
             }
         });
 
@@ -41,6 +42,7 @@ public class JobRegisterTest {
     @Test(expected = FailureException.class)
     public void execute_givenFailureExceptionThenExceptionIsRethrown() throws FailureException {
         Mockito.when(jobCallable.call()).thenThrow(new FailureException("aMessage"));
+        Mockito.when(jobCallable.onError()).thenReturn(LogType.FAILED);
 
         try {
             JobRegister.execute("testJob", jobCallable);
@@ -60,7 +62,7 @@ public class JobRegisterTest {
     @Test(expected = ErrorException.class)
     public void execute_givenErrorExceptionThenExceptionIsRethrown() throws FailureException {
         Mockito.when(jobCallable.call()).thenThrow(new ErrorException("aMessage"));
-        Mockito.when(jobCallable.onError()).thenReturn(AbstractTransactionLog.Type.ERROR);
+        Mockito.when(jobCallable.onError()).thenReturn(LogType.ERROR);
 
         try {
             JobRegister.execute("testJob", jobCallable);
@@ -75,6 +77,28 @@ public class JobRegisterTest {
             }
         }
         Assert.fail("The transactionRegistery should contain a JobTransactionLogDto " + MESSAGE + " in its errorReason .");
+    }
+
+    @Test
+    public void execute_givenErrorExceptionThenLogFieldsAreFilledIn() throws FailureException {
+        Mockito.when(jobCallable.call()).thenThrow(new ErrorException("aMessage"));
+        Mockito.when(jobCallable.onError()).thenReturn(LogType.ERROR);
+
+        try {
+            JobRegister.execute("testJob", jobCallable);
+        } catch (ErrorException eex){
+            for (AbstractTransactionLog abstractTransactionLog : TransactionRegistery.list()) {
+                if (abstractTransactionLog instanceof JobTransactionLogDto) {
+                    JobTransactionLogDto jobTransactionLogDto = (JobTransactionLogDto) abstractTransactionLog;
+                    Assert.assertNotNull(jobTransactionLogDto.getServerName());
+                    Assert.assertNotNull(jobTransactionLogDto.getUser());
+                    Assert.assertNotNull(jobTransactionLogDto.getFlowId());
+                    Assert.assertNotNull(jobTransactionLogDto.getTransactionId());
+                    return;
+                }
+            }
+        }
+        Assert.fail("No JobTransactionLogDto found in the TransactionRegistery. This should never happen");
     }
 
 }
