@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 
-import java.net.InetAddress;
 import java.util.Date;
 
 public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
@@ -56,21 +55,15 @@ public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 		String hostname;
 		String headerFlowId = null;
 		String originUser = null;
-		try {
-			hostname = InetAddress.getLocalHost().getHostName();
-			if (mi.getArguments().length == 2 && mi.getArguments()[1] instanceof Message) {
-				MessageProperties props = ((Message) mi.getArguments()[1]).getMessageProperties();
-				transaction.setExchange(props.getReceivedExchange());
-				transaction.setQueueName(props.getConsumerQueue());
-				transaction.setRoutingKey(props.getReceivedRoutingKey());
-				transaction.setHeaders(props.getHeaders());
-				headerFlowId = (String) props.getHeaders().get(Constants.FLOW_ID);
-				originUser = (String) props.getHeaders().get(Constants.ORIGIN_USER);
-			}
-
-		} catch (Exception ex) {
-			//java.util.logging.Logger.getLogger(TransactionLoggerAmqpAdvice.class.getName()).log(Level.SEVERE, null, ex);
-			hostname = "[unknown]";
+		hostname = LogTransaction.hostname();
+		if (mi.getArguments().length == 2 && mi.getArguments()[1] instanceof Message) {
+			MessageProperties props = ((Message) mi.getArguments()[1]).getMessageProperties();
+			transaction.setExchange(props.getReceivedExchange());
+			transaction.setQueueName(props.getConsumerQueue());
+			transaction.setRoutingKey(props.getReceivedRoutingKey());
+			transaction.setHeaders(props.getHeaders());
+			headerFlowId = (String) props.getHeaders().get(Constants.FLOW_ID);
+			originUser = (String) props.getHeaders().get(Constants.ORIGIN_USER);
 		}
 
 		String transactionUUID = LogTransaction.id();
