@@ -26,7 +26,7 @@
 							"properties": {
 								"startDate": {
 									"type": "date",
-									"format": "dateOptionalTime"
+									"format": "date_optional_time||epoch_millis"
 								},
 								"duration": {
 									"type": "long"
@@ -74,7 +74,7 @@
 								},
 								"startDate": {
 									"type": "date",
-									"format": "dateOptionalTime"
+									"format": "date_optional_time||epoch_millis"
 								},
 								"duration": {
 									"type": "long"
@@ -122,7 +122,7 @@
 							"properties": {
 								"startDate": {
 									"type": "date",
-									"format": "dateOptionalTime"
+									"format": "date_optional_time||epoch_millis"
 								},
 								"fullUrl": {
 									"type": "string",
@@ -180,7 +180,7 @@
 						},
 						"startup": {
 							"type": "date",
-							"format": "dateOptionalTime"
+							"format": "date_optional_time||epoch_millis"
 						},
 						"app": {
 							"type": "string",
@@ -198,7 +198,7 @@
 				},
 				"logDate": {
 					"type": "date",
-					"format": "dateOptionalTime"
+					"format": "date_optional_time||epoch_millis"
 				},
 				"loggerName": {
 					"type": "string",
@@ -206,11 +206,11 @@
 				},
 				"date": {
 					"type": "date",
-					"format": "dateOptionalTime"
+					"format": "date_optional_time||epoch_millis"
 				},
-				
+
 				"@timestamp": {
-					"format": "dateOptionalTime",
+					"format": "date_optional_time||epoch_millis",
 					"type": "date"
 				},
 				"logComment": {

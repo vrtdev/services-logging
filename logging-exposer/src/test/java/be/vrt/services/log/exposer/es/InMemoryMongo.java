@@ -2,7 +2,12 @@ package be.vrt.services.log.exposer.es;
 
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
@@ -12,8 +17,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.ClusterName;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
-import org.elasticsearch.common.collect.Lists;
-import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.util.concurrent.EsExecutors;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
@@ -28,7 +32,7 @@ import be.vrt.services.log.exposer.util.FileSystemUtils;
  */
 public class InMemoryMongo {
 
-	private static final String DATA_PATH = "target/elasticsearch/data";
+	private static final String DATA_PATH = "./target/elasticsearch";
 	private Node node;
 	private Client client;
 	private ObjectMapper objectMapper = new ObjectMapper();
@@ -39,7 +43,7 @@ public class InMemoryMongo {
 	public InMemoryMongo start() {
 		node = NodeBuilder.nodeBuilder()
 				//.loadConfigSettings(false)
-				.local(true).data(true).settings(ImmutableSettings.builder()
+				.local(true).data(true).settings(Settings.builder()
 				.put(ClusterName.SETTING, "loggingTestCluster")
 				.put("node.name", "loggingTestNode")
 				.put(IndexMetaData.SETTING_NUMBER_OF_SHARDS, 1)
@@ -47,10 +51,10 @@ public class InMemoryMongo {
 				.put("discovery.zen.ping.multicast", "false")
 				.put(EsExecutors.PROCESSORS, 1) // limit the number of threads created
 				.put("http.enabled", false)
-				.put("index.store.type", "memory")
-				.put("index.store.fs.memory.enabled", "true")
-				.put("gateway.type", "none")
+				.put("index.store.type", "default")
+				.put("gateway.type", "default")
 				.put("path.data", DATA_PATH)
+				.put("path.home", DATA_PATH)
 		).build();
 		node.start();
 		client = node.client();
@@ -88,7 +92,7 @@ public class InMemoryMongo {
 
 	private boolean indexExists(String indexName) {
 		GetIndexResponse indexResult = client.admin().indices().getIndex(new GetIndexRequest()).actionGet();
-		return Lists.newArrayList(indexResult.indices()).contains(indexName);
+		return Arrays.asList(indexResult.indices()).contains(indexName);
 	}
 
 	public void index(String indexName, String type, String... entryResources) {
