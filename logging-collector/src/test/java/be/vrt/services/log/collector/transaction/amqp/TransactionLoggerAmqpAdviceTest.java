@@ -16,6 +16,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 
+import java.util.Map;
+import java.util.Set;
+
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -42,12 +45,21 @@ public class TransactionLoggerAmqpAdviceTest {
         for (AbstractTransactionLog abstractTransactionLog : TransactionRegistery.list()) {
             if(abstractTransactionLog instanceof AmqpTransactionLogDto){
                 AmqpTransactionLogDto amqpTransactionLogDto = (AmqpTransactionLogDto) abstractTransactionLog;
+                assertHeaders(amqpTransactionLogDto);
                 if(A_QUEUE.equals(amqpTransactionLogDto.getQueueName())){
                     return;
                 }
             }
         }
         Assert.fail("The transactionRegistery should contain an AmqpTransactionLogDto having queue " + A_QUEUE);
+    }
+
+    private void assertHeaders(AmqpTransactionLogDto amqpTransactionLogDto) {
+        Map<String, Object> headers = amqpTransactionLogDto.getHeaders();
+        Assert.assertEquals(3, headers.size());
+        Set<String> keySet = headers.keySet();
+        Assert.assertEquals(true, keySet.contains("test_header"));
+        Assert.assertEquals(false, keySet.contains("test.header"));
     }
 
 
@@ -103,6 +115,7 @@ public class TransactionLoggerAmqpAdviceTest {
         MessageProperties properties = new MessageProperties();
         properties.setHeader(Constants.FLOW_ID, FLOW_ID);
         properties.setHeader(Constants.ORIGIN_USER, USER);
+        properties.setHeader("test.header", "testValue");
         properties.setConsumerQueue(A_QUEUE);
         return properties;
     }

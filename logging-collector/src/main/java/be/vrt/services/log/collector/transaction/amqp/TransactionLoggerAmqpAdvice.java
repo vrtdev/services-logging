@@ -15,6 +15,9 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 
 import java.util.Date;
+import java.util.Map;
+
+import static be.vrt.services.log.collector.util.ElasticNotAllowedCharactersFilter.filter;
 
 public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 
@@ -61,7 +64,7 @@ public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 			transaction.setExchange(props.getReceivedExchange());
 			transaction.setQueueName(props.getConsumerQueue());
 			transaction.setRoutingKey(props.getReceivedRoutingKey());
-			transaction.setHeaders(props.getHeaders());
+			transaction.setHeaders(filter(props.getHeaders()));
 			headerFlowId = (String) props.getHeaders().get(Constants.FLOW_ID);
 			originUser = (String) props.getHeaders().get(Constants.ORIGIN_USER);
 		}
