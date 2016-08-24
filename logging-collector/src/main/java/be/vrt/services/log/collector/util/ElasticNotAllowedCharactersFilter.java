@@ -1,5 +1,6 @@
 package be.vrt.services.log.collector.util;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public final class ElasticNotAllowedCharactersFilter {
@@ -9,17 +10,15 @@ public final class ElasticNotAllowedCharactersFilter {
     }
 
     public static Map<String, Object> filter(Map<String, Object> headers) {
+        Map<String, Object> newMap = new HashMap<>();
         for (Map.Entry<String, Object> entry : headers.entrySet()) {
-            if(entry.getKey().contains(".")) {
-                headers.put(filter(entry.getKey()), entry.getValue());
-                headers.remove(entry.getKey());
-            }
+            newMap.put(filter(entry.getKey()), entry.getValue());
         }
-        return headers;
+        return newMap;
     }
 
     public static String filter(String arg) {
-        if(arg == null) return null;
+        if (arg == null) return null;
         return arg.replaceAll("\\.", "_");
     }
 }
