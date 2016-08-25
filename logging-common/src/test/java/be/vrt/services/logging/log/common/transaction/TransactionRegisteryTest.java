@@ -1,22 +1,20 @@
 package be.vrt.services.logging.log.common.transaction;
 
 import be.vrt.services.logging.log.common.LogTransaction;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
+import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
+import be.vrt.services.logging.log.common.dto.LogType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 /**
  * @author lucs
@@ -36,7 +34,7 @@ public class TransactionRegisteryTest {
 	
 	@Test
 	public void testRegisterTransactionLocalOK() {
-		doReturn(AbstractTransactionLog.Type.OK).when(abstractTransactionLog).getStatus();
+		doReturn(LogType.OK).when(abstractTransactionLog).getStatus();
 		
 		registery.registerTransactionLocal(abstractTransactionLog);
 		
@@ -48,7 +46,7 @@ public class TransactionRegisteryTest {
 	
 	@Test
 	public void testRegisterTransactionLocalFAIL() {
-		doReturn(AbstractTransactionLog.Type.FAILED).when(abstractTransactionLog).getStatus();
+		doReturn(LogType.FAILED).when(abstractTransactionLog).getStatus();
 		
 		registery.registerTransactionLocal(abstractTransactionLog);
 		
@@ -60,7 +58,7 @@ public class TransactionRegisteryTest {
 	
 	@Test
 	public void testRegisterTransactionLocalERROR() {
-		doReturn(AbstractTransactionLog.Type.ERROR).when(abstractTransactionLog).getStatus();
+		doReturn(LogType.ERROR).when(abstractTransactionLog).getStatus();
 		
 		registery.registerTransactionLocal(abstractTransactionLog);
 		
@@ -95,7 +93,7 @@ public class TransactionRegisteryTest {
 	
 	@Test
 	public void testRegister_AbstractTransactionLog() {
-		doReturn(AbstractTransactionLog.Type.OK).when(abstractTransactionLog).getStatus();
+		doReturn(LogType.OK).when(abstractTransactionLog).getStatus();
 		TransactionRegistery.register(abstractTransactionLog);
 		
 		registery = TransactionRegistery.instance;
@@ -121,7 +119,7 @@ public class TransactionRegisteryTest {
 	
 	@Test
 	public void testList() {
-		doReturn(AbstractTransactionLog.Type.OK).when(abstractTransactionLog).getStatus();
+		doReturn(LogType.OK).when(abstractTransactionLog).getStatus();
 		
 		TransactionRegistery.register(abstractTransactionLog);
 		List<AbstractTransactionLog> l = TransactionRegistery.list();
@@ -135,7 +133,7 @@ public class TransactionRegisteryTest {
 	
 	@Test
 	public void testListErrors() {
-		doReturn(AbstractTransactionLog.Type.ERROR).when(abstractTransactionLog).getStatus();
+		doReturn(LogType.ERROR).when(abstractTransactionLog).getStatus();
 		
 		TransactionRegistery.register(abstractTransactionLog);
 		List<AbstractTransactionLog> l = TransactionRegistery.listErrors();
@@ -148,7 +146,7 @@ public class TransactionRegisteryTest {
 	
 	@Test
 	public void testListFailures() {
-		doReturn(AbstractTransactionLog.Type.FAILED).when(abstractTransactionLog).getStatus();
+		doReturn(LogType.FAILED).when(abstractTransactionLog).getStatus();
 		
 		TransactionRegistery.register(abstractTransactionLog);
 		List<AbstractTransactionLog> l = TransactionRegistery.listFailures();

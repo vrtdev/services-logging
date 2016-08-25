@@ -17,13 +17,7 @@ public abstract class AbstractTransactionLog implements DelayedLogObject{
 	protected String transactionId;
 	protected String flowId;
 	protected Map<String, String> parameters;
-
-	public static enum Type {
-
-		OK, FAILED, ERROR
-	};
-
-	private Type status;
+	private LogType status;
 	private String errorReason;
 
 	public abstract String getType();
@@ -92,11 +86,11 @@ public abstract class AbstractTransactionLog implements DelayedLogObject{
 		this.flowId = flowId;
 	}
 
-	public Type getStatus() {
+	public LogType getStatus() {
 		return status;
 	}
 
-	public void setStatus(Type status) {
+	public void setStatus(LogType status) {
 		this.status = status;
 	}
 

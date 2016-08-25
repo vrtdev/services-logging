@@ -1,12 +1,11 @@
 package be.vrt.services.log.collector.transaction.amqp;
 
 import be.vrt.services.log.collector.exception.FailureException;
-import be.vrt.services.logging.log.common.LogTransaction;
-import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import be.vrt.services.log.collector.transaction.dto.AmqpTransactionLogDto;
 import be.vrt.services.logging.log.common.Constants;
-import java.net.InetAddress;
-import java.util.Date;
+import be.vrt.services.logging.log.common.LogTransaction;
+import be.vrt.services.logging.log.common.dto.LogType;
+import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang3.time.StopWatch;
@@ -14,6 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
+
+import java.util.Date;
+import java.util.Map;
+
+import static be.vrt.services.log.collector.util.ElasticNotAllowedCharactersFilter.filter;
 
 public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 
@@ -26,16 +30,16 @@ public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		transaction.setStartDate(new Date(stopWatch.getStartTime()));
-		transaction.setStatus(AmqpTransactionLogDto.Type.OK);
+		transaction.setStatus(LogType.OK);
 		try {
 			return mi.proceed();
 		} catch (FailureException e) {
 			transaction.setErrorReason(e.getMessage());
-			transaction.setStatus(AmqpTransactionLogDto.Type.FAILED);
+			transaction.setStatus(LogType.FAILED);
 			throw e;
 		} catch (Throwable e) {
 			transaction.setErrorReason(e.getMessage());
-			transaction.setStatus(AmqpTransactionLogDto.Type.ERROR);
+			transaction.setStatus(LogType.ERROR);
 			throw e;
 		} finally {
 			stopWatch.stop();
@@ -54,21 +58,15 @@ public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 		String hostname;
 		String headerFlowId = null;
 		String originUser = null;
-		try {
-			hostname = InetAddress.getLocalHost().getHostName();
-			if (mi.getArguments().length == 2 && mi.getArguments()[1] instanceof Message) {
-				MessageProperties props = ((Message) mi.getArguments()[1]).getMessageProperties();
-				transaction.setExchange(props.getReceivedExchange());
-				transaction.setQueueName(props.getConsumerQueue());
-				transaction.setRoutingKey(props.getReceivedRoutingKey());
-				transaction.setHeaders(props.getHeaders());
-				headerFlowId = (String) props.getHeaders().get(Constants.FLOW_ID);
-				originUser = (String) props.getHeaders().get(Constants.ORIGIN_USER);
-			}
-
-		} catch (Exception ex) {
-			//java.util.logging.Logger.getLogger(TransactionLoggerAmqpAdvice.class.getName()).log(Level.SEVERE, null, ex);
-			hostname = "[unknown]";
+		hostname = LogTransaction.hostname();
+		if (mi.getArguments().length == 2 && mi.getArguments()[1] instanceof Message) {
+			MessageProperties props = ((Message) mi.getArguments()[1]).getMessageProperties();
+			transaction.setExchange(props.getReceivedExchange());
+			transaction.setQueueName(props.getConsumerQueue());
+			transaction.setRoutingKey(props.getReceivedRoutingKey());
+			transaction.setHeaders(filter(props.getHeaders()));
+			headerFlowId = (String) props.getHeaders().get(Constants.FLOW_ID);
+			originUser = (String) props.getHeaders().get(Constants.ORIGIN_USER);
 		}
 
 		String transactionUUID = LogTransaction.id();

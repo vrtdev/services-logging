@@ -1,5 +1,6 @@
 package be.vrt.services.log.collector.transaction.http;
 
+import be.vrt.services.log.collector.util.ElasticNotAllowedCharactersFilter;
 import be.vrt.services.logging.log.common.LogTransaction;
 import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import java.io.IOException;
@@ -23,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import be.vrt.services.log.collector.transaction.dto.HttpTransactionLogDto;
 import be.vrt.services.logging.log.common.Constants;
+
+import static be.vrt.services.log.collector.util.ElasticNotAllowedCharactersFilter.filter;
 
 public class TransactionLoggerFilter implements Filter, Constants {
 
@@ -84,7 +87,7 @@ public class TransactionLoggerFilter implements Filter, Constants {
 		Enumeration<String> keys = request.getParameterNames();
 		while (keys.hasMoreElements()) {
 			String paramName = keys.nextElement();
-			params.put(paramName, request.getParameter(paramName));
+			params.put(filter(paramName), request.getParameter(paramName));
 		}
 		return params;
 	}

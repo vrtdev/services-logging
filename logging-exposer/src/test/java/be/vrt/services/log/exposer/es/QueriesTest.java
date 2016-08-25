@@ -7,9 +7,9 @@ import be.vrt.services.log.exposer.es.result.ElasticSearchCountResult;
 import be.vrt.services.log.exposer.es.result.ElasticSearchResult;
 import be.vrt.services.logging.log.common.AppWithEnv;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.collect.Lists;
-import org.elasticsearch.common.joda.time.DateTime;
+import org.joda.time.DateTime;
 import org.junit.*;
 
 import java.util.*;
@@ -32,7 +32,7 @@ public class QueriesTest {
 		inMemoryMongo.reCreateIndex("logging", "es-mapping.json");
 	}
 
-	private static void index(String... logResources) {
+	private void index(String... logResources) {
 		inMemoryMongo.index("logging", "logs", logResources);
 		inMemoryMongo.flush("logging");
 	}
