@@ -18,6 +18,8 @@
 		<module>logging-exposer</module>
 		<module>logging-full</module>
 		<module>logging-test-web</module>
+	 <module>logging-api</module>
+	 <module>logging-terminal</module>
 	</modules>
 
 	<scm>

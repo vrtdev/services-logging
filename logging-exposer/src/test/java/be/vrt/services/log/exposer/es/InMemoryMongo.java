@@ -28,7 +28,7 @@ import be.vrt.services.log.exposer.util.FileSystemUtils;
  */
 public class InMemoryMongo {
 
-	private static final String DATA_PATH = "target/elasticsearch/data";
+	private static final String DATA_PATH = "/tmp/target/elasticsearch/data";
 	private Node node;
 	private Client client;
 	private ObjectMapper objectMapper = new ObjectMapper();
@@ -41,7 +41,7 @@ public class InMemoryMongo {
 				//.loadConfigSettings(false)
 				.local(true).data(true).settings(ImmutableSettings.builder()
 				.put(ClusterName.SETTING, "loggingTestCluster")
-				.put("node.name", "loggingTestNode")
+				.put("node.name", "logging2TestNode")
 				.put(IndexMetaData.SETTING_NUMBER_OF_SHARDS, 1)
 				.put(IndexMetaData.SETTING_NUMBER_OF_REPLICAS, 0)
 				.put("discovery.zen.ping.multicast", "false")

@@ -8,14 +8,18 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import org.slf4j.Logger;
 
 public class LogTransaction implements Constants {
+
+	private static Logger LOG = LoggerFactory.getLogger("LogTransaction");
 
 	private static String hostname;
 	private static final String TAG_LIST = "tags";
 	private static final String TAG_SEPERATOR = ",";
 	private static final String ID_LIST = "ids";
 	private static final String ID_SEPERATOR = ",";
+	private static final String SUBFLOWS_COUNT = ",";
 
 	private static final String DATA_CLEANUP_REGEX = "[^-_\\w]";
 
@@ -49,6 +53,17 @@ public class LogTransaction implements Constants {
 			idList += ID_SEPERATOR + id;
 		}
 		MDC.put(ID_LIST, idList);
+	}
+
+	public static void logSuppress(String msg) {
+		tagTransaction("SUPPRESSED");
+		LOG.debug("Logging suppressed: {}", msg);
+	}
+
+	public static void logUnsuppress(String msg) {
+		untagTransaction("SUPPRESSED");
+		tagTransaction("UNSUPPRESSED");
+		LOG.debug("Logging suppressed: {}", msg);
 	}
 
 	public static List<String> listIds() {
@@ -218,9 +233,9 @@ public class LogTransaction implements Constants {
 	}
 
 	public static void updateFlowId(String flowid) {
-		String currentFlowId =  MDC.get(FLOW_ID);
+		String currentFlowId = MDC.get(FLOW_ID);
 		if (currentFlowId != null && !currentFlowId.equals(flowid)) {
-			LoggerFactory.getLogger(LogTransaction.class).info("update FlowId : [{}] ==> [{}]", flow(), flowid);
+			LOG.info("update FlowId : [{}] ==> [{}]", flow(), flowid);
 		}
 		MDC.put(FLOW_ID, flowid);
 	}
