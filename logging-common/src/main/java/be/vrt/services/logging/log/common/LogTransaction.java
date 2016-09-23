@@ -1,11 +1,14 @@
 package be.vrt.services.logging.log.common;
 
+import be.vrt.services.logging.log.common.dto.ForkFlowDto;
 import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import org.slf4j.Logger;
@@ -16,12 +19,24 @@ public class LogTransaction implements Constants {
 
 	private static String hostname;
 	private static final String TAG_LIST = "tags";
-	private static final String TAG_SEPERATOR = ",";
 	private static final String ID_LIST = "ids";
-	private static final String ID_SEPERATOR = ",";
-	private static final String SUBFLOWS_COUNT = ",";
+	private static final String SUBFLOWS_COUNT = "0";
+	public static final String PARENT = "PARENT";
 
+	// TAGS
+	public static final String SUPPRESSED = "SUPPRESSED";
+
+	// Used in code
+	private static final String TAG_SEPERATOR = ",";
+	private static final String ID_SEPERATOR = ",";
 	private static final String DATA_CLEANUP_REGEX = "[^-_\\w]";
+
+	private static final ThreadLocal<NumberFormat> numberFormat = new ThreadLocal<NumberFormat>() {
+		@Override
+		public NumberFormat initialValue() {
+			return new DecimalFormat("00000000");
+		}
+	};
 
 	public static void resetThread() {
 		MDC.remove(TRANSACTION_ID);
@@ -30,11 +45,13 @@ public class LogTransaction implements Constants {
 		MDC.remove(USER);
 		MDC.remove(TAG_LIST);
 		MDC.remove(ID_LIST);
+		MDC.remove(PARENT);
+		MDC.remove(SUBFLOWS_COUNT);
 
 	}
 
 	public static void registerUser(String user) {
-		if (user == null) { // We do this as the morons of JBoss logging cannot handle a simple thing as null values in a Set...
+		if (user == null) {
 			user = "UNKNOWN";
 		}
 		MDC.put(USER, user);
@@ -55,15 +72,49 @@ public class LogTransaction implements Constants {
 		MDC.put(ID_LIST, idList);
 	}
 
+	public static void createChildFlow(String msg) {
+		ForkFlowDto dto = new ForkFlowDto();
+		dto.setParentFlowId(flow());
+		dto.setChildFlowId(createFlowId(null, user()));
+		LOG.info("### Creating SubFlow: {}", msg, dto);
+		
+		StringStack parentStack = new StringStack(MDC.get(PARENT));
+		parentStack.push(dto.getParentFlowId());
+		MDC.put(PARENT, parentStack.toString());
+		MDC.put(FLOW_ID, dto.getChildFlowId());
+		
+	}
+
+	public static void backToParentFlow(String msg) {
+		StringStack parentStack = new StringStack(MDC.get(PARENT));
+		String parent = parentStack.pop();
+		ForkFlowDto dto = new ForkFlowDto();
+		dto.setParentFlowId(parent);
+		dto.setChildFlowId(flow());
+		LOG.info("### Back to parent flow: {}", msg, dto);
+		
+		MDC.put(PARENT, parentStack.toString());
+		MDC.put(FLOW_ID, parent);
+		
+	}
+
+	public static int nbrOfSubflows() {
+		String subs = MDC.get(SUBFLOWS_COUNT);
+		return subs == null ? 0 : Integer.parseInt(subs);
+	}
+
 	public static void logSuppress(String msg) {
-		tagTransaction("SUPPRESSED");
-		LOG.debug("Logging suppressed: {}", msg);
+		if (msg != null) {
+			LOG.debug("Logging suppressed: {}", msg);
+		}
+		tagTransaction(SUPPRESSED);
 	}
 
 	public static void logUnsuppress(String msg) {
-		untagTransaction("SUPPRESSED");
-		tagTransaction("UNSUPPRESSED");
-		LOG.debug("Logging suppressed: {}", msg);
+		untagTransaction(SUPPRESSED);
+		if (msg != null) {
+			LOG.debug("Logging unsuppressed: {}", msg);
+		}
 	}
 
 	public static List<String> listIds() {
@@ -136,7 +187,8 @@ public class LogTransaction implements Constants {
 	}
 
 	public static String user() {
-		return MDC.get(USER);
+		String user = MDC.get(USER);
+		return user == null ? "NOT_SPECIFIED" : user;
 	}
 
 	public static String id() {
@@ -214,9 +266,10 @@ public class LogTransaction implements Constants {
 		if (user == null) {
 			user = "NOT_SPECIFIED";
 		}
+		MDC.put(USER, user);
 		user = user.replaceAll("[^-_.@a-zA-Z0-9]*", "");
 		StringBuffer buffer = new StringBuffer(UUID.randomUUID().toString());
-		buffer.append("000");
+		buffer.append("-").append(numberFormat.get().format(nbrOfSubflows()));
 		buffer.append("-").append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		buffer.append("-").append(user);
 		updateFlowId(buffer.toString());
