@@ -6,19 +6,12 @@ import be.vrt.services.logging.log.common.LogTransaction;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import static org.mockito.Mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LogSuppressingAspectTest {
 
-	private Logger log = mock(Logger.class);
 
 	@Test
 	public void testSomeMethod() {
@@ -28,14 +21,17 @@ public class LogSuppressingAspectTest {
 		factory.addAspect(aspect);
 		MyInterface proxy = factory.getProxy();
 		
-		proxy.aSimpleStatement();
-		
+		proxy.validateSuppression();
 
+		
+		proxy.suppressedStatement();
+		proxy.unSuppressedStatement();
+		
 	}
 
 	private static interface MyInterface {
 
-		void aSimpleStatement();
+		void validateSuppression();
 
 		void suppressedStatement();
 
@@ -60,14 +56,13 @@ public class LogSuppressingAspectTest {
 			
 		}
 		
-		
 		@Override
-		public void aSimpleStatement() {
+		public void validateSuppression() {
 			assertFalse(LogTransaction.isTaggedWith("SUPPRESSED"));
 			LogTransaction.logSuppress("suppressing");
 			suppressedStatement();
 			assertTrue(LogTransaction.isTaggedWith("SUPPRESSED"));
-			LogTransaction.logUnsuppress("suppressing");
+			LogTransaction.logUnsuppress("unsuppressing");
 			unSuppressedStatement();
 			assertFalse(LogTransaction.isTaggedWith("SUPPRESSED"));
 			
