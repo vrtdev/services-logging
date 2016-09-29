@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.Map;
 
 import static be.vrt.services.log.collector.util.ElasticNotAllowedCharactersFilter.filter;
+import static be.vrt.services.log.collector.util.ElasticNotAllowedCharactersFilter.filter;
 
 public class TransactionLoggerAmqpAdvice implements MethodInterceptor {
 

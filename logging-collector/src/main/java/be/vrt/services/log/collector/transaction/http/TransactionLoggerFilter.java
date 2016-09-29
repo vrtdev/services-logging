@@ -26,6 +26,7 @@ import be.vrt.services.log.collector.transaction.dto.HttpTransactionLogDto;
 import be.vrt.services.logging.log.common.Constants;
 
 import static be.vrt.services.log.collector.util.ElasticNotAllowedCharactersFilter.filter;
+import static be.vrt.services.log.collector.util.ElasticNotAllowedCharactersFilter.filter;
 
 public class TransactionLoggerFilter implements Filter, Constants {
 

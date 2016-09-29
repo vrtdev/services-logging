@@ -40,6 +40,7 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			dto.setFlowId(LogTransaction.flow());
 			dto.setBreadCrumb(LogTransaction.breadCrumb());
 			dto.setUser(LogTransaction.user());
+			dto.setSubFlow(LogTransaction.nbrOfSubflow());
 			dto.setTags(LogTransaction.listTags());
 			dto.setIds(LogTransaction.listIds());
 			String hostname;

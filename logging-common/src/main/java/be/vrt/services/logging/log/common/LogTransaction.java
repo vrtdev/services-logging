@@ -73,6 +73,7 @@ public class LogTransaction implements Constants {
 	}
 
 	public static void createChildFlow(String msg) {
+		MDC.put(SUBFLOWS_COUNT, Integer.toString(nbrOfSubflow()+1));
 		ForkFlowDto dto = new ForkFlowDto();
 		dto.setParentFlowId(flow());
 		dto.setChildFlowId(createFlowId(null, user()));
@@ -98,7 +99,7 @@ public class LogTransaction implements Constants {
 		
 	}
 
-	public static int nbrOfSubflows() {
+	public static int nbrOfSubflow() {
 		String subs = MDC.get(SUBFLOWS_COUNT);
 		return subs == null ? 0 : Integer.parseInt(subs);
 	}
@@ -269,7 +270,7 @@ public class LogTransaction implements Constants {
 		MDC.put(USER, user);
 		user = user.replaceAll("[^-_.@a-zA-Z0-9]*", "");
 		StringBuffer buffer = new StringBuffer(UUID.randomUUID().toString());
-		buffer.append("-").append(numberFormat.get().format(nbrOfSubflows()));
+		buffer.append("-").append(numberFormat.get().format(nbrOfSubflow()));
 		buffer.append("-").append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		buffer.append("-").append(user);
 		updateFlowId(buffer.toString());

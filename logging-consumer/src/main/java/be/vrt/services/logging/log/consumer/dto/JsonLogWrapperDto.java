@@ -17,6 +17,7 @@ public class JsonLogWrapperDto {
 	private String methodName;
 	private int breadCrumb;
 	private int lineNumber;
+	private int subFlow;
 	
 	private String user;
 	private String logLevel;
@@ -163,6 +164,14 @@ public class JsonLogWrapperDto {
 
 	public void setTags(List<String> tags) {
 		this.tags = tags;
+	}
+
+	public int getSubFlow() {
+		return subFlow;
+	}
+
+	public void setSubFlow(int subFlow) {
+		this.subFlow = subFlow;
 	}
 	
 	
