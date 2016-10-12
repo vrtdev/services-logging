@@ -17,8 +17,8 @@
 	</modules>
 
 	<scm>
-		<connection>scm:git:ssh://git@atlas.vrt.be:7999/ser/services-logging.git</connection>
-		<developerConnection>scm:git:ssh://git@atlas.vrt.be:7999/ser/services-logging.git</developerConnection>
+		<connection>scm:git:https://github.com/vrtdev/services-logging.git</connection>
+		<developerConnection>scm:git:https://github.com/vrtdev/services-logging.git</developerConnection>
 	</scm>
 
 	<properties>
@@ -46,6 +46,19 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 	</properties>
+
+    <distributionManagement>
+        <repository>
+            <id>deployment</id>
+            <name>VRT inhouse nexus</name>
+            <url>http://atlasnexus.servers.vrt.be:8080/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>deployment</id>
+            <name>VRT inhouse nexus</name>
+            <url>http://atlasnexus.servers.vrt.be:8080/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 	<dependencyManagement>
 		<dependencies>
