@@ -26,7 +26,7 @@ public class LogSuppressingAspect {
 
 	@Around("suppressing() ")
 	public Object logSuppress(ProceedingJoinPoint joinPoint) throws Throwable {
-		boolean suppressed = LogTransaction.isTaggedWith(SUPPRESSED);
+		boolean suppressed = LogTransaction.isSuppressed();
 		try {
 			if (!suppressed) {
 				LogTransaction.logSuppress(joinPoint.toShortString());
@@ -42,7 +42,7 @@ public class LogSuppressingAspect {
 
 	@Around("unsuppress()")
 	public Object logUnsuppress(ProceedingJoinPoint joinPoint) throws Throwable {
-		boolean suppressed = LogTransaction.isTaggedWith(SUPPRESSED);
+		boolean suppressed = LogTransaction.isSuppressed();
 		try {
 			if (suppressed) {
 				LogTransaction.logUnsuppress(joinPoint.toShortString());

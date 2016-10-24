@@ -117,6 +117,10 @@ public class LogTransaction implements Constants {
 			LOG.debug("Logging unsuppressed: {}", msg);
 		}
 	}
+	
+	public static boolean isSuppressed() {
+		return isTaggedWith(SUPPRESSED);
+	}
 
 	public static List<String> listIds() {
 

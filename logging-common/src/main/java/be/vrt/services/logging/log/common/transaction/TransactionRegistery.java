@@ -12,10 +12,10 @@ import java.util.Observer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TransactionRegistery extends Observable{
+public class TransactionRegistery extends Observable {
 
 	private final Logger log = LoggerFactory.getLogger(TransactionRegistery.class);
-	
+
 	static TransactionRegistery instance = new TransactionRegistery();
 
 	int bufferSize = 100;
@@ -24,7 +24,7 @@ public class TransactionRegistery extends Observable{
 	final List<AbstractTransactionLog> transactionLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(bufferSize));
 	final List<AbstractTransactionLog> transactionFailedLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(bufferSize));
 	final List<AbstractTransactionLog> transactionErrorLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(bufferSize));
-	
+
 	final Map<String, String> flowIds = Collections.synchronizedMap(new HashMap<String, String>());
 
 	final List<TransactionIdLog> transactionIds = Collections.synchronizedList(new ArrayList<TransactionIdLog>(bufferSizeIds));
@@ -34,8 +34,6 @@ public class TransactionRegistery extends Observable{
 		_registerStaticFlow("SYSTEM-STARTUP");
 	}
 
-	
-	
 	public void registerTransactionLocal(AbstractTransactionLog transaction) {
 		addToFixedSizeQueue(transactionLogs, transaction, bufferSize);
 		switch (transaction.getStatus()) {
@@ -62,14 +60,16 @@ public class TransactionRegistery extends Observable{
 	}
 
 	public static void register(AbstractTransactionLog transaction) {
-		instance.registerTransactionLocal(transaction);
+		if (!LogTransaction.isSuppressed()) {
+			instance.registerTransactionLocal(transaction);
+		}
 	}
-	
+
 	public static void registerTransaction() {
 		instance.registerTransactionId(LogTransaction.id(), LogTransaction.flow());
 	}
 
-	public static void registerTransactionObserver(Observer observer){
+	public static void registerTransactionObserver(Observer observer) {
 		instance.addObserver(observer);
 	}
 
@@ -89,10 +89,10 @@ public class TransactionRegistery extends Observable{
 		return new ArrayList<>(instance.transactionIds);
 	}
 
-	public static TransactionRegistery instance(){
+	public static TransactionRegistery instance() {
 		return instance;
 	}
-	
+
 	public int getBufferSize() {
 		return bufferSize;
 	}
@@ -108,20 +108,20 @@ public class TransactionRegistery extends Observable{
 	public void setBufferSizeIds(int bufferSizeIds) {
 		this.bufferSizeIds = bufferSizeIds;
 	}
-	
-	public static void registerStaticFlow(String name){
+
+	public static void registerStaticFlow(String name) {
 		instance._registerStaticFlow(name);
 	}
-	
-	private synchronized void _registerStaticFlow(String name){
+
+	private synchronized void _registerStaticFlow(String name) {
 		String flowId = LogTransaction.flow();
-		if(flowIds.containsKey(name)){
+		if (flowIds.containsKey(name)) {
 			log.warn("Updating flowId [{}] {} >> {}", name, flowIds.get(name), flowId);
 		}
 		flowIds.put(name, flowId);
 	}
-	
-	public static Map<String, String> listStaticFlows(){
+
+	public static Map<String, String> listStaticFlows() {
 		return new HashMap<>(instance.flowIds);
 	}
 
