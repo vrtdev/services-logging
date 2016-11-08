@@ -29,6 +29,10 @@
 	background-color:gray;
 }
 
+.rlog-suppress{
+	display: none;
+}
+
 .rlog-info, #rlog-detail{
 	font-size: 14px;
 	color: greenyellow;
@@ -135,6 +139,10 @@ tr.rlog-detail-row-json td {
 	border-color: lightblue; 
 	color: lightblue;
 }
+.rlog-info-show-btn:hover{
+	color: black;
+	background-color: lightblue;
+}
 
 tr .rlog-info-show-btn{
 	border: none;
@@ -146,10 +154,6 @@ tr .rlog-info-show-btn-green{
 	color: greenyellow;
 }
 
-.rlog-info-show-btn:hover{
-	color: black;
-	background-color: lightblue;
-}
 
 .rlog-clear-btn{
 	border-color: red; 

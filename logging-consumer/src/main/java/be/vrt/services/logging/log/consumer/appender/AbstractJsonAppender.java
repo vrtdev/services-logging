@@ -55,7 +55,7 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 				dto.getContent().put("STACKTRACE-MSG", logEvent.getThrowableProxy().getMessage());
 				dto.getContent().put("STACKTRACE-CLASS", logEvent.getThrowableProxy().getClassName());
 				dto.getContent().put("STACKTRACE-TOP", logEvent.getThrowableProxy().getStackTraceElementProxyArray()[0]);
-				dto.getContent().put("STACKTRACE-FULL", Arrays.toString(logEvent.getThrowableProxy().getStackTraceElementProxyArray()));
+				dto.getContent().put("STACKTRACE-FULL", logEvent.getThrowableProxy() );
 			}
 			
 			if (objects != null) {

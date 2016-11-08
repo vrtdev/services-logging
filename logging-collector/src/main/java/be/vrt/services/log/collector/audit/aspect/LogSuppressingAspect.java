@@ -9,7 +9,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.annotation.Order;
 
 @Aspect
-@Order(70)
+@Order(-50)
 public class LogSuppressingAspect {
 
 	@Pointcut("within(@be.vrt.services.logging.api.audit.annotation.LogSuppress *) || @annotation(be.vrt.services.logging.api.audit.annotation.LogSuppress)")
@@ -31,7 +31,8 @@ public class LogSuppressingAspect {
 			if (!suppressed) {
 				LogTransaction.logSuppress(joinPoint.toShortString());
 			}
-			return joinPoint.proceed();
+			Object o = joinPoint.proceed();
+			return o;
 		} finally {
 			if (!suppressed) {
 				LogTransaction.logUnsuppress(joinPoint.toShortString());
@@ -56,3 +57,4 @@ public class LogSuppressingAspect {
 
 	}
 }
+ 
