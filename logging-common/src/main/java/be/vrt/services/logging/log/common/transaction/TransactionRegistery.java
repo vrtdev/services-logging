@@ -18,7 +18,7 @@ public class TransactionRegistery extends Observable {
 
 	static TransactionRegistery instance = new TransactionRegistery();
 
-	int bufferSize = 100;
+	int bufferSize = 300;
 	int bufferSizeIds = 500;
 
 	final List<AbstractTransactionLog> transactionLogs = Collections.synchronizedList(new ArrayList<AbstractTransactionLog>(bufferSize));
@@ -36,12 +36,16 @@ public class TransactionRegistery extends Observable {
 
 	public void registerTransactionLocal(AbstractTransactionLog transaction) {
 		addToFixedSizeQueue(transactionLogs, transaction, bufferSize);
-		switch (transaction.getStatus()) {
-			case FAILED:
-				addToFixedSizeQueue(transactionFailedLogs, transaction, bufferSize);
-				break;
-			case ERROR:
-				addToFixedSizeQueue(transactionErrorLogs, transaction, bufferSize);
+		if (!LogTransaction.isSuppressed()) {
+			switch (transaction.getStatus()) {
+				case FAILED:
+					log.warn("{} [{}]  [{}] -> {} ", transaction.getStartDate(), transaction.getTransactionId(), transaction.getFlowId(), transaction.getErrorReason());
+					addToFixedSizeQueue(transactionFailedLogs, transaction, bufferSize);
+					break;
+				case ERROR:
+					log.error("{} [{}] [{}] -> {} ", transaction.getStartDate(), transaction.getTransactionId(), transaction.getFlowId(), transaction.getErrorReason());
+					addToFixedSizeQueue(transactionErrorLogs, transaction, bufferSize);
+			}
 		}
 		setChanged();
 		notifyObservers(transaction);

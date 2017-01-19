@@ -31,7 +31,7 @@ public class ElasticSearchSearchQueryHttpExecutor implements ElasticSearchQueryE
 			URL url = new URL(connectionUrl);
 
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setConnectTimeout(5000);
+			con.setConnectTimeout(15000);
 			con.setRequestMethod("POST");
 			con.setDoOutput(true);
 

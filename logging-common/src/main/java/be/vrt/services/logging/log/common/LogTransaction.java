@@ -18,6 +18,7 @@ public class LogTransaction implements Constants {
 	private static Logger LOG = LoggerFactory.getLogger("LogTransaction");
 
 	private static String hostname;
+	private static String transactionPrefix;
 	private static final String TAG_LIST = "tags";
 	private static final String ID_LIST = "ids";
 	private static final String SUBFLOWS_COUNT = "0";
@@ -37,6 +38,15 @@ public class LogTransaction implements Constants {
 			return new DecimalFormat("00000000");
 		}
 	};
+
+	/**
+	 * WARNING: Changing hostname will impact the transactionId for all current transactions..!!
+	 *
+	 */
+	public static void appendTransactionPrefix(String prefix) {
+		LOG.info("### Appending transPrefix: {} += {}", transactionPrefix, prefix);
+		transactionPrefix = hostname() + "-" + prefix;
+	}
 
 	public static void resetThread() {
 		MDC.remove(TRANSACTION_ID);
@@ -73,17 +83,17 @@ public class LogTransaction implements Constants {
 	}
 
 	public static void createChildFlow(String msg) {
-		MDC.put(SUBFLOWS_COUNT, Integer.toString(nbrOfSubflow()+1));
+		MDC.put(SUBFLOWS_COUNT, Integer.toString(nbrOfSubflow() + 1));
 		ForkFlowDto dto = new ForkFlowDto();
 		dto.setParentFlowId(flow());
 		dto.setChildFlowId(createFlowId(null, user()));
 		LOG.info("### Creating SubFlow: {}", msg, dto);
-		
+
 		StringStack parentStack = new StringStack(MDC.get(PARENT));
 		parentStack.push(dto.getParentFlowId());
 		MDC.put(PARENT, parentStack.toString());
 		MDC.put(FLOW_ID, dto.getChildFlowId());
-		
+
 	}
 
 	public static void backToParentFlow(String msg) {
@@ -93,10 +103,10 @@ public class LogTransaction implements Constants {
 		dto.setParentFlowId(parent);
 		dto.setChildFlowId(flow());
 		LOG.info("### Back to parent flow: {}", msg, dto);
-		
+
 		MDC.put(PARENT, parentStack.toString());
 		MDC.put(FLOW_ID, parent);
-		
+
 	}
 
 	public static int nbrOfSubflow() {
@@ -117,7 +127,7 @@ public class LogTransaction implements Constants {
 			LOG.debug("Logging unsuppressed: {}", msg);
 		}
 	}
-	
+
 	public static boolean isSuppressed() {
 		return isTaggedWith(SUPPRESSED);
 	}
@@ -256,9 +266,16 @@ public class LogTransaction implements Constants {
 		return hostname;
 	}
 
+	public static String transactionPrefix() {
+		if (transactionPrefix == null) {
+			transactionPrefix = hostname();
+		}
+		return transactionPrefix;
+	}
+
 	public static String generateTransactionId() {
 
-		String uuid = hostname() + "-" + UUID.randomUUID().toString();
+		String uuid = transactionPrefix() + "-" + UUID.randomUUID().toString();
 		return uuid;
 	}
 
