@@ -27,8 +27,8 @@ public class LogTransaction implements Constants {
 	public static final String SUPPRESSED = "SUPPRESSED";
 
 	// Used in code
-	private static final String TAG_SEPERATOR = ",";
-	private static final String ID_SEPERATOR = ",";
+	public static final String TAG_SEPERATOR = ",";
+	public static final String ID_SEPERATOR = ",";
 	private static final String DATA_CLEANUP_REGEX = "[^-_\\w]";
 
 	private static final ThreadLocal<NumberFormat> numberFormat = new ThreadLocal<NumberFormat>() {
