@@ -14,6 +14,7 @@
 		<module>logging-test-web</module>
 		<module>logging-api</module>
 		<module>logging-terminal</module>
+		<module>logging-agent</module>
 	</modules>
 
 	<scm>
