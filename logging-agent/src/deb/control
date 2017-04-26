@@ -1,0 +1,8 @@
+Package: [[name]]
+Version: [[version]].vrt
+Section: unknown
+Priority: extra
+Architecture: all
+Depends: java-common
+Maintainer: GMII - UNIX <dlgmiiopslag@vrt.be>
+Description: Services logging agent <sha>${buildNumber}</sha>
