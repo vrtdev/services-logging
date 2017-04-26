@@ -7,7 +7,7 @@ import be.vrt.services.log.agent.udp.Server;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -32,7 +32,7 @@ public class Main {
         LogIndexCreator logIndexCreator = new LogIndexCreator(host, esPort, mappingPath, logBuilder);
         logIndexCreator.createIndex();
 
-        Long minutesTillMidnight = LocalDateTime.now().until(LocalDate.now().plusDays(1).atStartOfDay(), ChronoUnit.MINUTES);
+        Long minutesTillMidnight = LocalDateTime.now().until(LocalDate.now().plusDays(1).atStartOfDay().plus(1, MINUTES), MINUTES);
         ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(1);
         scheduler.scheduleAtFixedRate(logIndexCreator::createIndex, minutesTillMidnight, 1440, TimeUnit.MINUTES);
 
