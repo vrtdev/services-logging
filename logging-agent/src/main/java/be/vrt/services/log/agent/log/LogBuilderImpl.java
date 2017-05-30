@@ -3,6 +3,7 @@ package be.vrt.services.log.agent.log;
 public class LogBuilderImpl implements LogBuilder, LogIndexNameObserver {
 
     private static final int MAX_BUFFER_SIZE = 4_000_000;
+    private static final int BUFFER_SIZE = 4_010_000;
 
     private StringBuilder buffer = createBuffer();
 
@@ -26,7 +27,7 @@ public class LogBuilderImpl implements LogBuilder, LogIndexNameObserver {
     }
 
     private StringBuilder createBuffer() {
-        return new StringBuilder(MAX_BUFFER_SIZE);
+        return new StringBuilder(BUFFER_SIZE);
     }
 
     @Override
