@@ -53,5 +53,10 @@ public class ServerIntegrationTest {
         public void addLog(String log) {
             logs.add(log);
         }
+
+        @Override
+        public void flush() {
+            logs.clear();
+        }
     }
 }
