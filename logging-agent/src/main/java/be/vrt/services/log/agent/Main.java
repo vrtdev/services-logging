@@ -35,6 +35,7 @@ public class Main {
         Long minutesTillMidnight = LocalDateTime.now().until(LocalDate.now().plusDays(1).atStartOfDay().plus(1, MINUTES), MINUTES);
         ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(1);
         scheduler.scheduleAtFixedRate(logIndexCreator::createIndex, minutesTillMidnight, 1440, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(logBuilder::flush, 60, 10, TimeUnit.SECONDS);
 
         Server server = new Server(port, logBuilder);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

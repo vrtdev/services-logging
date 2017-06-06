@@ -15,15 +15,20 @@ public class LogBuilderImpl implements LogBuilder, LogIndexNameObserver {
     }
 
     @Override
-    public void addLog(String log) {
+    public synchronized void addLog(String log) {
         buffer
                 .append("\n")
                 .append("{\"index\":{\"_index\":\"").append(indexName).append("\",\"_type\":\"logs\"}}\n")
                 .append(log);
         if(buffer.length() > MAX_BUFFER_SIZE) {
-            logFlusher.flush(buffer);
-            buffer = createBuffer();
+            flush();
         }
+    }
+
+    @Override
+    public synchronized void flush() {
+        logFlusher.flush(buffer);
+        buffer = createBuffer();
     }
 
     private StringBuilder createBuffer() {
@@ -31,7 +36,7 @@ public class LogBuilderImpl implements LogBuilder, LogIndexNameObserver {
     }
 
     @Override
-    public void indexChanged(String indexName) {
+    public synchronized void indexChanged(String indexName) {
         this.indexName = indexName;
     }
 }
