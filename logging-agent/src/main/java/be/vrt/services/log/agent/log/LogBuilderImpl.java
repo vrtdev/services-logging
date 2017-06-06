@@ -1,9 +1,13 @@
 package be.vrt.services.log.agent.log;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class LogBuilderImpl implements LogBuilder, LogIndexNameObserver {
 
     private static final int MAX_BUFFER_SIZE = 4_000_000;
     private static final int BUFFER_SIZE = 4_010_000;
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogBuilderImpl.class);
 
     private StringBuilder buffer = createBuffer();
 
@@ -27,6 +31,8 @@ public class LogBuilderImpl implements LogBuilder, LogIndexNameObserver {
 
     @Override
     public synchronized void flush() {
+        LOGGER.debug("FLUSHING...");
+        LOGGER.debug("size: {}", buffer.length());
         logFlusher.flush(buffer);
         buffer = createBuffer();
     }
