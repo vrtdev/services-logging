@@ -142,7 +142,7 @@ public class LogTransaction implements Constants {
         return Pattern.compile(separator).splitAsStream(getMDC(key).orElse("")).collect(Collectors.toSet());
     }
 
-    static void tagTransaction(String tag) {
+    public static void tagTransaction(String tag) {
         addToMDC(tag, TAG_LIST, TAG_SEPERATOR);
     }
 
@@ -150,7 +150,7 @@ public class LogTransaction implements Constants {
         return new LinkedList<>(getMDCSet(TAG_LIST, TAG_SEPERATOR));
     }
 
-    static void untagTransaction(String tag) {
+    public static void untagTransaction(String tag) {
         final Set<String> tagSet = getMDCSet(TAG_LIST, TAG_SEPERATOR);
         if (isNotEmpty(tag) && tagSet.remove(clean(tag))) { putMDC(tagSet, TAG_LIST, TAG_SEPERATOR); }
     }
