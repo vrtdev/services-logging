@@ -249,7 +249,7 @@ public class LogTransaction implements Constants {
         MDC.put(TRANSACTION_ID, generateTransactionId());
     }
 
-    private static void updateFlowId(String flowid) {
+    public static void updateFlowId(String flowid) {
         String currentFlowId = MDC.get(FLOW_ID);
         if (currentFlowId != null && !currentFlowId.equals(flowid)) {
             LOG.info("update FlowId : [{}] ==> [{}]", flow(), flowid);
