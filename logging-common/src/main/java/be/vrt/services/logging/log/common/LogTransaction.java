@@ -224,13 +224,14 @@ public class LogTransaction implements Constants {
         return transactionPrefix() + "-" + UUID.randomUUID().toString();
     }
 
-    public static String createFlowId(final String flowId, final String user) {
+    public static String createFlowId(final String flowId, String user) {
         if (flowId != null) {
             updateFlowId(flowId);
             return flowId;
         }
 
-        MDC.put(USER, ofNullable(user).orElse("NOT_SPECIFIED"));
+        user = ofNullable(user).orElse("NOT_SPECIFIED");
+        MDC.put(USER, user);
         final String flowid = new StringJoiner("-").add(UUID.randomUUID().toString())
                 .add(numberFormat.get().format(nbrOfSubflow()))
                 .add(dateFormat.get().format(new Date()))
