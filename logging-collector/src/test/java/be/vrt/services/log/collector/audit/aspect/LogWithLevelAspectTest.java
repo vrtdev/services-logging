@@ -12,30 +12,77 @@ import static org.junit.Assert.assertThat;
 
 public class LogWithLevelAspectTest {
 
+    private AnnotatedMethodsClass annotatedMethodsClass;
     private AnnotatedClass annotatedClass;
 
     @Before
     public void setUp() throws Exception {
-        AnnotatedClass target = new AnnotatedClassImpl();
+        AnnotatedMethodsClass target = new AnnotatedMethodsClassImpl();
         AspectJProxyFactory factory = new AspectJProxyFactory(target);
         LogWithLevelAspect logWithLevelAspect = new LogWithLevelAspect();
         factory.addAspect(logWithLevelAspect);
-        annotatedClass = factory.getProxy();
+        annotatedMethodsClass = factory.getProxy();
+
+        AspectJProxyFactory annotatedClassProxyFactory = new AspectJProxyFactory(new AnnotatedClassImpl());
+        annotatedClassProxyFactory.addAspect(logWithLevelAspect);
+        annotatedClass = annotatedClassProxyFactory.getProxy();
     }
 
     @Test
-    public void levelIsSet() throws Exception {
-        assertThat(annotatedClass.info(), Matchers.is(Level.INFO.name()));
-        assertThat(annotatedClass.all(), Matchers.is(Level.ALL.name()));
-        assertThat(annotatedClass.debug(), Matchers.is(Level.DEBUG.name()));
-        assertThat(annotatedClass.error(), Matchers.is(Level.ERROR.name()));
-        assertThat(annotatedClass.off(), Matchers.is(Level.OFF.name()));
-        assertThat(annotatedClass.trace(), Matchers.is(Level.TRACE.name()));
-        assertThat(annotatedClass.warn(), Matchers.is(Level.WARN.name()));
-        assertThat(annotatedClass.none(), Matchers.is(Level.INFO.name()));
+    public void levelIsSetOnMethods() throws Exception {
+        assertThat(annotatedMethodsClass.info(), Matchers.is(Level.INFO.name()));
+        assertThat(annotatedMethodsClass.all(), Matchers.is(Level.ALL.name()));
+        assertThat(annotatedMethodsClass.debug(), Matchers.is(Level.DEBUG.name()));
+        assertThat(annotatedMethodsClass.error(), Matchers.is(Level.ERROR.name()));
+        assertThat(annotatedMethodsClass.off(), Matchers.is(Level.OFF.name()));
+        assertThat(annotatedMethodsClass.trace(), Matchers.is(Level.TRACE.name()));
+        assertThat(annotatedMethodsClass.warn(), Matchers.is(Level.WARN.name()));
+        assertThat(annotatedMethodsClass.none(), Matchers.is(Level.INFO.name()));
     }
 
+    @Test
+    public void levelIsSetOnClass() throws Exception {
+        assertThat(annotatedClass.level(), Matchers.is(Level.OFF.name()));
+    }
+
+    public interface AnnotatedMethodsClass {
+        @LogWithLevel(Level.INFO)
+        String info();
+
+        @LogWithLevel(Level.ALL)
+        String all();
+
+        @LogWithLevel(Level.DEBUG)
+        String debug();
+
+        @LogWithLevel(Level.ERROR)
+        String error();
+
+        @LogWithLevel(Level.OFF)
+        String off();
+
+        @LogWithLevel(Level.TRACE)
+        String trace();
+
+        @LogWithLevel(Level.WARN)
+        String warn();
+
+        String none();
+    }
+
+    public interface AnnotatedClass {
+        String level();
+    }
+
+    @LogWithLevel(Level.OFF)
     public static class AnnotatedClassImpl implements AnnotatedClass {
+        @Override
+        public String level() {
+            return LogTransaction.getLevel();
+        }
+    }
+
+    public static class AnnotatedMethodsClassImpl implements AnnotatedMethodsClass {
         @Override
         @LogWithLevel(Level.INFO)
         public String info() {
@@ -82,30 +129,5 @@ public class LogWithLevelAspectTest {
         public String none() {
             return LogTransaction.getLevel();
         }
-    }
-
-    public static interface AnnotatedClass {
-        @LogWithLevel(Level.INFO)
-        String info();
-
-        @LogWithLevel(Level.ALL)
-        String all();
-
-        @LogWithLevel(Level.DEBUG)
-        String debug();
-
-        @LogWithLevel(Level.ERROR)
-        String error();
-
-        @LogWithLevel(Level.OFF)
-        String off();
-
-        @LogWithLevel(Level.TRACE)
-        String trace();
-
-        @LogWithLevel(Level.WARN)
-        String warn();
-
-        String none();
     }
 }
