@@ -68,7 +68,7 @@ public class LogTransaction implements Constants {
         MDC.put(USER, ofNullable(user).orElse("UNKNOWN"));
     }
 
-    static void registerId(String id) {
+    public static void registerId(String id) {
         addToMDC(id, ID_LIST, ID_SEPERATOR);
     }
 
