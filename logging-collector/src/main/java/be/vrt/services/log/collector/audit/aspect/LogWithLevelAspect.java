@@ -10,7 +10,6 @@ import org.springframework.core.annotation.Order;
 @Aspect
 @Order(-50)
 public class LogWithLevelAspect {
-    @Around("@target(logWithLevel)")
     public Object logWithLevel(ProceedingJoinPoint joinPoint, LogWithLevel logWithLevel) throws Throwable {
         final String previousLevel = LogTransaction.getLevel();
         final String desiredLevel = logWithLevel.value().name();
