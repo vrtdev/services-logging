@@ -37,11 +37,9 @@ public class AbstractAuditAspectTest {
 
     private static final String METHOD = "short";
     private static final String TYPE = "you're not my type";
-    private static final List<be.vrt.services.logging.api.audit.annotation.Level> LEVELS_WO_OFF_ALL =
-            Arrays.asList(be.vrt.services.logging.api.audit.annotation.Level.values())
-                    .stream()
+    private static final List<be.vrt.services.logging.api.audit.annotation.Level> LEVELS_WO_OFF =
+            Arrays.stream(be.vrt.services.logging.api.audit.annotation.Level.values())
                     .filter(Predicate.isEqual(be.vrt.services.logging.api.audit.annotation.Level.OFF).negate())
-                    .filter(Predicate.isEqual(be.vrt.services.logging.api.audit.annotation.Level.ALL).negate())
                     .collect(Collectors.toList());
 
 
@@ -108,7 +106,7 @@ public class AbstractAuditAspectTest {
 
     @Test
     public void handleJoinPoint_whenLogTransactionLevel_thenLevelSame() throws Throwable {
-        for (be.vrt.services.logging.api.audit.annotation.Level l : LEVELS_WO_OFF_ALL) {
+        for (be.vrt.services.logging.api.audit.annotation.Level l : LEVELS_WO_OFF) {
             LogTransaction.setLevel(l.name());
 
             testInstance.handleJoinPoint(proceedingJoinPoint);
@@ -116,16 +114,6 @@ public class AbstractAuditAspectTest {
             verify(appender, atLeastOnce()).doAppend(argumentCaptor.capture());
             assertLoggingEvent(argumentCaptor.getValue(), AuditLevelType.OK, Level.valueOf(l.name()));
         }
-    }
-
-    @Test
-    public void handleJoinPoint_whenLogTransactionLevelAll_thenLevelError() throws Throwable {
-        LogTransaction.setLevel(Level.ALL.levelStr);
-
-        testInstance.handleJoinPoint(proceedingJoinPoint);
-
-        verify(appender, atLeastOnce()).doAppend(argumentCaptor.capture());
-        assertLoggingEvent(argumentCaptor.getValue(), AuditLevelType.OK, Level.ERROR);
     }
 
     @Test

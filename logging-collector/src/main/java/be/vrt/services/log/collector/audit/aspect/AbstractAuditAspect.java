@@ -64,7 +64,6 @@ public abstract class AbstractAuditAspect extends AbstractBreadcrumbAuditAspect 
                     logger.warn(LOG_MSG_TEMPLATE, getType(), auditLogDto.getMethod(), auditLogDto.getAuditLevel(),
                             auditLogDto);
                     break;
-                case ALL:
                 case ERROR:
                     logger.error(LOG_MSG_TEMPLATE, getType(), auditLogDto.getMethod(), auditLogDto.getAuditLevel(),
                             auditLogDto);
