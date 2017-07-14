@@ -1,28 +1,32 @@
 package be.vrt.services.log.collector.audit.aspect;
 
 import be.vrt.services.log.collector.audit.AuditLevelType;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import be.vrt.services.log.collector.audit.dto.AuditLogDto;
+import be.vrt.services.log.collector.exception.FailureException;
+import be.vrt.services.logging.api.audit.annotation.Level;
+import be.vrt.services.logging.log.common.LogTransaction;
+import be.vrt.services.logging.log.common.dto.ErrorDto;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.time.StopWatch;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.aspectj.lang.ProceedingJoinPoint;
-
-import be.vrt.services.log.collector.audit.dto.AuditLogDto;
-import be.vrt.services.logging.log.common.dto.ErrorDto;
-import be.vrt.services.log.collector.exception.FailureException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import org.apache.commons.lang3.time.StopWatch;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.LoggerFactory;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public abstract class AbstractAuditAspect extends AbstractBreadcrumbAuditAspect {
 
-	protected abstract String getType();
+    private static final String LOG_MSG_TEMPLATE = "[{}] - {} >> {}";
+
+    protected abstract String getType();
 
 	@Override
 	protected Object handleJoinPoint(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -33,37 +37,57 @@ public abstract class AbstractAuditAspect extends AbstractBreadcrumbAuditAspect 
 			auditLogDto.setStartDate(new Date(stopWatch.getStartTime()));
 
 			Object[] arguments = joinPoint.getArgs();
-			List<Object> cloneArguments = new ArrayList<>();
-			for (int i = 0; i < arguments.length; i++) {
-				cloneArguments.add(cloneArgument("[" + i + "]", arguments[i]));
-			}
 
-			auditLogDto.setArguments(cloneArguments);
-			auditLogDto.setMethod(joinPoint.getSignature().toShortString());
-			auditLogDto.setClassName(joinPoint.getTarget().getClass().getSimpleName());
-			Object obj = joinPoint.proceed();
-			if (joinPoint.getSignature() instanceof MethodSignature) {
-				MethodSignature ms = (MethodSignature) joinPoint.getSignature();
-				if (ms.getMethod().getReturnType() != null) {
-					auditLogDto.setResponse(cloneArgument("[resp]", obj));
-				}
-			}
-			return obj;
-		} catch (Throwable t) {
-			auditLogDto.setAuditLevel((t instanceof FailureException) ? AuditLevelType.FAIL : AuditLevelType.ERROR);
-			auditLogDto.setResponse(cloneArgument("[resp-fail]", t));
-			throw t;
-		} finally {
-			stopWatch.stop();
-			auditLogDto.setDuration(stopWatch.getTime());
-			LoggerFactory.getLogger(joinPoint.getTarget().getClass()).info("[{}] - {} >> {}", getType(), auditLogDto.getMethod(), auditLogDto.getAuditLevel(), auditLogDto);
-			// Add listener HERE!!
-		}
-	}
+            auditLogDto.setArguments(IntStream.range(0, arguments.length)
+                    .mapToObj(i -> cloneArgument("[" + i + "]", arguments[i]))
+                    .collect(Collectors.toList()));
+            auditLogDto.setMethod(joinPoint.getSignature().toShortString());
+            auditLogDto.setClassName(joinPoint.getTarget().getClass().getSimpleName());
+            final Object obj = joinPoint.proceed();
+            if (joinPoint.getSignature() instanceof MethodSignature) {
+                MethodSignature ms = (MethodSignature) joinPoint.getSignature();
+                if (ms.getMethod().getReturnType() != null) {
+                    auditLogDto.setResponse(cloneArgument("[resp]", obj));
+                }
+            }
+            return obj;
+        } catch (Throwable t) {
+            auditLogDto.setAuditLevel((t instanceof FailureException) ? AuditLevelType.FAIL : AuditLevelType.ERROR);
+            auditLogDto.setResponse(cloneArgument("[resp-fail]", t));
+            throw t;
+        } finally {
+            stopWatch.stop();
+            auditLogDto.setDuration(stopWatch.getTime());
+            final Logger logger = LoggerFactory.getLogger(joinPoint.getTarget().getClass());
+            switch (Level.from(LogTransaction.getLevel())) {
+                case WARN:
+                    logger.warn(LOG_MSG_TEMPLATE, getType(), auditLogDto.getMethod(), auditLogDto.getAuditLevel(),
+                            auditLogDto);
+                    break;
+                case ERROR:
+                    logger.error(LOG_MSG_TEMPLATE, getType(), auditLogDto.getMethod(), auditLogDto.getAuditLevel(),
+                            auditLogDto);
+                    break;
+                case TRACE:
+                    logger.trace(LOG_MSG_TEMPLATE, getType(), auditLogDto.getMethod(), auditLogDto.getAuditLevel(),
+                            auditLogDto);
+                    break;
+                case DEBUG:
+                    logger.debug(LOG_MSG_TEMPLATE, getType(), auditLogDto.getMethod(), auditLogDto.getAuditLevel(),
+                            auditLogDto);
+                    break;
+                case OFF:
+                    break;
+                default:
+                    logger.info(LOG_MSG_TEMPLATE, getType(), auditLogDto.getMethod(), auditLogDto.getAuditLevel(),
+                            auditLogDto);
+            }
+            // Add listener HERE!!
+        }
+    }
 
-	protected Object cloneArgument(String prefix, Object arg) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+	protected Object cloneArgument(String prefix, Object arg) {
 		Map<String, Object> clonedArg = new HashMap<>();
-		try {
 
 			if (arg == null) {
 				clonedArg.put(prefix + "aNull", "[NULL]");
@@ -93,11 +117,12 @@ public abstract class AbstractAuditAspect extends AbstractBreadcrumbAuditAspect 
 				dto.setStackTrace(sw.toString());
 				return dto;
 			} else {
-				return BeanUtils.cloneBean(arg);
+                try {
+    				return BeanUtils.cloneBean(arg);
+                } catch (Exception e) {
+                    clonedArg.put(prefix + "failed_parse_data", arg.getClass().getSimpleName() + " --> " +  e.getMessage());
+                }
 			}
-		} catch (Exception e) {
-			clonedArg.put(prefix + "failed_parse_data", arg.getClass().getSimpleName() + " --> " +  e.getMessage());
-		}
 		return clonedArg;
 	}
 }
