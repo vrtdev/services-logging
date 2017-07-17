@@ -21,8 +21,9 @@ public class AuditLogLevelAspect {
         }
     }
 
-    @Around("@target(auditLogLevel)")
-    public Object logWithLevelOnClass(ProceedingJoinPoint joinPoint, AuditLogLevel auditLogLevel) throws Throwable {
+    @Around("within(@be.vrt.services.logging.api.audit.annotation.AuditLogLevel *) ")
+    public Object logWithLevelOnClass(ProceedingJoinPoint joinPoint) throws Throwable {
+        AuditLogLevel auditLogLevel = joinPoint.getTarget().getClass().getAnnotation(AuditLogLevel.class);
         return logWithLevel(joinPoint, auditLogLevel);
     }
 
