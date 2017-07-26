@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>be.vrt.services.logging</groupId>
 		<artifactId>logging</artifactId>
-		<version>1.22.0-SNAPSHOT</version>
+		<version>1.22.0-RC-SNAPSHOT</version>
 	</parent>
 	<artifactId>logging-consumer</artifactId>
 	<packaging>jar</packaging>
