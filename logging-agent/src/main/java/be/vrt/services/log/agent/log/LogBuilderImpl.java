@@ -24,15 +24,23 @@ public class LogBuilderImpl implements LogBuilder, LogIndexNameObserver {
                 .append("\n")
                 .append("{\"index\":{\"_index\":\"").append(indexName).append("\",\"_type\":\"logs\"}}\n")
                 .append(log);
-        if(buffer.length() > MAX_BUFFER_SIZE) {
-            flush();
+        int length = buffer.length();
+        if (length > MAX_BUFFER_SIZE) {
+            flushInternal(length);
         }
     }
 
     @Override
     public synchronized void flush() {
+        int length = buffer.length();
+        if (length > 0) {
+            flushInternal(length);
+        }
+    }
+
+    private void flushInternal(int length) {
         LOGGER.debug("FLUSHING...");
-        LOGGER.debug("size: {}", buffer.length());
+        LOGGER.debug("size: {}", length);
         logFlusher.flush(buffer);
         buffer = createBuffer();
     }
