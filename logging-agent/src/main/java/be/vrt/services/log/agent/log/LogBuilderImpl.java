@@ -40,8 +40,7 @@ public class LogBuilderImpl implements LogBuilder, LogIndexNameObserver {
     }
 
     private void flushInternal(int length) {
-        LOGGER.debug("FLUSHING...");
-        LOGGER.debug("size: {}", length);
+        LOGGER.debug("Flushing buffer to {}; size={}", indexName, length);
         logFlusher.flush(buffer);
         buffer = createBuffer();
     }
