@@ -1,15 +1,16 @@
 package be.vrt.services.log.agent.log;
 
+import be.vrt.services.log.agent.udp.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LogBuilderImpl implements LogBuilder, LogIndexNameObserver {
 
     private static final int MAX_BUFFER_SIZE = 4_000_000;
-    private static final int BUFFER_SIZE = 4_010_000;
+    private static final int BUFFER_SIZE = MAX_BUFFER_SIZE + Server.CHANNEL_BUFFER;
     private static final Logger LOGGER = LoggerFactory.getLogger(LogBuilderImpl.class);
 
-    private StringBuilder buffer = createBuffer();
+    StringBuilder buffer = createBuffer();
 
     private LogFlusher logFlusher;
     private String indexName;

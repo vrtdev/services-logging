@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 public class Server {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
-    private static final int RCVBUF_BYTES = 65536;
+    public  static final int CHANNEL_BUFFER = 65536;
 
     private DefaultThreadFactory acceptFactory = new DefaultThreadFactory("accept");
     private NioEventLoopGroup acceptGroup = new NioEventLoopGroup(1, acceptFactory);
@@ -31,8 +31,8 @@ public class Server {
         new Bootstrap()
                 .group(acceptGroup)
                 .channel(NioDatagramChannel.class)
-                .option(ChannelOption.SO_RCVBUF, RCVBUF_BYTES)
-                .option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(RCVBUF_BYTES))
+                .option(ChannelOption.SO_RCVBUF, CHANNEL_BUFFER)
+                .option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(CHANNEL_BUFFER))
                 .handler(new Handler())
                 .bind(port).sync();
     }
