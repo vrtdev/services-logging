@@ -22,9 +22,10 @@ public class LogBuilderImpl implements LogBuilder, LogIndexNameObserver {
     @Override
     public synchronized void addLog(String log) {
         buffer
-                .append("\n")
                 .append("{\"index\":{\"_index\":\"").append(indexName).append("\",\"_type\":\"logs\"}}\n")
-                .append(log);
+                .append(log)
+                .append("\n")
+        ;
         int length = buffer.length();
         if (length > MAX_BUFFER_SIZE) {
             flushInternal(length);
