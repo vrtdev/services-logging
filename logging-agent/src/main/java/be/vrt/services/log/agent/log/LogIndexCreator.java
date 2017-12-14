@@ -75,7 +75,7 @@ public class LogIndexCreator {
 
     private String readDefaultMapping() {
         String output;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("es-2-mapping.json")))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("es-6-mapping.json")))) {
             output = reader.lines()
                     .reduce((t, u) -> t + u)
                     .get();

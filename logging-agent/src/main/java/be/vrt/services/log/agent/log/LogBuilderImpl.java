@@ -53,5 +53,6 @@ public class LogBuilderImpl implements LogBuilder, LogIndexNameObserver {
     @Override
     public synchronized void indexChanged(String indexName) {
         this.indexName = indexName;
+        LOGGER.debug("Switched to index: {}", indexName);
     }
 }
