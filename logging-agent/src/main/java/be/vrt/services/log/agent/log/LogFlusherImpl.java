@@ -28,7 +28,7 @@ public class LogFlusherImpl implements LogFlusher {
                 URL url = new URL(urlString);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/x-ndjson;charset=UTF-8");
+                connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
                 connection.setRequestProperty("Content-Length", "" + output.length());
                 connection.setDoOutput(true);
                 try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
