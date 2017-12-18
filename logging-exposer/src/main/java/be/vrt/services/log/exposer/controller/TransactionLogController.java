@@ -2,11 +2,7 @@ package be.vrt.services.log.exposer.controller;
 
 import be.vrt.services.log.exposer.es.ElasticSearchQueryExecutor;
 import be.vrt.services.log.exposer.es.ElasticSearchSearchQueryHttpExecutor;
-import be.vrt.services.log.exposer.es.query.DailyProblemQuery;
 import be.vrt.services.log.exposer.es.query.DetailQuery;
-import be.vrt.services.log.exposer.es.query.StatsQuery;
-import be.vrt.services.log.exposer.es.result.ElasticSearchCountResult;
-import be.vrt.services.logging.log.common.AppWithEnv;
 import be.vrt.services.logging.log.common.LoggingProperties;
 import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,32 +73,7 @@ public class TransactionLogController extends HttpServlet {
 
 			Map results = elasticSearchQueryExecutor.executeSearchQueryMultiInstances(new DetailQuery(id)).getData();
 			map.put("hits", results);
-		} else if (path.matches("/stats/overview/[^/]*")) {
-			String date = path.substring("/stats/overview/".length()).trim();
-
-			List<AppWithEnv> appWithEnvs = LoggingProperties.statsAppsWithEnv();
-			ElasticSearchCountResult result;
-			if(appWithEnvs == null || appWithEnvs.isEmpty()) {
-				result = elasticSearchQueryExecutor.executeCountQuery(new StatsQuery(date));
-			} else {
-				result = elasticSearchQueryExecutor.executeCountQuery(new StatsQuery(date, appWithEnvs));
-			}
-
-			map.put("agg", result.getAggregations());
-
-		} else if (path.matches("/stats/errors/[^/]*")) {
-			String date = path.substring("/stats/errors/".length()).trim();
-
-			Map result = getDailyProblemsWithLevelAndDate(date, "ERROR");
-
-			map.put("statshits", result);
-		} else if (path.matches("/stats/failures/[^/]*")) {
-			String date = path.substring("/stats/failures/".length()).trim();
-
-			Map result = getDailyProblemsWithLevelAndDate(date, "FAIL");
-
-			map.put("statshits", result);
-		}
+        }
 
 		map.put("info",
 			mapWith("urls", connectionUrls)
@@ -115,14 +86,4 @@ public class TransactionLogController extends HttpServlet {
 		resp.getWriter().print(json);
 
 	}
-
-	private Map getDailyProblemsWithLevelAndDate(String date, String level) {
-		List<AppWithEnv> appWithEnvs = LoggingProperties.statsAppsWithEnv();
-		if(appWithEnvs == null || appWithEnvs.isEmpty()) {
-			return elasticSearchQueryExecutor.executeSearchQuery(new DailyProblemQuery(date, level)).getData();
-		} else {
-			return elasticSearchQueryExecutor.executeSearchQuery(new DailyProblemQuery(date, level, appWithEnvs)).getData();
-		}
-	}
-
 }

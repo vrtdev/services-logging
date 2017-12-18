@@ -2,7 +2,6 @@ package be.vrt.services.log.exposer.es;
 
 import be.vrt.services.log.exposer.es.query.DailyProblemQuery;
 import be.vrt.services.log.exposer.es.query.DetailQuery;
-import be.vrt.services.log.exposer.es.query.StatsQuery;
 import be.vrt.services.log.exposer.es.result.ElasticSearchCountResult;
 import be.vrt.services.log.exposer.es.result.ElasticSearchResult;
 import be.vrt.services.logging.log.common.AppWithEnv;
@@ -140,34 +139,6 @@ public class QueriesTest {
 		ElasticSearchResult elasticSearchResult = elasticSearchQueryExecutor.executeSearchQuery(query);
 		assertHasNumberOfHits(elasticSearchResult, 2);
 		assertHitsIdsInOrder(elasticSearchResult, "second", "first");
-	}
-
-	@Test
-	public void testStatsQuery_onlyRetrieveFacadeInTimeRangeWithLevelAppAndEnv() throws Exception {
-		index(
-				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR"),
-
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"), //THIS ONE
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app1", "STAG")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app1", "STAG")).addAuditLog("thisServiceThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR"), //THIS ONE
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app1", "STAG")).addAuditLog("thisFacadeThing", "ERROR"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("otherAPP", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("otherAPP", "STAG")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app1", "DEV")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app2", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app2", "STAG")).addAuditLog("thisFacadeThing", "WARN"), //THIS ONE
-
-				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR")
-		);
-		StatsQuery query = new StatsQuery("2015-01-02", asList(new AppWithEnv("app1", "TEST"), new AppWithEnv("app2", "STAG")));
-		ElasticSearchCountResult elasticSearchResult = elasticSearchQueryExecutor.executeCountQuery(query);
-		assertHasNumberOfHits(elasticSearchResult, 3);
 	}
 
 	private void assertHitsIdsInOrder(ElasticSearchResult elasticSearchResult, String... ids) {
