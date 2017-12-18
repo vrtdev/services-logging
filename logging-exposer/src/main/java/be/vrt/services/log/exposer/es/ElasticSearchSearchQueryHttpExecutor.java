@@ -33,12 +33,13 @@ public class ElasticSearchSearchQueryHttpExecutor implements ElasticSearchQueryE
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setConnectTimeout(15000);
 			con.setRequestMethod("POST");
+			con.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
 			con.setDoOutput(true);
 
 			mapper.writeValue(con.getOutputStream(), query.getData());
 			if (con.getResponseCode() > 299) {
 				LOGGER.info(">> Failed to query ES > " + connectionUrl + " [" + con.getResponseCode() + "] :" + con.getResponseMessage());
-				LOGGER.info(">> Failed to query ES > " + mapper.writeValueAsString(query));
+				LOGGER.info(">> Failed to query ES > " + mapper.writeValueAsString(query.getData()));
 				return ElasticSearchResult.empty();
 			} else {
 				return ElasticSearchResult.from((Map<String, Object>) mapper.readValue(con.getInputStream(), HashMap.class));
@@ -61,17 +62,18 @@ public class ElasticSearchSearchQueryHttpExecutor implements ElasticSearchQueryE
 	public ElasticSearchCountResult executeCountQuery(ElasticSearchQuery query) {
 		String connectionUrl = LoggingProperties.connectionStatUrl();
 		try {
-			URL url = new URL(connectionUrl + "?search_type=count");
+			URL url = new URL(connectionUrl);
 
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setConnectTimeout(5000);
 			con.setRequestMethod("POST");
-			con.setDoOutput(true);
+            con.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+            con.setDoOutput(true);
 
 			mapper.writeValue(con.getOutputStream(), query.getData());
 			if (con.getResponseCode() > 299) {
 				LOGGER.info(">> Failed to query ES > " + connectionUrl + " [" + con.getResponseCode() + "] :" + con.getResponseMessage());
-				LOGGER.info(">> Failed to query ES > " + mapper.writeValueAsString(query));
+				LOGGER.info(">> Failed to query ES > " + mapper.writeValueAsString(query.getData()));
 			} else {
 				return ElasticSearchCountResult.from((Map<String, Object>) mapper.readValue(con.getInputStream(), HashMap.class));
 			}

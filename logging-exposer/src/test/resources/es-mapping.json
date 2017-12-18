@@ -1,249 +1,213 @@
-
 {
-	"mappings": {
-		"logs": {
-			"date_detection": false,
-			"dynamic_templates": [
-				{
-					"strings": {
-						"match": "*String",
-						"mapping": {
-							"type": "string"
-						}
-					}
-				},
-				{
-					"ints": {
-						"match": "*Integer",
-						"mapping": {
-							"type": "long"
-						}
-					}
-				},
-				{
-					"audits": {
-						"match": "*AuditLogDto",
-						"mapping": {
-							"properties": {
-								"startDate": {
-									"type": "date",
-									"format": "date_optional_time||epoch_millis"
-								},
-								"duration": {
-									"type": "long"
-								},
-								"method": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"className": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"auditLevel": {
-									"type": "string",
-									"index": "not_analyzed"
-								}
-							}
-						}
-					}
-				},
-				{
-					"amqp_transactions": {
-						"match": "*AmqpTransactionLogDto",
-						"mapping": {
-							"properties": {
-								"headers": {
-									"properties": {
-										"amqp-method": {
-											"type": "string",
-											"index": "not_analyzed"
-										},
-										"migCorrelationId": {
-											"type": "string",
-											"index": "not_analyzed"
-										},
-										"amqp-url": {
-											"type": "string",
-											"index": "not_analyzed"
-										},
-										"X-Log-Flow-Id": {
-											"type": "string",
-											"index": "not_analyzed"
-										}
-									}
-								},
-								"startDate": {
-									"type": "date",
-									"format": "date_optional_time||epoch_millis"
-								},
-								"duration": {
-									"type": "long"
-								},
-								"transactionId": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"status": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"queueName": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"type": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"serverName": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"flowId": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"exchange": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"routingKey": {
-									"type": "string",
-									"index": "not_analyzed"
-								}
-							}
-						}
-					}
-				},
-				{
-					"http_transactions": {
-						"match": "*HttpTransactionLogDto",
-						"mapping": {
-							"properties": {
-								"startDate": {
-									"type": "date",
-									"format": "date_optional_time||epoch_millis"
-								},
-								"fullUrl": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"transactionId": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"httpMethod": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"status": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"resource": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"type": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"serverName": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"duration": {
-									"type": "long"
-								},
-								"responseStatus": {
-									"type": "long"
-								},
-								"user": {
-									"type": "string",
-									"index": "not_analyzed"
-								},
-								"flowId": {
-									"type": "string",
-									"index": "not_analyzed"
-								}
-							}
-						}
-					}
-				}
-			],
-			"properties": {
-				"environmentInfo": {
-					"properties": {
-						"runtime": {
-							"type": "string",
-							"index": "not_analyzed"
-						},
-						"startup": {
-							"type": "date",
-							"format": "date_optional_time||epoch_millis"
-						},
-						"app": {
-							"type": "string",
-							"index": "not_analyzed"
-						},
-						"env": {
-							"type": "string",
-							"index": "not_analyzed"
-						}
-					}
-				},
-				"transactionId": {
-					"type": "string",
-					"index": "not_analyzed"
-				},
-				"logDate": {
-					"type": "date",
-					"format": "date_optional_time||epoch_millis"
-				},
-				"loggerName": {
-					"type": "string",
-					"index": "not_analyzed"
-				},
-				"date": {
-					"type": "date",
-					"format": "date_optional_time||epoch_millis"
-				},
-
-				"@timestamp": {
-					"format": "date_optional_time||epoch_millis",
-					"type": "date"
-				},
-				"logComment": {
-					"type": "string"
-				},
-				"logLevel": {
-					"type": "string",
-					"index": "not_analyzed"
-				},
-				"breadCrumb": {
-					"type": "long"
-				},
-				"hostName": {
-					"type": "string",
-					"index": "not_analyzed"
-				},
-				"lineNumber": {
-					"type": "long"
-				},
-				"className": {
-					"type": "string",
-					"index": "not_analyzed"
-				},
-				"methodName": {
-					"type": "string",
-					"index": "not_analyzed"
-				},
-				"flowId": {
-					"type": "string",
-					"index": "not_analyzed"
-				}
-			}
-		}
-	}
+  "mappings": {
+    "logs": {
+      "date_detection": false,
+      "dynamic_templates": [
+        {
+          "strings": {
+            "match": "*String",
+            "mapping": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "ints": {
+            "match": "*Integer",
+            "mapping": {
+              "type": "long"
+            }
+          }
+        },
+        {
+          "audits": {
+            "match": "*AuditLogDto",
+            "mapping": {
+              "properties": {
+                "startDate": {
+                  "type": "date",
+                  "format": "date_optional_time||epoch_millis"
+                },
+                "duration": {
+                  "type": "long"
+                },
+                "method": {
+                  "type": "keyword"
+                },
+                "className": {
+                  "type": "keyword"
+                },
+                "auditLevel": {
+                  "type": "keyword"
+                }
+              }
+            }
+          }
+        },
+        {
+          "amqp_transactions": {
+            "match": "*AmqpTransactionLogDto",
+            "mapping": {
+              "properties": {
+                "headers": {
+                  "properties": {
+                    "amqp-method": {
+                      "type": "keyword"
+                    },
+                    "migCorrelationId": {
+                      "type": "keyword"
+                    },
+                    "amqp-url": {
+                      "type": "keyword"
+                    },
+                    "X-Log-Flow-Id": {
+                      "type": "keyword"
+                    }
+                  }
+                },
+                "startDate": {
+                  "type": "date",
+                  "format": "date_optional_time||epoch_millis"
+                },
+                "duration": {
+                  "type": "long"
+                },
+                "transactionId": {
+                  "type": "keyword"
+                },
+                "status": {
+                  "type": "keyword"
+                },
+                "queueName": {
+                  "type": "keyword"
+                },
+                "type": {
+                  "type": "keyword"
+                },
+                "serverName": {
+                  "type": "keyword"
+                },
+                "flowId": {
+                  "type": "keyword"
+                },
+                "exchange": {
+                  "type": "keyword"
+                },
+                "routingKey": {
+                  "type": "keyword"
+                }
+              }
+            }
+          }
+        },
+        {
+          "http_transactions": {
+            "match": "*HttpTransactionLogDto",
+            "mapping": {
+              "properties": {
+                "startDate": {
+                  "type": "date",
+                  "format": "date_optional_time||epoch_millis"
+                },
+                "fullUrl": {
+                  "type": "keyword"
+                },
+                "transactionId": {
+                  "type": "keyword"
+                },
+                "httpMethod": {
+                  "type": "keyword"
+                },
+                "status": {
+                  "type": "keyword"
+                },
+                "resource": {
+                  "type": "keyword"
+                },
+                "type": {
+                  "type": "keyword"
+                },
+                "serverName": {
+                  "type": "keyword"
+                },
+                "duration": {
+                  "type": "long"
+                },
+                "responseStatus": {
+                  "type": "long"
+                },
+                "user": {
+                  "type": "keyword"
+                },
+                "flowId": {
+                  "type": "keyword"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "environmentInfo": {
+          "properties": {
+            "runtime": {
+              "type": "keyword"
+            },
+            "startup": {
+              "type": "date",
+              "format": "date_optional_time||epoch_millis"
+            },
+            "app": {
+              "type": "keyword"
+            },
+            "env": {
+              "type": "keyword"
+            }
+          }
+        },
+        "transactionId": {
+          "type": "keyword"
+        },
+        "logDate": {
+          "type": "date",
+          "format": "date_optional_time||epoch_millis"
+        },
+        "loggerName": {
+          "type": "keyword"
+        },
+        "date": {
+          "type": "date",
+          "format": "date_optional_time||epoch_millis"
+        },
+        "@timestamp": {
+          "format": "date_optional_time||epoch_millis",
+          "type": "date"
+        },
+        "logComment": {
+          "type": "text"
+        },
+        "logLevel": {
+          "type": "keyword"
+        },
+        "breadCrumb": {
+          "type": "long"
+        },
+        "hostName": {
+          "type": "keyword"
+        },
+        "lineNumber": {
+          "type": "long"
+        },
+        "className": {
+          "type": "keyword"
+        },
+        "methodName": {
+          "type": "keyword"
+        },
+        "flowId": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
 }

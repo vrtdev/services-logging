@@ -1,18 +1,20 @@
 package be.vrt.services.log.exposer.es.result;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static org.junit.Assert.*;
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 
 public class ElasticSearchResultTest {
 
 	@Test
 	public void testAddResultToEmpty() throws Exception {
-		List<String> hitsList = Lists.newArrayList("one", "two");
+		List<String> hitsList = asList("one", "two");
 		Map<String, Object> data = createDataMapWithHits(hitsList);
 
 		ElasticSearchResult result = ElasticSearchResult.empty().addResult(ElasticSearchResult.from(data));
@@ -22,9 +24,9 @@ public class ElasticSearchResultTest {
 
 	@Test
 	public void testAddResults() throws Exception {
-		List<String> hitsList = Lists.newArrayList("one", "two");
+		List<String> hitsList = asList("one", "two");
 		Map<String, Object> data = createDataMapWithHits(hitsList);
-		List<String> hitsList2 = Lists.newArrayList("three", "four");
+		List<String> hitsList2 = asList("three", "four");
 		Map<String, Object> data2 = createDataMapWithHits(hitsList2);
 
 		ElasticSearchResult result = ElasticSearchResult.from(data)
@@ -37,7 +39,7 @@ public class ElasticSearchResultTest {
 
 	@Test
 	public void testAddEmptyToResult() throws Exception {
-		List<String> hitsList = Lists.newArrayList("one", "two");
+		List<String> hitsList = asList("one", "two");
 		Map<String, Object> data = createDataMapWithHits(hitsList);
 
 		ElasticSearchResult result = ElasticSearchResult.from(data)
@@ -47,10 +49,10 @@ public class ElasticSearchResultTest {
 	}
 
 	private Map<String, Object> createDataMapWithHits(List<String> hitsList) {
-		Map<String, Object> hitsData = Maps.newHashMap();
+		Map<String, Object> hitsData = new HashMap<>();
 		hitsData.put("hits", hitsList);
 		hitsData.put("total", hitsList.size());
-		Map<String, Object> data = Maps.newHashMap();
+		Map<String, Object> data = new HashMap<>();
 		data.put("hits", hitsData);
 		return data;
 	}

@@ -60,7 +60,13 @@
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>2.3.4</version>
+			<version>6.0.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch.client</groupId>
+			<artifactId>transport</artifactId>
+			<version>6.0.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -74,6 +80,12 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-cbor</artifactId>
+		</dependency>
+		<dependency><!-- required by elasticsearch -->
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+            <version>2.9.1</version>
+			<scope>compile</scope>
 		</dependency>
 
 	</dependencies>
