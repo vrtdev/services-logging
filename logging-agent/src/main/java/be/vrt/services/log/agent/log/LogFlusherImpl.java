@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 
 public class LogFlusherImpl implements LogFlusher {
     private static final Logger LOGGER = LoggerFactory.getLogger(LogFlusherImpl.class);
@@ -22,17 +23,18 @@ public class LogFlusherImpl implements LogFlusher {
     @Override
     public void flush(StringBuilder buffer) {
         new Thread(() -> {
+
             String output = buffer.toString();
             HttpURLConnection connection = null;
             try {
                 URL url = new URL(urlString);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/x-ndjson;charset=UTF-8");
+                connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
                 connection.setRequestProperty("Content-Length", "" + output.length());
                 connection.setDoOutput(true);
                 try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
-                    wr.writeBytes(output);
+                    wr.write(output.getBytes("UTF-8"));
                     wr.close();
                 }
                 int responseCode = connection.getResponseCode();

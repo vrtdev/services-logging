@@ -1,7 +1,6 @@
 package be.vrt.services.log.exposer.es;
 
 import be.vrt.services.log.exposer.es.query.ElasticSearchQuery;
-import be.vrt.services.log.exposer.es.result.ElasticSearchCountResult;
 import be.vrt.services.log.exposer.es.result.ElasticSearchResult;
 import be.vrt.services.logging.log.common.LoggingProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,12 +32,13 @@ public class ElasticSearchSearchQueryHttpExecutor implements ElasticSearchQueryE
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setConnectTimeout(15000);
 			con.setRequestMethod("POST");
+			con.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
 			con.setDoOutput(true);
 
 			mapper.writeValue(con.getOutputStream(), query.getData());
 			if (con.getResponseCode() > 299) {
 				LOGGER.info(">> Failed to query ES > " + connectionUrl + " [" + con.getResponseCode() + "] :" + con.getResponseMessage());
-				LOGGER.info(">> Failed to query ES > " + mapper.writeValueAsString(query));
+				LOGGER.info(">> Failed to query ES > " + mapper.writeValueAsString(query.getData()));
 				return ElasticSearchResult.empty();
 			} else {
 				return ElasticSearchResult.from((Map<String, Object>) mapper.readValue(con.getInputStream(), HashMap.class));
@@ -55,29 +55,5 @@ public class ElasticSearchSearchQueryHttpExecutor implements ElasticSearchQueryE
 			result = result.addResult(executeSearchQuery(query, connectionUrl));
 		}
 		return result;
-	}
-
-	@Override
-	public ElasticSearchCountResult executeCountQuery(ElasticSearchQuery query) {
-		String connectionUrl = LoggingProperties.connectionStatUrl();
-		try {
-			URL url = new URL(connectionUrl + "?search_type=count");
-
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setConnectTimeout(5000);
-			con.setRequestMethod("POST");
-			con.setDoOutput(true);
-
-			mapper.writeValue(con.getOutputStream(), query.getData());
-			if (con.getResponseCode() > 299) {
-				LOGGER.info(">> Failed to query ES > " + connectionUrl + " [" + con.getResponseCode() + "] :" + con.getResponseMessage());
-				LOGGER.info(">> Failed to query ES > " + mapper.writeValueAsString(query));
-			} else {
-				return ElasticSearchCountResult.from((Map<String, Object>) mapper.readValue(con.getInputStream(), HashMap.class));
-			}
-		} catch (Exception ex) {
-			LOGGER.error("Failed to query ES", ex);
-		}
-		return ElasticSearchCountResult.empty();
 	}
 }

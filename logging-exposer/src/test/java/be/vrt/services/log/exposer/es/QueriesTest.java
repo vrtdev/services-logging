@@ -2,44 +2,48 @@ package be.vrt.services.log.exposer.es;
 
 import be.vrt.services.log.exposer.es.query.DailyProblemQuery;
 import be.vrt.services.log.exposer.es.query.DetailQuery;
-import be.vrt.services.log.exposer.es.query.StatsQuery;
 import be.vrt.services.log.exposer.es.result.ElasticSearchCountResult;
 import be.vrt.services.log.exposer.es.result.ElasticSearchResult;
 import be.vrt.services.logging.log.common.AppWithEnv;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.collect.Lists;
-import org.elasticsearch.client.Client;
 import org.joda.time.DateTime;
 import org.junit.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static java.util.Arrays.asList;
 
 public class QueriesTest {
 
-	private static InMemoryMongo inMemoryMongo;
-	private static ElasticSearchClientQueryExecutor elasticSearchQueryExecutor;
+	private static InMemoryElastic inMemoryElastic;
+	private static ElasticSearchQueryExecutor elasticSearchQueryExecutor;
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		inMemoryMongo = new InMemoryMongo().start();
-		Client client = inMemoryMongo.getClient();
+		inMemoryElastic = new InMemoryElastic().start();
 
-		elasticSearchQueryExecutor = new ElasticSearchClientQueryExecutor(client);
+		elasticSearchQueryExecutor = new ElasticSearchSearchQueryHttpExecutor();
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		inMemoryMongo.reCreateIndex("logging", "es-mapping.json");
+		inMemoryElastic.reCreateIndex(indexName(), "es-mapping.json");
+	}
+
+	private String indexName(){
+		return "svc-logging-" + DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDate.now());
 	}
 
 	private void index(String... logResources) {
-		inMemoryMongo.index("logging", "logs", logResources);
-		inMemoryMongo.flush("logging");
+		inMemoryElastic.index(indexName(), "logs", logResources);
+		inMemoryElastic.flush(indexName());
 	}
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {
-		inMemoryMongo.stop();
+		inMemoryElastic.stop();
 	}
 
 	@Test
@@ -104,11 +108,11 @@ public class QueriesTest {
 				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
 				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR"),
 
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"), //THIS ONE
 				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "STAG")).addAuditLog("thisFacadeThing", "WARN"),
 				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
 				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "STAG")).addAuditLog("thisServiceThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR"),
+				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR"), //THIS ONE
 				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("app1", "STAG")).addAuditLog("thisFacadeThing", "ERROR"),
 				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("otherAPP", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
 				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0), log("otherAPP", "STAG")).addAuditLog("thisFacadeThing", "WARN"),
@@ -120,7 +124,7 @@ public class QueriesTest {
 				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
 				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR")
 		);
-		DailyProblemQuery query = new DailyProblemQuery("2015-01-02", "WARN", Lists.newArrayList(new AppWithEnv("app1", "TEST"), new AppWithEnv("app2", "STAG")));
+		DailyProblemQuery query = new DailyProblemQuery("2015-01-02", "WARN", asList(new AppWithEnv("app1", "TEST"), new AppWithEnv("app2", "STAG")));
 		ElasticSearchResult elasticSearchResult = elasticSearchQueryExecutor.executeSearchQuery(query);
 		assertHasNumberOfHits(elasticSearchResult, 2);
 	}
@@ -131,38 +135,10 @@ public class QueriesTest {
 				new DailyLogEntry("first",  new DateTime(2015, 1, 2, 12, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
 				new DailyLogEntry("second", new DateTime(2015, 1, 2, 12, 3), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN")
 		);
-		DailyProblemQuery query = new DailyProblemQuery("2015-01-02", "WARN", Lists.newArrayList(new AppWithEnv("app1", "TEST"), new AppWithEnv("app2", "STAG")));
+		DailyProblemQuery query = new DailyProblemQuery("2015-01-02", "WARN", asList(new AppWithEnv("app1", "TEST"), new AppWithEnv("app2", "STAG")));
 		ElasticSearchResult elasticSearchResult = elasticSearchQueryExecutor.executeSearchQuery(query);
 		assertHasNumberOfHits(elasticSearchResult, 2);
 		assertHitsIdsInOrder(elasticSearchResult, "second", "first");
-	}
-
-	@Test
-	public void testStatsQuery_onlyRetrieveFacadeInTimeRangeWithLevelAppAndEnv() throws Exception {
-		index(
-				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 1, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR"),
-
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app1", "STAG")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app1", "STAG")).addAuditLog("thisServiceThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app1", "STAG")).addAuditLog("thisFacadeThing", "ERROR"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("otherAPP", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("otherAPP", "STAG")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app1", "DEV")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app2", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 2, 12, 0, 13, 0), log("app2", "STAG")).addAuditLog("thisFacadeThing", "WARN"),
-
-				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisServiceThing", "WARN"),
-				new DailyLogEntry(new DateTime(2015, 1, 3, 12, 0, 13, 0), log("app1", "TEST")).addAuditLog("thisFacadeThing", "ERROR")
-		);
-		StatsQuery query = new StatsQuery("2015-01-02", Lists.newArrayList(new AppWithEnv("app1", "TEST"), new AppWithEnv("app2", "STAG")));
-		ElasticSearchCountResult elasticSearchResult = elasticSearchQueryExecutor.executeCountQuery(query);
-		assertHasNumberOfHits(elasticSearchResult, 3);
 	}
 
 	private void assertHitsIdsInOrder(ElasticSearchResult elasticSearchResult, String... ids) {
@@ -174,8 +150,8 @@ public class QueriesTest {
 	}
 
 	private void index(DailyLogEntry... entries) {
-		inMemoryMongo.index("logging", "logs", entries);
-		inMemoryMongo.flush("logging");
+		inMemoryElastic.index(indexName(), "logs", entries);
+		inMemoryElastic.flush(indexName());
 	}
 
 	private void assertHasNumberOfHits(ElasticSearchResult elasticSearchResult, int expectedNumberOfHits) {
@@ -190,7 +166,7 @@ public class QueriesTest {
 		Assert.assertEquals(expectedNumberOfHits, totalHits.intValue());
 	}
 
-	private static class DailyLogEntry implements InMemoryMongo.EntryWithId {
+	private static class DailyLogEntry implements InMemoryElastic.EntryWithId {
 
 		private final String id;
 		@JsonProperty

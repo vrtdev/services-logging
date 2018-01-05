@@ -7,8 +7,7 @@ var loadFiles = [
 	"services/logging/lib/momentjs.js",
 	"services/logging/lib/highcharts.js",
 	"services/logging/lib/highcharts-config.js",
-	"services/logging/logging.js?v=${mvn.timestamp}",
-	"services/logging/log-stats.js?v=${mvn.timestamp}"
+	"services/logging/logging.js?v=${mvn.timestamp}"
 ]
 var counter = 0;
 

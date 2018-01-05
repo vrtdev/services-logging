@@ -1,10 +1,7 @@
 package be.vrt.services.log.exposer.controller;
 
 import be.vrt.services.log.exposer.es.ElasticSearchQueryExecutor;
-import be.vrt.services.log.exposer.es.query.DailyProblemQuery;
 import be.vrt.services.log.exposer.es.query.ElasticSearchQuery;
-import be.vrt.services.log.exposer.es.query.StatsQuery;
-import be.vrt.services.log.exposer.es.result.ElasticSearchCountResult;
 import be.vrt.services.log.exposer.es.result.ElasticSearchResult;
 import be.vrt.services.logging.log.common.dto.AbstractTransactionLog;
 import be.vrt.services.logging.log.common.dto.LogType;
@@ -167,60 +164,5 @@ public class TransactionLogControllerTest {
 		String value = json.getValue();
 		Assert.assertTrue(value.contains("/transaction/blabla"));
 		Assert.assertTrue(value.contains("\"hits\":{}"));
-	}
-
-	@Test
-	public void doGet_whenStatsOverviewPathMatches_ESQueryExecuted() throws ServletException, IOException {
-		when(aRequest.getPathInfo()).thenReturn("/stats/overview/blabla");
-		when(aResponse.getWriter()).thenReturn(printWriter);
-		when(elasticSearchQueryExecutor.executeCountQuery(any(StatsQuery.class))).thenReturn(ElasticSearchCountResult.empty());
-		instance = TransactionRegisteryMock.doSpy();
-
-		transactionLogController.doGet(aRequest, aResponse);
-
-		verify(aResponse).setContentType("application/json");
-		verify(elasticSearchQueryExecutor).executeCountQuery(any(StatsQuery.class));
-		ArgumentCaptor<String> json = ArgumentCaptor.forClass(String.class);
-		verify(printWriter).print(json.capture());
-		String value = json.getValue();
-		Assert.assertTrue(value.contains("/stats/overview/blabla"));
-		Assert.assertTrue(value.contains("\"agg\":{}"));
-	}
-
-
-	@Test
-	public void doGet_whenStatsErrorsPathMatches_ESQueryExecuted() throws ServletException, IOException {
-		when(aRequest.getPathInfo()).thenReturn("/stats/errors/blabla");
-		when(aResponse.getWriter()).thenReturn(printWriter);
-		when(elasticSearchQueryExecutor.executeSearchQuery(any(DailyProblemQuery.class))).thenReturn(ElasticSearchResult.empty());
-		instance = TransactionRegisteryMock.doSpy();
-
-		transactionLogController.doGet(aRequest, aResponse);
-
-		verify(aResponse).setContentType("application/json");
-		verify(elasticSearchQueryExecutor).executeSearchQuery(any(DailyProblemQuery.class));
-		ArgumentCaptor<String> json = ArgumentCaptor.forClass(String.class);
-		verify(printWriter).print(json.capture());
-		String value = json.getValue();
-		Assert.assertTrue(value.contains("/stats/errors/blabla"));
-		Assert.assertTrue(value.contains("\"statshits\":{}"));
-	}
-
-	@Test
-	public void doGet_whenStatsFailuresPathMatches_ESQueryExecuted() throws ServletException, IOException {
-		when(aRequest.getPathInfo()).thenReturn("/stats/failures/blabla");
-		when(aResponse.getWriter()).thenReturn(printWriter);
-		when(elasticSearchQueryExecutor.executeSearchQuery(any(DailyProblemQuery.class))).thenReturn(ElasticSearchResult.empty());
-		instance = TransactionRegisteryMock.doSpy();
-
-		transactionLogController.doGet(aRequest, aResponse);
-
-		verify(aResponse).setContentType("application/json");
-		verify(elasticSearchQueryExecutor).executeSearchQuery(any(DailyProblemQuery.class));
-		ArgumentCaptor<String> json = ArgumentCaptor.forClass(String.class);
-		verify(printWriter).print(json.capture());
-		String value = json.getValue();
-		Assert.assertTrue(value.contains("/stats/failures/blabla"));
-		Assert.assertTrue(value.contains("\"statshits\":{}"));
 	}
 }

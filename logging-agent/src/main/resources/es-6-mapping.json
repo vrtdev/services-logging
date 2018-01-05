@@ -179,6 +179,7 @@
           "type": "date",
           "format": "date_optional_time||epoch_millis"
         },
+
         "@timestamp": {
           "format": "date_optional_time||epoch_millis",
           "type": "date"
