@@ -4,22 +4,6 @@
       "date_detection": false,
       "dynamic_templates": [
         {
-          "strings": {
-            "match": "*String",
-            "mapping": {
-              "type": "text"
-            }
-          }
-        },
-        {
-          "ints": {
-            "match": "*Integer",
-            "mapping": {
-              "type": "long"
-            }
-          }
-        },
-        {
           "audits": {
             "match": "*AuditLogDto",
             "mapping": {
@@ -143,6 +127,32 @@
                   "type": "keyword"
                 }
               }
+            }
+          }
+        },
+        {
+          "strings": {
+            "match": "*String",
+            "mapping": {
+              "type": "text",
+              "index": false
+            }
+          }
+        },
+        {
+          "ints": {
+            "match": "*Integer",
+            "mapping": {
+              "type": "long",
+              "index": false
+            }
+          }
+        },
+        {
+          "everything_else": {
+            "match": "*",
+            "mapping": {
+              "index": false
             }
           }
         }
