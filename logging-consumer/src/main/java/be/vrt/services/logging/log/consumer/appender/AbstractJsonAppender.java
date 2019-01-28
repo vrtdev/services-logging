@@ -1,11 +1,5 @@
 package be.vrt.services.logging.log.consumer.appender;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Date;
-
-import org.slf4j.Logger;
-
 import be.vrt.services.logging.log.common.Constants;
 import be.vrt.services.logging.log.common.DelayedLogObject;
 import be.vrt.services.logging.log.common.LogTransaction;
@@ -13,19 +7,32 @@ import be.vrt.services.logging.log.common.transaction.TransactionRegistery;
 import be.vrt.services.logging.log.consumer.config.EnvironmentSetting;
 import be.vrt.services.logging.log.consumer.dto.JsonLogWrapperDto;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.AppenderBase;
-
+import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Arrays;
+import org.slf4j.Logger;
 
-public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> implements Constants {
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Date;
+
+public abstract class AbstractJsonAppender extends UnsynchronizedAppenderBase<ILoggingEvent> implements Constants {
 	
 	// Tag startupthread for logging to static flow
 	static {
 		TransactionRegistery.instance();
 	}
 
+	private String hostName;
+
 	private ObjectMapper mapper = new ObjectMapper();
+
+	protected AbstractJsonAppender() {
+		try {
+			hostName = InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+			hostName = "unknown-host";
+		}
+	}
 
 	@Override
 	protected void append(ILoggingEvent logEvent) {
@@ -43,13 +50,7 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			dto.setSubFlow(LogTransaction.nbrOfSubflow());
 			dto.setTags(LogTransaction.listTags());
 			dto.setIds(LogTransaction.listIds());
-			String hostname;
-			try {
-				hostname = InetAddress.getLocalHost().getHostName();
-			} catch (UnknownHostException ex) {
-				hostname = "<UnknownHost>";
-			}
-			dto.setHostName(hostname);
+			dto.setHostName(hostName);
 
 			if(logEvent.getThrowableProxy() != null){
 				dto.getContent().put("STACKTRACE-MSG", logEvent.getThrowableProxy().getMessage());
@@ -72,9 +73,10 @@ public abstract class AbstractJsonAppender extends AppenderBase<ILoggingEvent> i
 			}
 			dto.setLogComment(logEvent.getFormattedMessage());
 
-			dto.setClassName(logEvent.getCallerData()[0].getClassName());
-			dto.setMethodName(logEvent.getCallerData()[0].getMethodName());
-			dto.setLineNumber(logEvent.getCallerData()[0].getLineNumber());
+			StackTraceElement callerData = logEvent.getCallerData()[0];
+			dto.setClassName(callerData.getClassName());
+			dto.setMethodName(callerData.getMethodName());
+			dto.setLineNumber(callerData.getLineNumber());
 			dto.setEnvironmentInfo(EnvironmentSetting.info());
 			dto.setLoggerName(logEvent.getLoggerName());
 			dto.setLogLevel(logEvent.getLevel().toString());
