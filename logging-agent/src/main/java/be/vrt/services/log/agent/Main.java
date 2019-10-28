@@ -2,12 +2,8 @@ package be.vrt.services.log.agent;
 
 import be.vrt.services.log.agent.log.LogBuilderImpl;
 import be.vrt.services.log.agent.log.LogFlusherImpl;
-import be.vrt.services.log.agent.log.LogIndexCreator;
 import be.vrt.services.log.agent.udp.Server;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import static java.time.temporal.ChronoUnit.MINUTES;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -17,24 +13,16 @@ public class Main {
         int port;
         int esPort;
         String host;
-        String mappingPath = null;
-        if (args.length >= 3) {
+        if (args.length == 3) {
             host = args[0];
             esPort = Integer.parseInt(args[1]);
             port = Integer.parseInt(args[2]);
-            if(args.length >= 4) {
-                mappingPath = args[3];
-            }
         } else {
-            throw new RuntimeException("expected ESHost ESPort udpPort [mappingFilePath]");
+            throw new RuntimeException("expected ESHost ESPort udpPort");
         }
         LogBuilderImpl logBuilder = new LogBuilderImpl(new LogFlusherImpl(host, esPort));
-        LogIndexCreator logIndexCreator = new LogIndexCreator(host, esPort, mappingPath, logBuilder);
-        logIndexCreator.createIndex();
 
-        Long minutesTillMidnight = LocalDateTime.now().until(LocalDate.now().plusDays(1).atStartOfDay().plus(1, MINUTES), MINUTES);
         ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(1);
-        scheduler.scheduleAtFixedRate(logIndexCreator::createIndex, minutesTillMidnight, 1440, TimeUnit.MINUTES);
         scheduler.scheduleAtFixedRate(logBuilder::flush, 60, 10, TimeUnit.SECONDS);
 
         Server server = new Server(port, logBuilder);
