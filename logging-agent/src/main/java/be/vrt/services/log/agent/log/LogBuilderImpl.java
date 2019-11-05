@@ -4,14 +4,16 @@ import be.vrt.services.log.agent.udp.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LogBuilderImpl implements LogBuilder, LogIndexNameObserver {
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class LogBuilderImpl implements LogBuilder {
 
     private static final int MAX_BUFFER_SIZE = 4_000_000;
     private static final int BUFFER_SIZE = MAX_BUFFER_SIZE + Server.CHANNEL_BUFFER;
     private static final Logger LOGGER = LoggerFactory.getLogger(LogBuilderImpl.class);
 
-    StringBuilder buffer = createBuffer();
-
+    private StringBuilder buffer = createBuffer();
     private LogFlusher logFlusher;
     private String indexName;
 
@@ -47,12 +49,8 @@ public class LogBuilderImpl implements LogBuilder, LogIndexNameObserver {
     }
 
     private StringBuilder createBuffer() {
+        this.indexName = "svc-logging-" + DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDate.now());
         return new StringBuilder(BUFFER_SIZE);
     }
 
-    @Override
-    public synchronized void indexChanged(String indexName) {
-        this.indexName = indexName;
-        LOGGER.debug("Switched to index: {}", indexName);
-    }
 }
