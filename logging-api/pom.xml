@@ -4,7 +4,7 @@
     <parent>
         <groupId>be.vrt.services.logging</groupId>
         <artifactId>logging</artifactId>
-        <version>1.29.1-SNAPSHOT</version>
+        <version>1.29.1</version>
     </parent>
     <artifactId>logging-api</artifactId>
     <packaging>jar</packaging>

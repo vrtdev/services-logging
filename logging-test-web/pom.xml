@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>logging</artifactId>
 		<groupId>be.vrt.services.logging</groupId>
-		<version>1.29.1-SNAPSHOT</version>
+		<version>1.29.1</version>
 	</parent>
 
 	<artifactId>logging-test-web</artifactId>
@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>logging-full</artifactId>
-			<version>1.29.1-SNAPSHOT</version>
+			<version>1.29.1</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>
