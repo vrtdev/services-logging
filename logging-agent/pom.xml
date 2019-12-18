@@ -17,7 +17,7 @@
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 
-		<netty.version>4.1.42.Final</netty.version>
+		<netty.version>4.1.42</netty.version>
 		<junit-version>4.12</junit-version>
 		<org.mockito-version>1.10.19</org.mockito-version>
 
