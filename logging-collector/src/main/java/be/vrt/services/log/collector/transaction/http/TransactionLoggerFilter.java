@@ -59,7 +59,7 @@ public class TransactionLoggerFilter implements Filter, Constants {
 			transaction.responseStatus(response.getStatus());
 
 			LOG.info("Filter Info: [{}] ==> {} | {} ", transaction.getResponseStatus(), transaction.getHttpMethod(), transaction.getResource(), transaction);
-			if (request.getRequestURI().contains("/external/metrics")) TransactionRegistery.register(transaction);
+			if (!request.getRequestURI().contains("/external/metrics")) TransactionRegistery.register(transaction);
 			LogTransaction.resetThread();
 		}
 	}
