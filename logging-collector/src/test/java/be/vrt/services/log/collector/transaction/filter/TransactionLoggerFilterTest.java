@@ -87,6 +87,7 @@ public class TransactionLoggerFilterTest {
 		when(httpServletRequest.getMethod()).thenReturn(HttpMethod.GET);
 		when(httpServletRequest.getServerName()).thenReturn("mediazone-dev");
 		when(httpServletRequest.getRequestURL()).thenReturn(new StringBuffer("http://mediazone-admin-dev.vrt.be/rest/client/v1/assestsources"));
+		when(httpServletRequest.getRequestURI()).thenReturn("http://mediazone-admin-dev.vrt.be/rest/client/v1/assestsources");
 		Map<String, String> httpParameters = new HashMap<>();
 		when(httpServletRequest.getParameterNames()).thenReturn(new IteratorEnumeration(httpParameters.keySet().iterator()));
 
