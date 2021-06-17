@@ -32,19 +32,6 @@
 		<logback.version>1.1.7</logback.version>
 	</properties>
 
-	<distributionManagement>
-		<repository>
-			<id>deployment</id>
-			<name>VRT inhouse nexus</name>
-			<url>http://atlasnexus.servers.vrt.be:8080/nexus/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>deployment</id>
-			<name>VRT inhouse nexus</name>
-			<url>http://atlasnexus.servers.vrt.be:8080/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

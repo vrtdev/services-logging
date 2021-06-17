@@ -57,12 +57,12 @@
 		<repository>
 			<id>nexus-core-deployment</id>
 			<name>VRT inhouse nexus</name>
-			<url>https://nexus.core.a51.be/repository/vrt-releases/</url>
+			<url>https://nexus.core.a51.be/repository/vrt-maven-releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>nexus-core-deployment</id>
 			<name>VRT inhouse nexus</name>
-			<url>https://nexus.core.a51.be/repository/vrt-snapshots/</url>
+			<url>https://nexus.core.a51.be/repository/vrt-maven-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
