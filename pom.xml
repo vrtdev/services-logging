@@ -33,7 +33,7 @@
 		<org.aspectj-version>1.8.5</org.aspectj-version>
 		<logback-version>1.1.3</logback-version>
 		<net.logstash.logback-version>4.2</net.logstash.logback-version>
-		<jackson.databind-version>2.10.1</jackson.databind-version>
+		<jackson.databind-version>2.12.1</jackson.databind-version>
 		<org.apache.common.lang-version>3.3.2</org.apache.common.lang-version>
 		<commons.beanutils-version>1.9.2</commons.beanutils-version>
 		<junit-version>4.12</junit-version>
